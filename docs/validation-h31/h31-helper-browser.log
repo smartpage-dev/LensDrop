@@ -1,0 +1,7 @@
+PASS offline helper JavaScript in Chromium (set_content)
+PASS administrator-only generation yields 64 hex characters
+PASS storage fields remain empty and unchanged
+PASS copy action provides a result or manual-copy instruction
+PASS 390px viewport has no horizontal overflow
+PASS no page errors or network requests
+LIMIT: helper-only Chromium check using set_content, not native file navigation or live Hostinger

@@ -1,0 +1,8 @@
+Android build availability check
+ANDROID_HOME=
+ANDROID_SDK_ROOT=
+Google SDK repository request:
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0curl: (6) Could not resolve host: dl.google.com
+No Android SDK, Gradle installation or APK build result is available.

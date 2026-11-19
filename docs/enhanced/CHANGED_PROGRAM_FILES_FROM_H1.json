@@ -1,0 +1,132 @@
+[
+  {
+    "path": "clients/android/app/build.gradle",
+    "change": "modified",
+    "sha256": "14e517ba0f2b31c18075586473b654e4f515a7bbf2debc27603407e613a7b9a8"
+  },
+  {
+    "path": "clients/android/app/src/main/java/app/lensdrop/transfer/CloudApi.java",
+    "change": "modified",
+    "sha256": "2bc193b865ab3fcf9f5e029303bd73af70c2340aa73e30945b26b65e139a1bb9"
+  },
+  {
+    "path": "clients/android/app/src/main/java/app/lensdrop/transfer/Config.java",
+    "change": "modified",
+    "sha256": "1dcb4fdd7c427f48e6e0f9a954874dbedd4f36d50c0132ecd1cefbd69503f355"
+  },
+  {
+    "path": "clients/android/app/src/main/java/app/lensdrop/transfer/EventService.java",
+    "change": "modified",
+    "sha256": "814b19715adc29b584ccf9b52d304584d6f8d4e24ccb1a6cfafdebbe31c6a7b6"
+  },
+  {
+    "path": "clients/android/app/src/main/java/app/lensdrop/transfer/MainActivity.java",
+    "change": "modified",
+    "sha256": "f481e3035adac55f74571bee6c79bee09476d2bfe45c54acf2a4f91b5a3dadaa"
+  },
+  {
+    "path": "clients/android/app/src/main/java/app/lensdrop/transfer/QueueDb.java",
+    "change": "modified",
+    "sha256": "e6386e1a38ad0ead8b896e69855c81dae3856629a6fc9abd3fb94f3e6000857b"
+  },
+  {
+    "path": "clients/android/app/src/main/java/app/lensdrop/transfer/RecoveryJob.java",
+    "change": "modified",
+    "sha256": "b894d9220ef732c3c76fe5ef305fdb13d867d11aff9a00efcc86d8cad0a19d03"
+  },
+  {
+    "path": "clients/android/app/src/main/java/app/lensdrop/transfer/SessionRules.java",
+    "change": "added",
+    "sha256": "631b2e8debfad66a05a6c23b0c122a593ee9ba9249e43f1e96593eb19fbd6139"
+  },
+  {
+    "path": "clients/android/app/src/main/java/app/lensdrop/transfer/UploadEngine.java",
+    "change": "modified",
+    "sha256": "dd4c7e90258ef65377afab95c8a0b5a88391e6f09a98fec0a436cfe7e3683384"
+  },
+  {
+    "path": "clients/desktop/OPEN_OPERATOR_CONSOLE.cmd",
+    "change": "added",
+    "sha256": "3a52606d83cdc1ca28863374809a1d4e76dd6e3a20520447001df5de03dba236"
+  },
+  {
+    "path": "clients/desktop/OPEN_OPERATOR_CONSOLE.sh",
+    "change": "added",
+    "sha256": "2be0822e36171282f5991f147edc2d90b7ba55a596bdbdb8f8ea7dda2239cadf"
+  },
+  {
+    "path": "clients/desktop/lensdrop_agent.py",
+    "change": "modified",
+    "sha256": "1b4f3491832970fb5340fe021cbbaf15a39213a7dcd8da53157daece0d772830"
+  },
+  {
+    "path": "clients/desktop/lensdrop_console.py",
+    "change": "added",
+    "sha256": "dae9f37d0f4c2f3bc57c0cd3ac958f44d3b232351cf74182ab68398fa2c4ef6d"
+  },
+  {
+    "path": "clients/tests/test_operations.py",
+    "change": "added",
+    "sha256": "eee77bdb9e9913718ed20160e87c3de04a0edf494ebc7b5cc5a35825b403d6dc"
+  },
+  {
+    "path": "clients/tests/ui/tk_smoke.py",
+    "change": "added",
+    "sha256": "eeff1153523ca8e792d5d1cf3bfbe51d93c4ea739d7935ae1c257f280a19b2ef"
+  },
+  {
+    "path": "clients/tests/ui/ui_dom_check.py",
+    "change": "added",
+    "sha256": "f1bb0a436e4008b268460bb11b0ea3a38ff88a891c968dffbe8f9e9e0d014a40"
+  },
+  {
+    "path": "cloud/public/app.js",
+    "change": "modified",
+    "sha256": "1537ddfbb7c2347737df7d199f34a9327e31c56c1a511a9611853c913a4176a0"
+  },
+  {
+    "path": "cloud/public/gallery.html",
+    "change": "modified",
+    "sha256": "4a942b3e8526e400198e8cdc8f9b59f567d72b4ae90cb6e39b5986ee0b393acd"
+  },
+  {
+    "path": "cloud/public/gallery.js",
+    "change": "modified",
+    "sha256": "caa184125eb5901a2c35e4074b861dd377171070ec8ffbbd0b83dc4bb1a5f6cc"
+  },
+  {
+    "path": "cloud/public/index.html",
+    "change": "modified",
+    "sha256": "f56598c5270486c644f614d19e5effb6f75f69c578623f84ef01e1ed2f50b5fd"
+  },
+  {
+    "path": "cloud/public/style.css",
+    "change": "modified",
+    "sha256": "63f6819826cd97acd25e911b0d7b2a27404428d0dab7309fb6d081d3eb40c9e1"
+  },
+  {
+    "path": "cloud/scripts/build.cjs",
+    "change": "modified",
+    "sha256": "4ce7a50695c70eb7b211b0560be897645a42a8c2bd46bbfaaeac4df091e786e9"
+  },
+  {
+    "path": "cloud/src/operations.cjs",
+    "change": "added",
+    "sha256": "736d483206c02b5b9062329b0f645204116b8a7bec7c026625f053b0c73a9013"
+  },
+  {
+    "path": "cloud/src/server.cjs",
+    "change": "modified",
+    "sha256": "51928bbb987a3bb69d95615f9da50130e386cd51c8b609475dd6f55bb54293cc"
+  },
+  {
+    "path": "cloud/src/store.cjs",
+    "change": "modified",
+    "sha256": "b2c813ec64a834d22a19ccfb7d9621258e92912f88d09d536ebbba4af011811c"
+  },
+  {
+    "path": "cloud/tests/operations.test.cjs",
+    "change": "added",
+    "sha256": "a752b148146c2e836342092263d0c4d375655d28d77d0dbd8d3c88efa941d32d"
+  }
+]

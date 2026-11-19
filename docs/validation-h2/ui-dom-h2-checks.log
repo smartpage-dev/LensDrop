@@ -1,0 +1,9 @@
+PASS rendered H2 source shows three distinct synthetic counters
+PASS isolated test buttons are disabled in the rendered console
+PASS Traditional Chinese core UI toggle
+PASS 390px rendered admin has no horizontal page overflow
+PASS no JavaScript errors in exercised static/mocked admin controls
+PASS mocked guest new-photo refresh preserves current cards and scroll position
+PASS explicit mocked guest action renders new cards
+PASS mocked visibility update withdraws a photo
+LIMIT: set_content with mocked fetch; NOT live browser/server, HTTPS, Hostinger, Android or camera validation.

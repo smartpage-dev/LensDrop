@@ -1,0 +1,11 @@
+PARSED app/src/main/java/app/lensdrop/transfer/RecoveryJob.java
+PARSED app/src/main/java/app/lensdrop/transfer/CloudApi.java
+PARSED app/src/main/java/app/lensdrop/transfer/UploadEngine.java
+PARSED app/src/main/java/app/lensdrop/transfer/SessionRules.java
+PARSED app/src/main/java/app/lensdrop/transfer/Config.java
+PARSED app/src/main/java/app/lensdrop/transfer/EventService.java
+PARSED app/src/main/java/app/lensdrop/transfer/MediaScanner.java
+PARSED app/src/main/java/app/lensdrop/transfer/MainActivity.java
+PARSED app/src/main/java/app/lensdrop/transfer/QueueDb.java
+warning: [options] system modules path not set in conjunction with -source 17
+Java syntax parse passed only. Android types, resources, manifest and packaging NOT compiled.

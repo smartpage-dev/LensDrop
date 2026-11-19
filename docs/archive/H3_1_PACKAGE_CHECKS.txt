@@ -1,0 +1,9 @@
+PASS local links: START_HERE.html
+PASS local links: RECOVER_503.html
+PASS local links: START_HERE.html
+PASS local links: LensDrop_H3_1_503_Recovery_Guide.html
+PASS cloud ZIP CRC and all 142 SHA256 manifest entries
+PASS correct version, root entry files, no live database/dependency/cache files
+PASS all public UI files and database/presentation/operations/QR sources unchanged from H3
+PASS redeployed ZIP build and 71 cloud tests; 23 desktop regression tests
+LIMIT: no live Hostinger deployment, fresh npm install, physical camera/phone/projector or Android build

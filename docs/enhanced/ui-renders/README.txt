@@ -1,0 +1,1 @@
+The two web UI images are local set_content renders with SYNTHETIC API responses, not Hostinger/mobile screenshots or live-browser E2E evidence. The desktop image is a real Linux/Xvfb Tk startup render with example paths, not Windows/macOS validation. No user photos are included.

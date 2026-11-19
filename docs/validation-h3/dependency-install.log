@@ -1,0 +1,7 @@
+npm error code EAI_AGAIN
+npm error syscall getaddrinfo
+npm error errno EAI_AGAIN
+npm error request to https://registry.npmjs.org/sharp failed, reason: getaddrinfo EAI_AGAIN registry.npmjs.org
+npm error A complete log of this run can be found in: /home/oai/.npm/_logs/2026-11-14T11_04_32_846Z-debug-0.log
+
+Executed tests used preinstalled sharp 0.34.1 and Node 22.16.0 through NODE_PATH. The dependency version matches package.json. No node_modules directory is shipped.

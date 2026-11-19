@@ -1,0 +1,22 @@
+{
+  "transport": "DOM fetch/image bridge to real local backend; browser navigation/CSP/HTTPS not verified",
+  "passed": 14,
+  "checks": [
+    "Admin loads both QR delivery modes",
+    "Personal auto-release defaults OFF",
+    "Unapproved personal photos render waiting page",
+    "Shared event branding loads",
+    "Independently decoded personal QR matches original stable URL",
+    "Admin release makes only one chosen photo personally visible",
+    "Personal release does not publish whole-event gallery",
+    "Selected preview and download appear",
+    "Mobile gallery has no horizontal overflow",
+    "Same group page receives another approved photograph automatically",
+    "Unrelated single QR does not expose group photos",
+    "Hiding a photo clears its open personal preview",
+    "Revoked personal link clears photos and event logo",
+    "No browser JavaScript errors"
+  ],
+  "synthetic_photos": true,
+  "android_ui_tested": false
+}

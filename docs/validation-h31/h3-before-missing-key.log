@@ -1,0 +1,16 @@
+{"type":"startup_rejected","code":"admin_key_required","message":"Generate a private random administrator key of at least 32 characters."}
+[eval]:1
+const h=require('node:http');global.LsNode={listenDone:false};const oldListen=h.Server.prototype.listen;h.Server.prototype.listen=function(){global.LsNode.listenDone=true;return oldListen.apply(this,arguments)};delete process.env.LENSDROP_ADMIN_KEY;const app=require('./server.js');if(!global.LsNode.listenDone && typeof app.listen==='function')app.listen(3000);
+                                                                                                                                                                                                                                                                                                                                     ^
+
+TypeError: Cannot read properties of undefined (reading 'listen')
+    at [eval]:1:326
+    at runScriptInThisContext (node:internal/vm:209:10)
+    at node:internal/process/execution:449:12
+    at [eval]-wrapper:6:24
+    at runScriptInContext (node:internal/process/execution:447:60)
+    at evalFunction (node:internal/process/execution:87:30)
+    at evalScript (node:internal/process/execution:99:3)
+    at node:internal/main/eval_string:74:3
+
+Node.js v22.16.0

@@ -1,0 +1,32 @@
+{
+  "release": "H3 Slideshow",
+  "cloud_version": "0.2.0-alpha.4-hostinger.3",
+  "release_date": "2026-11-14",
+  "classification": "engineering alpha - controlled rehearsal",
+  "migration_schema": 3,
+  "cloud_tests_passed": 54,
+  "desktop_regression_tests_passed": 23,
+  "instrumented_ui_qr_checks_passed": 18,
+  "instrumented_ui_boundary": "actual frontend/local backend connected by test-only fetch/image bridge; not native browser-network or CSP/HTTPS proof",
+  "android_apk_included": false,
+  "ios_app_included": false,
+  "windows_installer_included": false,
+  "android_source_compiled": false,
+  "client_sources_changed_from_h2": false,
+  "native_browser_navigation": "blocked by environment policy",
+  "hostinger_live_verified": false,
+  "physical_projector_verified": false,
+  "camera_phone_verified": false,
+  "clean_dependency_install_verified": false,
+  "tested_node": "22.16.0",
+  "tested_sharp": "0.34.1",
+  "rollback": "matching H2 code plus entire pre-H3 backup; preserve/reconcile uploads made after backup",
+  "limits": [
+    "single local server commit, not replicated backup",
+    "observed source counts do not prove camera-card completeness",
+    "latest-N projection pool, not whole album",
+    "projection visibility checks are polling, not instant push",
+    "no PIN or expiry for share links",
+    "no camera SDK or native mobile change"
+  ]
+}

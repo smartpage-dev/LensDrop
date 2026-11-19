@@ -1,0 +1,1 @@
+Install Gradle 8.11.1 and add its bin directory to PATH. No Gradle wrapper is bundled.

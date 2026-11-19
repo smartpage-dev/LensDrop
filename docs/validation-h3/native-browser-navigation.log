@@ -1,0 +1,1 @@
+Direct Chromium navigation to the loopback Node server failed: net::ERR_BLOCKED_BY_ADMINISTRATOR. No native browser-network or live Hostinger result is claimed. The separate bridge test uses set_content and the actual local API with only URL-context substitutions.

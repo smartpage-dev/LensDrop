@@ -1,0 +1,212 @@
+[
+  {
+    "path": "clients/android/RUN_LEDGER_TESTS.sh",
+    "change": "added",
+    "sha256": "0530c46ecbac91a7a242f4c95a68f8fb5a2bbe1da35b2a00bc5d30c750a36926"
+  },
+  {
+    "path": "clients/android/app/build.gradle",
+    "change": "modified",
+    "sha256": "7f8cb60bdd65efc49b9eacbaa2e3a136f311dc98a4c33f0151f0667a94583f2d"
+  },
+  {
+    "path": "clients/android/app/src/main/AndroidManifest.xml",
+    "change": "modified",
+    "sha256": "09cddd32af1d4b5893394dfe8bf67f10f72596aee1213953a5c13da134dcf760"
+  },
+  {
+    "path": "clients/android/app/src/main/assets/QRCode-LICENSE.txt",
+    "change": "added",
+    "sha256": "b3c7a2fadb2515b8106eae58439a4b9c0581a4eaa88d6a265701f8d4dd7dadb8"
+  },
+  {
+    "path": "clients/android/app/src/main/assets/qr.js",
+    "change": "added",
+    "sha256": "bab76b147e2ce00880d6952bbb02ea379b0bb41cd422a611327ebd0c872226fc"
+  },
+  {
+    "path": "clients/android/app/src/main/java/app/lensdrop/transfer/CloudApi.java",
+    "change": "modified",
+    "sha256": "f91b38614e690bc0732830c8461cbf9dc58ffa31fb688b333bd93e7c629c009b"
+  },
+  {
+    "path": "clients/android/app/src/main/java/app/lensdrop/transfer/DeliveryActivity.java",
+    "change": "added",
+    "sha256": "364a40fbf8cd4e9eaba5002d7655789614fece36036667372dbf4b517c9418bb"
+  },
+  {
+    "path": "clients/android/app/src/main/java/app/lensdrop/transfer/DeliveryCoordinator.java",
+    "change": "added",
+    "sha256": "ab1a4e4715ffd79e13ec93cff7d0a0e9c3baa8bf10913e3ea75a31fad8b9305c"
+  },
+  {
+    "path": "clients/android/app/src/main/java/app/lensdrop/transfer/MainActivity.java",
+    "change": "modified",
+    "sha256": "762658e5320a4a93c5b5c55e0ecb74c846e5309002594889fd77309513a1263f"
+  },
+  {
+    "path": "clients/android/app/src/main/java/app/lensdrop/transfer/MediaScanner.java",
+    "change": "modified",
+    "sha256": "708c21d7f8024e8ff0746ae685d184c2fcae16738f46b0927fdf4b07f30f7d07"
+  },
+  {
+    "path": "clients/android/app/src/main/java/app/lensdrop/transfer/QueueDb.java",
+    "change": "modified",
+    "sha256": "b57ea90622a8b4d00bc4a99e538ea521dc0d83f79549f1a77ad58af62b30e587"
+  },
+  {
+    "path": "clients/android/app/src/main/java/app/lensdrop/transfer/SessionRules.java",
+    "change": "modified",
+    "sha256": "7eb52bf172ae05c3a0abdc0a74211b006d785879301cf2a6de47e2eafa09c56c"
+  },
+  {
+    "path": "clients/android/app/src/main/java/app/lensdrop/transfer/UploadEngine.java",
+    "change": "modified",
+    "sha256": "dd64138483586e0c84c7f9433891f83234bcb50dbf1b3566fe2674f3879e4e03"
+  },
+  {
+    "path": "clients/android/app/src/main/java/app/lensdrop/transfer/WatchLedger.java",
+    "change": "added",
+    "sha256": "5dbb382bea73c5a4826669f3aef9614fd0de09246ea5f39ad29a7cbcdfba93b8"
+  },
+  {
+    "path": "clients/android/app/src/main/java/app/lensdrop/transfer/WatchRules.java",
+    "change": "added",
+    "sha256": "e84e0669a5122bfc0cd126101cadee6b84c633f91558da3884de306191ab7ffa"
+  },
+  {
+    "path": "clients/android/ledger-tests/WatchLedgerIntegrationTest.java",
+    "change": "added",
+    "sha256": "82ad2522fc5336dc53a758a86de2287f280e84f243f68749116850a10daa748a"
+  },
+  {
+    "path": "clients/android/ledger-tests/android/content/ContentValues.java",
+    "change": "added",
+    "sha256": "26eb2dd370a77cec44f0287390df43c1c3db7fe2d238ca37de100995b1968755"
+  },
+  {
+    "path": "clients/android/ledger-tests/android/content/Context.java",
+    "change": "added",
+    "sha256": "4050d4fe12e5de57031cb7ac20815dbbdb6043e725bb2fd1ca9bc81ae71a04dd"
+  },
+  {
+    "path": "clients/android/ledger-tests/android/database/Cursor.java",
+    "change": "added",
+    "sha256": "2a2e39d3dd013971fbe7daa6d151c7a50b60256b6099708ad9adb7e14abdf65e"
+  },
+  {
+    "path": "clients/android/ledger-tests/android/database/sqlite/SQLiteDatabase.java",
+    "change": "added",
+    "sha256": "7d147692916d53747d4e53fa828424cd0803b5a0eaa7f120fe0da19ef288f526"
+  },
+  {
+    "path": "clients/android/ledger-tests/android/database/sqlite/SQLiteOpenHelper.java",
+    "change": "added",
+    "sha256": "1b0d8e4cc98713c9abeb10d6d6932d3a979cafbe1115603881c6e650aa52522d"
+  },
+  {
+    "path": "clients/android/ledger-tests/bridge.py",
+    "change": "added",
+    "sha256": "3983e888a3176f1dc7393903313b6af1c71fab903e3f42e04e05ccd4259b06d3"
+  },
+  {
+    "path": "clients/android/ledger-tests/org/json/JSONArray.java",
+    "change": "added",
+    "sha256": "c6af8b39b3fd0ba35fc3b6411e460fe9bf8885d6635d49dceedcb7e5d76ad5b6"
+  },
+  {
+    "path": "clients/android/ledger-tests/org/json/JSONObject.java",
+    "change": "added",
+    "sha256": "dba55b22142a94b4c484fcac73245d60fe722bc549b90bdf7f68e1cf9da52879"
+  },
+  {
+    "path": "cloud/package.json",
+    "change": "modified",
+    "sha256": "78bb9630673930e561b0ba6dfb9752898770297ca21c2c5b62b8638b5b461a66"
+  },
+  {
+    "path": "cloud/public/app.js",
+    "change": "modified",
+    "sha256": "40ea152226bf8665a0727c88e56153ded10ff798dff566172795fda2353e1f19"
+  },
+  {
+    "path": "cloud/public/index.html",
+    "change": "modified",
+    "sha256": "e373275cbd22883be21c1c1ef476d55b95166cc9942c6ffbd3bf4863bd4e33e3"
+  },
+  {
+    "path": "cloud/public/personal-admin.js",
+    "change": "added",
+    "sha256": "b1d854b11ff08f62197f694a5ee026cf42eb2d8ed82b6c96e7349143faf80fc4"
+  },
+  {
+    "path": "cloud/public/personal.html",
+    "change": "added",
+    "sha256": "8b0c6b906087510fe46adc1c804abe7c2cc31f84425150dabfcdc037f0177a50"
+  },
+  {
+    "path": "cloud/public/personal.js",
+    "change": "added",
+    "sha256": "aef1dde18b4e001535a52d5820403d7021b4b971f29d503dd4e492a8c1f15da1"
+  },
+  {
+    "path": "cloud/public/style.css",
+    "change": "modified",
+    "sha256": "732c61aa0ebdb91227f3a8a407d5b172772347e06b1248aaca5b632c80d07e5c"
+  },
+  {
+    "path": "cloud/scripts/build.cjs",
+    "change": "modified",
+    "sha256": "b86c9e78780da89b769a3d50d831ad0400591db3f55cf6164395dc63e724854b"
+  },
+  {
+    "path": "cloud/src/deliveries.cjs",
+    "change": "added",
+    "sha256": "20e1b599cb959b7b9d6516feb3da73082e2f0f264dfa62dc499203ca47ee66b9"
+  },
+  {
+    "path": "cloud/src/operations.cjs",
+    "change": "modified",
+    "sha256": "6a6d631b2c1a05ce5c89e8cff696113e6b6d461d19dfb976041e441fb0d563b4"
+  },
+  {
+    "path": "cloud/src/presentation.cjs",
+    "change": "modified",
+    "sha256": "b09bb5a0d8a384e89ada94935c41d6e48e1dcf1cb93be53a32a039fe71833443"
+  },
+  {
+    "path": "cloud/src/server.cjs",
+    "change": "modified",
+    "sha256": "3b3d6ab64a9066e82c84a4e20ff3dca4907376310779036dd6f0963d6c7ab72a"
+  },
+  {
+    "path": "cloud/src/store.cjs",
+    "change": "modified",
+    "sha256": "73bd69c84d6ddae9a7854601aacc758f8d9dc3eca3aafe4a8fb569935617d5bb"
+  },
+  {
+    "path": "cloud/tests/deliveries.test.cjs",
+    "change": "added",
+    "sha256": "b316936764b20f09e015f6defa2cf5fd61c8a9b8409093d250451a3e0635a25c"
+  },
+  {
+    "path": "cloud/tests/presentation.test.cjs",
+    "change": "modified",
+    "sha256": "503f76363cfeb858ca81e9af04ce24e8d39a00d48b014664cebaaabd8f1c7f88"
+  },
+  {
+    "path": "cloud/tests/ui/h4-browser-check.py",
+    "change": "added",
+    "sha256": "918f6be170ee7dfe0cb6c7e81e8d68c86f5f61a9c87fe586e052e8e38b840a3d"
+  },
+  {
+    "path": "cloud/tests/ui/h4-seed.cjs",
+    "change": "added",
+    "sha256": "68ffbed8824c70e07b335ca970429fa4949011312ce0fa429155126999e1df92"
+  },
+  {
+    "path": "cloud/tools/personal-qr-rehearsal.cjs",
+    "change": "added",
+    "sha256": "9fa70ba6c703141a3ddfaa19227a9867d9e3827f9dae52b4b022dbadb3d31980"
+  }
+]

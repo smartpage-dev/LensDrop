@@ -1,0 +1,2 @@
+PASS: five-page Traditional Chinese guide rendered to PNG using PyMuPDF and every page visually inspected. No clipping, overlap or broken glyphs observed. HTML is self-contained with embedded synthetic UI screenshot.
+PASS: final pages2-4 identical to previous inspected renders; updated pages1/5 re-inspected after correcting exact LENSDROP_* environment variable names.

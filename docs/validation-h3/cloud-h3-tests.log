@@ -1,0 +1,346 @@
+
+> lensdrop-reliability-core@0.2.0-alpha.4-hostinger.3 test
+> node --test --test-concurrency=1 tests/*.test.cjs
+
+TAP version 13
+# (node:4784) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: review-first, exact private original, hidden access denial and idempotent finalization
+ok 1 - review-first, exact private original, hidden access denial and idempotent finalization
+  ---
+  duration_ms: 119.617637
+  type: 'test'
+  ...
+# Subtest: committed chunk replay, checksum rejection, future offset and process restart recovery
+ok 2 - committed chunk replay, checksum rejection, future offset and process restart recovery
+  ---
+  duration_ms: 390.476075
+  type: 'test'
+  ...
+# Subtest: same filename from different devices is safe; reimport by one device is deduplicated
+ok 3 - same filename from different devices is safe; reimport by one device is deduplicated
+  ---
+  duration_ms: 75.357416
+  type: 'test'
+  ...
+# Subtest: event/device authorization, revocation and client ID misuse
+ok 4 - event/device authorization, revocation and client ID misuse
+  ---
+  duration_ms: 32.473361
+  type: 'test'
+  ...
+# Subtest: 1,000 pending upload sessions retained without a 400-item eviction cap
+ok 5 - 1,000 pending upload sessions retained without a 400-item eviction cap
+  ---
+  duration_ms: 2267.587392
+  type: 'test'
+  ...
+# Subtest: invalid JPEG, wrong file checksum and incomplete completion never publish
+ok 6 - invalid JPEG, wrong file checksum and incomplete completion never publish
+  ---
+  duration_ms: 31.248446
+  type: 'test'
+  ...
+# Subtest: one process per data directory enforced
+ok 7 - one process per data directory enforced
+  ---
+  duration_ms: 9.362873
+  type: 'test'
+  ...
+# Subtest: SIGKILL at chunk_renamed: restart reconciles without lost or duplicate photo
+ok 8 - SIGKILL at chunk_renamed: restart reconciles without lost or duplicate photo
+  ---
+  duration_ms: 264.26703
+  type: 'test'
+  ...
+# Subtest: SIGKILL at originals_renamed: restart reconciles without lost or duplicate photo
+ok 9 - SIGKILL at originals_renamed: restart reconciles without lost or duplicate photo
+  ---
+  duration_ms: 230.035581
+  type: 'test'
+  ...
+# Subtest: SIGKILL at photo_committed: restart reconciles without lost or duplicate photo
+ok 10 - SIGKILL at photo_committed: restart reconciles without lost or duplicate photo
+  ---
+  duration_ms: 237.678678
+  type: 'test'
+  ...
+# (node:4891) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: hosting: rejects relative paths, release paths, and overlapping app storage
+ok 11 - hosting: rejects relative paths, release paths, and overlapping app storage
+  ---
+  duration_ms: 1.660919
+  type: 'test'
+  ...
+# Subtest: hosting: symlink aliases cannot disguise deployment-directory storage
+ok 12 - hosting: symlink aliases cannot disguise deployment-directory storage
+  ---
+  duration_ms: 1.164339
+  type: 'test'
+  ...
+# Subtest: hosting: placeholder administrator keys and invalid identities are rejected
+ok 13 - hosting: placeholder administrator keys and invalid identities are rejected
+  ---
+  duration_ms: 0.730143
+  type: 'test'
+  ...
+# Subtest: hosting: missing storage fails closed without creating a new directory
+ok 14 - hosting: missing storage fails closed without creating a new directory
+  ---
+  duration_ms: 0.380074
+  type: 'test'
+  ...
+# Subtest: hosting: existing unmarked data is never automatically adopted or erased
+ok 15 - hosting: existing unmarked data is never automatically adopted or erased
+  ---
+  duration_ms: 0.761971
+  type: 'test'
+  ...
+# Subtest: hosting: first initialization and subsequent safe boot preserve identity and database
+ok 16 - hosting: first initialization and subsequent safe boot preserve identity and database
+  ---
+  duration_ms: 14.836283
+  type: 'test'
+  ...
+# Subtest: hosting: wrong storage identity fails without rewriting the marker
+ok 17 - hosting: wrong storage identity fails without rewriting the marker
+  ---
+  duration_ms: 2.70749
+  type: 'test'
+  ...
+# Subtest: hosting: missing database cannot be mistaken for an empty healthy gallery
+ok 18 - hosting: missing database cannot be mistaken for an empty healthy gallery
+  ---
+  duration_ms: 2.509532
+  type: 'test'
+  ...
+# Subtest: hosting: invalid quotas and initialization flags fail before data creation
+ok 19 - hosting: invalid quotas and initialization flags fail before data creation
+  ---
+  duration_ms: 0.915623
+  type: 'test'
+  ...
+# Subtest: hosting: CommonJS host entry, private diagnostics and release replacement preserve an interrupted upload
+ok 20 - hosting: CommonJS host entry, private diagnostics and release replacement preserve an interrupted upload
+  ---
+  duration_ms: 448.15113
+  type: 'test'
+  ...
+# Subtest: legacy prototype patch never evicts pending or failed imports
+ok 21 - legacy prototype patch never evicts pending or failed imports
+  ---
+  duration_ms: 15.624034
+  type: 'test'
+  ...
+# Subtest: legacy edited returns respect review-first policy and preserve hidden status
+ok 22 - legacy edited returns respect review-first policy and preserve hidden status
+  ---
+  duration_ms: 3.010358
+  type: 'test'
+  ...
+# (node:4937) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: H2 preflight is isolated on live events and cannot be published by an administrator
+ok 23 - H2 preflight is isolated on live events and cannot be published by an administrator
+  ---
+  duration_ms: 93.340284
+  type: 'test'
+  ...
+# Subtest: test type is immutable and must be a boolean; test and production bytes cannot cross categories
+ok 24 - test type is immutable and must be a boolean; test and production bytes cannot cross categories
+  ---
+  duration_ms: 26.742
+  type: 'test'
+  ...
+# Subtest: production cannot become a preflight by reimporting identical bytes
+ok 25 - production cannot become a preflight by reimporting identical bytes
+  ---
+  duration_ms: 41.704395
+  type: 'test'
+  ...
+# Subtest: source jobs, unique cloud photos and public photos remain separate, excluding tests
+ok 26 - source jobs, unique cloud photos and public photos remain separate, excluding tests
+  ---
+  duration_ms: 71.276241
+  type: 'test'
+  ...
+# Subtest: fresh zero backlog can reconcile observed files but never claims camera-card completeness or deletion safety
+ok 27 - fresh zero backlog can reconcile observed files but never claims camera-card completeness or deletion safety
+  ---
+  duration_ms: 17.491165
+  type: 'test'
+  ...
+# Subtest: stale heartbeat is not made fresh by a device GET or last_seen update
+ok 28 - stale heartbeat is not made fresh by a device GET or last_seen update
+  ---
+  duration_ms: 16.994234
+  type: 'test'
+  ...
+# Subtest: legacy or missing counts and revoked credentials do not yield a green wrap-up
+ok 29 - legacy or missing counts and revoked credentials do not yield a green wrap-up
+  ---
+  duration_ms: 22.485239
+  type: 'test'
+  ...
+# Subtest: backlog and unknown server sessions prevent false reconciliation
+ok 30 - backlog and unknown server sessions prevent false reconciliation
+  ---
+  duration_ms: 17.914584
+  type: 'test'
+  ...
+# Subtest: diagnostics use an allowlist and exclude names, paths, tokens, hashes and public gallery links
+ok 31 - diagnostics use an allowlist and exclude names, paths, tokens, hashes and public gallery links
+  ---
+  duration_ms: 35.215392
+  type: 'test'
+  ...
+# Subtest: admin pagination returns all 205 seeded photo records and keeps full-event counts
+ok 32 - admin pagination returns all 205 seeded photo records and keeps full-event counts
+  ---
+  duration_ms: 24.538542
+  type: 'test'
+  ...
+# Subtest: gallery visibility check drops withdrawn and test files and validates the bounded request
+ok 33 - gallery visibility check drops withdrawn and test files and validates the bounded request
+  ---
+  duration_ms: 87.859845
+  type: 'test'
+  ...
+# Subtest: additive migration can adopt H1 columns with default production flags and preserves uploaded metadata
+ok 34 - additive migration can adopt H1 columns with default production flags and preserves uploaded metadata
+  ---
+  duration_ms: 37.410328
+  type: 'test'
+  ...
+# Subtest: heartbeat sanitization rejects negative, fractional and free-text payloads
+ok 35 - heartbeat sanitization rejects negative, fractional and free-text payloads
+  ---
+  duration_ms: 0.175215
+  type: 'test'
+  ...
+# (node:4951) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: H3 new and migrated events get disabled independent projector capabilities
+ok 36 - H3 new and migrated events get disabled independent projector capabilities
+  ---
+  duration_ms: 77.736901
+  type: 'test'
+  ...
+# Subtest: presentation settings, token rotation and logo writes require admin, not device or guest
+ok 37 - presentation settings, token rotation and logo writes require admin, not device or guest
+  ---
+  duration_ms: 41.810505
+  type: 'test'
+  ...
+# Subtest: slideshow feed and assets exclude review, hidden, preflight and foreign-event photos
+ok 38 - slideshow feed and assets exclude review, hidden, preflight and foreign-event photos
+  ---
+  duration_ms: 154.643818
+  type: 'test'
+  ...
+# Subtest: hide and disable revoke new projection fetches; guest gallery stays available
+ok 39 - hide and disable revoke new projection fetches; guest gallery stays available
+  ---
+  duration_ms: 50.354263
+  type: 'test'
+  ...
+# Subtest: rotation invalidates old feed and assets but not guest links or device credentials
+ok 40 - rotation invalidates old feed and assets but not guest links or device credentials
+  ---
+  duration_ms: 42.170078
+  type: 'test'
+  ...
+# Subtest: settings enforce enums, integer limits, strict booleans and optimistic revisions
+ok 41 - settings enforce enums, integer limits, strict booleans and optimistic revisions
+  ---
+  duration_ms: 25.408496
+  type: 'test'
+  ...
+# Subtest: transparent logo is re-encoded, shared with gallery and projector, persisted and removable
+ok 42 - transparent logo is re-encoded, shared with gallery and projector, persisted and removable
+  ---
+  duration_ms: 65.221584
+  type: 'test'
+  ...
+# Subtest: logo rejects SVG, disguised SVG, invalid images and oversize requests without replacing the existing logo
+ok 43 - logo rejects SVG, disguised SVG, invalid images and oversize requests without replacing the existing logo
+  ---
+  duration_ms: 49.736875
+  type: 'test'
+  ...
+# Subtest: latest-N projection window is bounded, has full totals and excludes test rows even if corruptly marked live
+ok 44 - latest-N projection window is bounded, has full totals and excludes test rows even if corruptly marked live
+  ---
+  duration_ms: 35.155672
+  type: 'test'
+  ...
+# Subtest: audience QR capability is opt-in and name changes are shared, without publishing pending photos
+ok 45 - audience QR capability is opt-in and name changes are shared, without publishing pending photos
+  ---
+  duration_ms: 17.926642
+  type: 'test'
+  ...
+# Subtest: static assets have CSP and previews require admin without changing publication state
+ok 46 - static assets have CSP and previews require admin without changing publication state
+  ---
+  duration_ms: 3057.025218
+  type: 'test'
+  ...
+# Subtest: H2 schema upgrade creates disabled presentation records and restart retains existing event and photos
+ok 47 - H2 schema upgrade creates disabled presentation records and restart retains existing event and photos
+  ---
+  duration_ms: 49.010786
+  type: 'test'
+  ...
+# Subtest: playlist polls do not rewind a running cycle and new published items get the next boundary
+ok 48 - playlist polls do not rewind a running cycle and new published items get the next boundary
+  ---
+  duration_ms: 0.818917
+  type: 'test'
+  ...
+# Subtest: withdrawn queued photos are removed and a single photo can repeat without an infinite loop
+ok 49 - withdrawn queued photos are removed and a single photo can repeat without an infinite loop
+  ---
+  duration_ms: 0.134273
+  type: 'test'
+  ...
+# Subtest: oldest and shuffle modes yield each item within a cycle without immediate repeat
+ok 50 - oldest and shuffle modes yield each item within a cycle without immediate repeat
+  ---
+  duration_ms: 0.21815
+  type: 'test'
+  ...
+# Subtest: many feed updates bound metadata and discard withdrawn history from the queue
+ok 51 - many feed updates bound metadata and discard withdrawn history from the queue
+  ---
+  duration_ms: 13.267441
+  type: 'test'
+  ...
+# Subtest: QR renderer produces an actual matrix with four-module quiet zone and rejects unsafe or enormous payloads
+ok 52 - QR renderer produces an actual matrix with four-module quiet zone and rejects unsafe or enormous payloads
+  ---
+  duration_ms: 13.695767
+  type: 'test'
+  ...
+# Subtest: admin template contains every literal H3 control binding and loads all required scripts
+ok 53 - admin template contains every literal H3 control binding and loads all required scripts
+  ---
+  duration_ms: 0.62248
+  type: 'test'
+  ...
+# Subtest: slideshow and guest templates contain required DOM elements and avoid remote services
+ok 54 - slideshow and guest templates contain required DOM elements and avoid remote services
+  ---
+  duration_ms: 0.391672
+  type: 'test'
+  ...
+1..54
+# tests 54
+# suites 0
+# pass 54
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 8813.552992

@@ -1,0 +1,19 @@
+PASS admin loads H3 settings and distinct share links from the real local backend through the test bridge
+PASS Traditional Chinese H3 labels and controls
+PASS H3 admin at 390px has no horizontal page overflow
+PASS admin saves slideshow settings to the real local backend
+PASS authenticated admin image preview loads without publishing state changes
+PASS guest gallery displays the same stored event name/logo and four synthetic published photos
+PASS two-layer slideshow loads published delivery images, brand corner and opposite guest QR
+PASS 12-second slides still advance with 5-second feed polls (polls do not reset the playback timer)
+PASS pause preserves the current photograph while feed verification remains active
+PASS a withdrawn paused photograph is removed on the next verified feed
+PASS local projector selector applies all three styles without changing shared settings
+PASS simulated 31-second verification age clears photographs during a simulated outage
+PASS reconnection resumes verified photos without reloading the page
+PASS whole-photo fit and bounded two-image-layer rendering
+PASS remote disable clears projection photos and audience QR
+PASS no JavaScript page errors in exercised admin, gallery or slideshow flows
+PASS independent QR decoder matches exact slideshow URL
+PASS independent QR decoder matches exact guest URL
+LIMIT: Browser navigation was blocked by environment policy. HTML/CSS/JS were mounted using set_content. Fetch and image loads were bridged to the actual local Node backend, with source substitutions only for location origin/path. This is NOT native browser-network, CSP/HTTPS, Hostinger, projector, camera or phone certification. Offline age was simulated.

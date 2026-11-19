@@ -1,0 +1,7 @@
+Pinned sharp dependency registry resolution check; not a clean install.
+npm error code EAI_AGAIN
+npm error syscall getaddrinfo
+npm error errno EAI_AGAIN
+npm error request to https://registry.npmjs.org/sharp failed, reason: getaddrinfo EAI_AGAIN registry.npmjs.org
+npm error A complete log of this run can be found in: /home/oai/.npm/_logs/2026-11-13T18_46_41_731Z-debug-0.log
+Dependency installation must be performed and verified on the deployment target.

@@ -1,0 +1,19 @@
+
+> lensdrop-reliability-core@0.2.0-alpha.3-hostinger.2 build
+> node scripts/build.cjs
+
+(node:3492) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+{
+  "ok": true,
+  "version": "0.2.0-alpha.3-hostinger.2",
+  "node": "v22.16.0",
+  "sharp": "0.34.1",
+  "checked": [
+    "CommonJS startup syntax",
+    "in-memory SQLite",
+    "native JPEG encoding and decoding",
+    "web assets"
+  ],
+  "runtime_storage": "not opened by build; runtime and redeploy checks still required"
+}
