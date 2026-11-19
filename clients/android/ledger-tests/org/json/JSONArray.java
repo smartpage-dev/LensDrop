@@ -1,0 +1,1 @@
+package org.json;import java.util.*;public class JSONArray{private final List<Object> values=new ArrayList<>();public JSONArray put(Object v){values.add(v);return this;}public int length(){return values.size();}public JSONObject getJSONObject(int n){return (JSONObject)values.get(n);}public String getString(int n){return String.valueOf(values.get(n));}}

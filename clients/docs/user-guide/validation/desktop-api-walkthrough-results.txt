@@ -1,0 +1,14 @@
+LensDrop Guide r1 validation | 11 November 2026
+Environment: Linux, Node 22.16.0, Python 3.13.5, preinstalled sharp 0.34.1
+Fresh npm dependency installation timed out; not certified.
+
+PASS: local server /health returns expected alpha version.
+PASS: create Review event and event-scoped device through actual API.
+PASS: real desktop CLI uploads three distinct JPEGs; Review gallery remains empty.
+PASS: all three original downloads match input bytes by SHA-256.
+PASS: Live delivery returns JPEG; Hidden removes listing and returns 404 at delivery route.
+PASS: desktop CLI restart with same state produces no duplicate photos.
+PASS: clean-stop full-directory copy, restart from restored copy, gallery and original checksums.
+
+Browser UI attempt blocked by environment policy (ERR_BLOCKED_BY_ADMINISTRATOR); no browser pass claimed.
+Not tested: Windows/macOS execution, HTTPS deployment, Android build, real camera/phone, multi-hour load.
