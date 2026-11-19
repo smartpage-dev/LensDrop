@@ -1,0 +1,21 @@
+{
+  "name": "lensdrop-reliability-core",
+  "version": "0.2.0-alpha.6-hostinger.5",
+  "private": true,
+  "description": "LensDrop single-instance, recovery-first upload engineering alpha",
+  "engines": {
+    "node": "^22.13.0 || ^24.0.0"
+  },
+  "scripts": {
+    "start": "node server.js",
+    "start:local": "node src/server.cjs",
+    "build": "node scripts/build.cjs",
+    "preflight": "node scripts/build.cjs",
+    "generate:secrets": "node scripts/generate-secrets.cjs",
+    "test": "node --test --test-concurrency=1 tests/*.test.cjs",
+    "generate:admin-key": "node scripts/generate-secrets.cjs --admin-only"
+  },
+  "dependencies": {
+    "sharp": "0.34.1"
+  }
+}

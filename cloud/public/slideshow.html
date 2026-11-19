@@ -1,0 +1,16 @@
+<!doctype html>
+<html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex,nofollow"><title>LensDrop | Live Slideshow</title><link rel="stylesheet" href="/slideshow.css"></head>
+<body class="style-fade fit-contain bg-black">
+<div id="stage" aria-label="Live event slideshow"><div class="slide-layer" id="layerA"><img alt="Published event photograph" decoding="async"></div><div class="slide-layer" id="layerB"><img alt="Published event photograph" decoding="async"></div></div>
+<div id="emptyState" class="empty-state"><div class="mark">L</div><p class="eyebrow">LENSDROP / LIVE MOMENTS</p><h1 id="emptyTitle">Live event slideshow</h1><p id="emptyText" role="status">Connecting to published photographs...</p></div>
+<div id="brand" class="brand bottom-right" hidden><img id="brandLogo" alt="Event logo" hidden><strong id="brandName"></strong></div>
+<div id="audience" class="audience bottom-left" hidden><img id="audienceQr" alt="Scan to open the guest gallery"><span>SCAN FOR PHOTOS<br><span lang="zh-Hant">&#25475;&#30908;&#30535;&#30456;</span></span></div>
+<div id="controls" class="controls" aria-label="Projector controls">
+  <button id="previous" title="Previous photograph / Left arrow">&#8592;</button><button id="pause" title="Pause / Space">&#26283;&#20572; / Pause</button><button id="next" title="Next photograph / Right arrow">&#8594;</button>
+  <select id="localStyle" aria-label="Style on this screen"><option value="server">&#36319;&#38568; Admin / Follow admin</option><option value="fade">&#28129;&#20837;&#28129;&#20986; / Fade</option><option value="zoom">&#26580;&#21644;&#32302;&#25918; / Zoom</option><option value="slide">&#24038;&#21491;&#28369;&#21205; / Slide</option></select>
+  <button id="fullscreen">&#20840;&#34722;&#24149; / Fullscreen</button><button id="refresh">&#37325;&#36899; / Reconnect</button><button id="infoToggle" title="Show projector information">i</button>
+</div>
+<div id="details" class="details" hidden><strong id="detailName">LensDrop</strong><p id="detailCounts"></p><p id="detailConnection"></p><p id="detailWake"></p><p>F: fullscreen &middot; Space: pause &middot; &#8592;/&#8594;: previous/next &middot; Esc: exit fullscreen</p><p>Only published non-test photos. No original files or admin credentials. After 30s without verification, photos clear until reconnection.</p><p>For projection: connect power, disable OS sleep and notifications, and keep this tab visible.</p></div>
+<div id="notice" class="notice" role="status" hidden></div><div id="pausedBadge" class="paused-badge" hidden>PAUSED / &#24050;&#26283;&#20572;</div>
+<script src="/qr.js"></script><script src="/slideshow-model.js"></script><script src="/slideshow.js"></script>
+</body></html>

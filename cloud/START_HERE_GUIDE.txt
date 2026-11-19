@@ -1,0 +1,3 @@
+LensDrop H4 engineering alpha
+Read docs/h4/LensDrop_H4_WatchFolder_and_PersonalQR_Guide.html
+Android SOURCE ONLY; no APK. Backup before schema4 cloud upgrade. Keep initialization=0 for an existing system.

@@ -1,0 +1,2116 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>LensDrop — live event photo delivery</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,300..900&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.js"></script>
+<style>
+:root{
+  --paper:#F6F7F4; --paper-2:#ECEEEA; --paper-3:#E2E5E0;
+  --ink:#1C2024; --ink-2:#5A6168; --rule:#D6D9D4;
+  --frame:#202326; --frame-ink:#C3C8CC;
+  --marker:#D92B26; --live:#12804F; --hold:#A86A08; --edit:#2F5FC4;
+  --focus:#2F6FEB; --scrim:rgba(20,22,25,.45);
+  --font:"Archivo","Helvetica Neue",Helvetica,Arial,sans-serif;
+  color-scheme:light;
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px);
+  padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --paper:#15181B; --paper-2:#1D2125; --paper-3:#262B30;
+    --ink:#E8EBE7; --ink-2:#A2A9AF; --rule:#2E3338;
+    --frame:#060708; --frame-ink:#9AA1A7;
+    --marker:#FF5A50; --live:#3CC98A; --hold:#E6A23C; --edit:#86AEFF;
+    --focus:#7AA7FF; --scrim:rgba(0,0,0,.6);
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --paper:#15181B; --paper-2:#1D2125; --paper-3:#262B30;
+  --ink:#E8EBE7; --ink-2:#A2A9AF; --rule:#2E3338;
+  --frame:#060708; --frame-ink:#9AA1A7;
+  --marker:#FF5A50; --live:#3CC98A; --hold:#E6A23C; --edit:#86AEFF;
+  --focus:#7AA7FF; --scrim:rgba(0,0,0,.6);
+  color-scheme:dark;
+}
+html{scroll-padding-top:env(safe-area-inset-top,0px);height:100%}
+*,*::before,*::after{box-sizing:inherit}
+body{margin:0;min-height:100%;background:var(--paper);color:var(--ink);font:400 16px/1.5 var(--font);-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--paper)}
+button,input,select,textarea{font:inherit;color:inherit}
+img{max-width:100%}
+:focus-visible{outline:2px solid var(--focus);outline-offset:2px}
+h1,h2,h3,h4{margin:0;line-height:1.15;font-weight:750}
+p{margin:0}
+a{color:inherit}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.muted{color:var(--ink-2)}
+.small{font-size:14px}
+.tiny{font-size:12px}
+.wide{font-stretch:125%}
+.narrow{font-stretch:75%}
+.num{font-variant-numeric:tabular-nums}
+[hidden]{display:none!important}
+
+/* controls */
+.btn{appearance:none;border:1px solid var(--ink);background:var(--ink);color:var(--paper);padding:7px 14px;border-radius:4px;font-weight:600;font-size:14px;line-height:1.3;cursor:pointer;min-height:36px;display:inline-flex;align-items:center;justify-content:center;gap:8px;white-space:nowrap;text-decoration:none}
+.btn:hover{filter:brightness(1.12)}
+.btn.ghost{background:transparent;color:var(--ink);border-color:var(--rule)}
+.btn.ghost:hover{border-color:var(--ink);filter:none}
+.btn.danger{background:transparent;color:var(--marker);border-color:var(--marker)}
+.btn.sm{min-height:30px;padding:4px 10px;font-size:13px}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.link{background:none;border:0;padding:0;color:var(--ink);text-decoration:underline;text-underline-offset:3px;cursor:pointer;font-size:inherit}
+.seg{display:inline-flex;flex-wrap:wrap;border:1px solid var(--rule);border-radius:4px;overflow:hidden;background:var(--paper)}
+.seg button{border:0;background:transparent;padding:6px 11px;font-size:14px;cursor:pointer;border-right:1px solid var(--rule)}
+.seg button:last-child{border-right:0}
+.seg button[aria-pressed="true"]{background:var(--ink);color:var(--paper)}
+.field{display:grid;gap:5px;margin:0 0 14px}
+.field>span{font-size:14px;font-weight:600}
+.field .hint{font-size:13px;color:var(--ink-2);font-weight:400}
+.in{width:100%;border:1px solid var(--rule);background:var(--paper);border-radius:4px;padding:8px 10px;min-height:38px;font-size:15px}
+.in:focus{border-color:var(--ink);outline:none}
+select.in{padding-right:28px}
+.check{display:flex;gap:10px;align-items:flex-start;font-size:14px;margin:8px 0;cursor:pointer}
+.check input{margin-top:3px;width:16px;height:16px;accent-color:var(--ink)}
+input[type=range]{accent-color:var(--ink);width:100%}
+input[type=color]{width:48px;height:38px;border:1px solid var(--rule);border-radius:4px;padding:2px;background:var(--paper)}
+.row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.spacer{flex:1}
+
+/* toast + dialog */
+#toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translate(-50%,20px);background:var(--ink);color:var(--paper);padding:10px 16px;border-radius:4px;font-size:14px;opacity:0;pointer-events:none;transition:opacity .2s,transform .2s;z-index:200;max-width:calc(100% - 32px)}
+#toast.on{opacity:1;transform:translate(-50%,0)}
+dialog{border:1px solid var(--rule);border-radius:6px;background:var(--paper);color:var(--ink);padding:24px;width:min(520px,calc(100% - 24px));max-height:calc(100% - 40px)}
+dialog::backdrop{background:var(--scrim)}
+dialog h2{font-stretch:125%;font-size:24px;margin-bottom:16px}
+dialog .actions{display:flex;gap:10px;justify-content:flex-end;margin-top:18px}
+
+/* app states */
+.state{max-width:560px;margin:12vh auto;padding:0 20px}
+.state h1{font-stretch:125%;font-size:36px;font-weight:850;margin-bottom:12px;letter-spacing:-.01em}
+.state p{color:var(--ink-2);max-width:60ch}
+
+/* ===== console ===== */
+.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;background:var(--paper);border-bottom:1px solid var(--rule);display:flex;align-items:center;gap:14px;padding:10px 20px;flex-wrap:wrap}
+.wordmark{font-weight:850;font-stretch:125%;font-size:21px;letter-spacing:-.015em;display:flex;align-items:center;gap:8px}
+.wordmark svg{width:22px;height:22px}
+.album-pick{min-width:0;max-width:340px}
+.album-pick select{font-weight:600}
+.livecount{font-size:14px;color:var(--ink-2);display:flex;align-items:center;gap:8px}
+.livecount b{color:var(--ink);font-stretch:75%;font-size:16px}
+.dot{width:8px;height:8px;border-radius:50%;background:var(--live);display:inline-block;flex:none}
+.dot.off{background:var(--ink-2)}
+.dot.on{animation:pulse 1.8s ease-in-out infinite}
+@keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(18,128,79,.55)}50%{box-shadow:0 0 0 6px rgba(18,128,79,0)}}
+.layout{display:grid;grid-template-columns:196px minmax(0,1fr);min-height:calc(100% - 60px)}
+.nav{border-right:1px solid var(--rule);padding:14px 0;display:flex;flex-direction:column;gap:2px}
+.nav button{text-align:left;border:0;background:none;padding:9px 20px;font-size:15px;cursor:pointer;color:var(--ink-2);border-left:3px solid transparent}
+.nav button:hover{color:var(--ink)}
+.nav button[aria-current="page"]{color:var(--ink);border-left-color:var(--ink);font-weight:650}
+.nav .navcount{font-stretch:75%;font-size:13px;margin-left:6px}
+.panel{padding:24px 28px 96px;min-width:0}
+.panel>h1{font-stretch:125%;font-size:30px;font-weight:850;letter-spacing:-.01em}
+.panel>.lede{color:var(--ink-2);margin:6px 0 22px;max-width:70ch}
+.sec{margin:30px 0 0}
+.sec>h2{font-size:18px;margin-bottom:10px}
+@media (max-width:780px){
+  .top{padding:8px 14px;gap:10px;position:static}
+  .bulk{top:env(safe-area-inset-top,0px)}
+  .layout{grid-template-columns:1fr}
+  .nav{flex-direction:row;overflow-x:auto;border-right:0;border-bottom:1px solid var(--rule);padding:0;gap:0}
+  .nav button{border-left:0;border-bottom:3px solid transparent;padding:11px 14px;white-space:nowrap}
+  .nav button[aria-current="page"]{border-bottom-color:var(--ink)}
+  .panel{padding:18px 14px 96px}
+  .panel>h1{font-size:24px}
+}
+
+/* ingest pipeline: a real sequence, so the steps are numbered */
+.pipe{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:1px;background:var(--rule);border:1px solid var(--rule);border-radius:4px;overflow:hidden}
+.step{background:var(--paper);padding:14px 16px 16px;min-width:0}
+.step h3{font-size:16px;display:flex;gap:8px;align-items:baseline;margin-bottom:8px}
+.step h3 .n{font-stretch:75%;color:var(--ink-2);font-weight:600;font-size:15px}
+.step .check{margin:6px 0}
+.step .seg{margin-top:2px;display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--rule);width:100%}
+.step .seg button{border-right:0;background:var(--paper);padding:7px 8px}
+.step .seg button[aria-pressed="true"]{background:var(--ink)}
+.step .hint{font-size:13px;color:var(--ink-2);margin-top:6px}
+@media (max-width:1180px){.pipe{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:620px){.pipe{grid-template-columns:1fr}}
+.drop{margin-top:18px;border:2px dashed var(--rule);border-radius:6px;padding:36px 20px;text-align:center;transition:background .15s,border-color .15s}
+.drop.over{border-color:var(--ink);background:var(--paper-2)}
+.drop h2{font-stretch:125%;font-size:24px;font-weight:800;margin-bottom:6px}
+.drop p{color:var(--ink-2);margin-bottom:14px}
+.q{margin-top:22px}
+.q-head{display:flex;gap:12px;align-items:baseline;flex-wrap:wrap;margin-bottom:6px}
+.q-head h2{font-size:18px}
+.q-row{display:grid;grid-template-columns:52px minmax(0,1fr) auto;gap:12px;align-items:center;padding:8px 0;border-bottom:1px solid var(--rule)}
+.q-row:first-of-type{border-top:1px solid var(--rule)}
+.q-thumb{width:52px;height:36px;background:var(--paper-3);object-fit:cover;display:block}
+.q-name{font-size:14px;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.q-stage{font-size:13px;color:var(--ink-2)}
+.q-stage.err{color:var(--marker)}
+.q-time{font-stretch:75%;font-size:14px;color:var(--ink-2);text-align:right}
+.q-time.live{color:var(--live);font-weight:600}
+.ai-line{margin-top:14px;font-size:14px;color:var(--ink-2);display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+
+/* contact sheet */
+.tools{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:12px}
+.tools .in{width:auto;min-height:34px;padding:5px 9px;font-size:14px}
+.chips{display:flex;gap:6px;flex-wrap:wrap}
+.chip{border:1px solid var(--rule);background:transparent;border-radius:999px;padding:5px 11px;font-size:14px;cursor:pointer;line-height:1.3;white-space:nowrap}
+.chip .c{font-stretch:75%;color:var(--ink-2);margin-left:4px}
+.chip[aria-pressed="true"]{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+.chip[aria-pressed="true"] .c{color:inherit;opacity:.75}
+.bulk{position:sticky;top:calc(env(safe-area-inset-top,0px) + 58px);z-index:12;display:flex;gap:8px;align-items:center;flex-wrap:wrap;background:var(--ink);color:var(--paper);padding:8px 12px;border-radius:4px;margin-bottom:10px}
+.bulk .btn{background:transparent;color:var(--paper);border-color:rgba(255,255,255,.35)}
+.bulk .btn:hover{border-color:var(--paper)}
+.bulk select{background:var(--ink);color:var(--paper);border:1px solid rgba(255,255,255,.35);border-radius:4px;min-height:30px;font-size:13px;padding:3px 6px}
+.bulk b{font-stretch:75%;font-size:16px}
+.sheet{display:grid;grid-template-columns:repeat(auto-fill,minmax(172px,1fr));background:var(--frame);padding:8px;border-radius:2px;min-height:120px}
+.f{position:relative;padding:8px 8px 28px;cursor:pointer;color:var(--frame-ink);outline-offset:-3px}
+.f-img{position:relative;aspect-ratio:3/2;background:#000;overflow:hidden}
+.f-img img{width:100%;height:100%;object-fit:contain;display:block}
+.f-vid{position:absolute;left:6px;bottom:6px;background:rgba(0,0,0,.7);color:#fff;font-size:11px;padding:1px 6px;border-radius:2px}
+.f-no{position:absolute;left:10px;bottom:6px;font-stretch:75%;font-weight:600;font-size:14px;font-variant-numeric:tabular-nums;letter-spacing:.02em}
+.f-st{position:absolute;right:10px;bottom:7px;font-size:12px;display:flex;align-items:center;gap:5px}
+.f-st::before{content:"";width:7px;height:7px;border-radius:50%;background:currentColor}
+.st-live{color:#5BD69B}.st-review{color:#F0B44C}.st-editing{color:#8DB4FF}.st-hidden{color:#7C8389}
+.f-flag{position:absolute;right:6px;top:6px;background:#D92B26;color:#fff;font-size:11px;font-weight:600;padding:1px 6px;border-radius:2px;max-width:calc(100% - 40px);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.f-sel{position:absolute;top:13px;left:13px;width:18px;height:18px;margin:0;opacity:0;accent-color:#fff;cursor:pointer;z-index:2}
+.f:hover .f-sel,.f-sel:checked,.f-sel:focus-visible,.sheet.selecting .f-sel{opacity:1}
+.f.sel .f-img{outline:3px solid #fff;outline-offset:2px}
+.mk{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;overflow:visible}
+.mk path{fill:none;stroke:#E8322B;stroke-width:4.5;stroke-linecap:round;stroke-linejoin:round;vector-effect:non-scaling-stroke;opacity:.92}
+.sheet-empty{color:var(--frame-ink);padding:40px 20px;text-align:center;grid-column:1/-1}
+
+/* drawer */
+.drawer-scrim{position:fixed;inset:0;background:var(--scrim);z-index:49;opacity:0;pointer-events:none;transition:opacity .2s}
+.drawer-scrim.open{opacity:1;pointer-events:auto}
+.drawer{position:fixed;top:0;right:0;bottom:0;width:min(460px,100%);background:var(--paper);border-left:1px solid var(--rule);z-index:50;overflow:auto;padding:calc(14px + env(safe-area-inset-top,0px)) 20px calc(28px + env(safe-area-inset-bottom,0px));transform:translateX(102%);transition:transform .22s ease;overscroll-behavior:contain}
+.drawer.open{transform:none}
+.drawer h2{font-size:21px;font-stretch:125%;font-weight:800}
+.drawer .sub{color:var(--ink-2);font-size:14px;margin:2px 0 12px;overflow-wrap:anywhere}
+.cmp{position:relative;background:#000;margin:0 -20px 12px;user-select:none;touch-action:pan-y}
+.cmp img,.cmp video{display:block;width:100%;max-height:52vh;object-fit:contain}
+.cmp .after{position:absolute;inset:0;clip-path:inset(0 0 0 var(--x,50%))}
+.cmp .after img{height:100%}
+.cmp .bar{position:absolute;top:0;bottom:0;left:var(--x,50%);width:2px;background:#fff;pointer-events:none;transform:translateX(-1px)}
+.cmp .lbl{position:absolute;bottom:8px;font-size:12px;color:#fff;background:rgba(0,0,0,.6);padding:2px 7px;border-radius:2px}
+.cmp input[type=range]{position:absolute;inset:0;width:100%;height:100%;opacity:0;cursor:ew-resize;margin:0}
+.meta{display:grid;grid-template-columns:auto 1fr;gap:4px 14px;font-size:14px;margin:12px 0}
+.meta dt{color:var(--ink-2)}
+.meta dd{margin:0;overflow-wrap:anywhere}
+.flagtxt{color:var(--marker);font-weight:600}
+.tags{display:flex;gap:5px;flex-wrap:wrap;margin-top:4px}
+.tag{font-size:13px;border:1px solid var(--rule);border-radius:3px;padding:1px 7px}
+.dsec{border-top:1px solid var(--rule);padding-top:14px;margin-top:14px}
+.dsec h3{font-size:15px;margin-bottom:8px}
+
+/* brand */
+.brand-grid{display:grid;grid-template-columns:minmax(0,1fr) 340px;gap:32px;align-items:start}
+@media (max-width:1100px){.brand-grid{grid-template-columns:1fr}}
+.fs{border:0;padding:0;margin:0 0 26px}
+.fs legend{font-size:18px;font-weight:750;padding:0;margin-bottom:12px}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:0 16px}
+@media (max-width:560px){.two{grid-template-columns:1fr}}
+.imgfield{display:flex;gap:12px;align-items:center;margin:0 0 14px}
+.imgfield .pv{width:96px;height:64px;background:var(--paper-3) center/contain no-repeat;border:1px solid var(--rule);border-radius:3px;flex:none}
+.imgfield .pv.cover{background-size:cover}
+.imgfield .t{font-size:14px;font-weight:600}
+.preview{position:sticky;top:90px;border:1px solid var(--rule);border-radius:4px;overflow:hidden;background:var(--paper)}
+.preview .pc{height:110px;background:var(--paper-3) center/cover}
+.preview .pt{padding:12px 14px}
+.preview .pt h3{font-stretch:125%;font-size:20px;font-weight:850}
+.preview .pframe{position:relative;margin:0 14px 14px;aspect-ratio:3/2;background:var(--paper-3) center/cover}
+.cats{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px}
+.cat{display:inline-flex;align-items:center;gap:4px;border:1px solid var(--rule);border-radius:999px;padding:3px 4px 3px 11px;font-size:14px}
+.cat button{border:0;background:none;cursor:pointer;width:22px;height:22px;border-radius:50%;color:var(--ink-2)}
+.cat button:hover{background:var(--paper-3);color:var(--ink)}
+
+/* share */
+.share-grid{display:grid;grid-template-columns:minmax(0,1fr) 320px;gap:32px;align-items:start}
+@media (max-width:900px){.share-grid{grid-template-columns:1fr}}
+.qrbox{border:1px solid var(--rule);border-radius:4px;padding:18px;background:#fff;color:#111;text-align:center}
+.qrbox svg{width:100%;height:auto;display:block}
+.qrbox p{font-size:13px;margin-top:8px;color:#444}
+
+/* insights */
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:1px;background:var(--rule);border:1px solid var(--rule);border-radius:4px;overflow:hidden}
+.stat{background:var(--paper);padding:14px 16px}
+.stat b{display:block;font-stretch:75%;font-size:36px;font-weight:700;line-height:1.1;font-variant-numeric:tabular-nums}
+.stat span{font-size:14px;color:var(--ink-2)}
+.chart{width:100%;max-width:760px;height:auto;display:block}
+.chart rect{fill:var(--ink)}
+.chart text{fill:var(--ink-2);font-size:11px;font-family:var(--font)}
+.top-photos{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:10px}
+.top-photos figure{margin:0}
+.top-photos img{width:100%;aspect-ratio:1;object-fit:cover;display:block;background:var(--paper-3)}
+.top-photos figcaption{font-size:13px;color:var(--ink-2);margin-top:4px;font-variant-numeric:tabular-nums}
+.table-wrap{overflow-x:auto;border:1px solid var(--rule);border-radius:4px}
+table{border-collapse:collapse;width:100%;font-size:14px}
+th,td{text-align:left;padding:9px 12px;border-bottom:1px solid var(--rule);vertical-align:top}
+th{font-weight:650;background:var(--paper-2);white-space:nowrap}
+tr:last-child td{border-bottom:0}
+
+/* blueprint */
+.bp{max-width:1100px}
+.bp p{max-width:72ch;margin:0 0 12px}
+.bp h2{font-size:21px;margin:34px 0 10px}
+.bp h3{font-size:16px;margin:20px 0 6px}
+.bp table{table-layout:fixed;min-width:760px}
+.bp th:nth-child(1){width:19%}.bp th:nth-child(2){width:13%}.bp th:nth-child(3){width:34%}.bp th:nth-child(4){width:34%}
+.bp td:first-child{font-weight:600}
+.bp .s{white-space:nowrap;font-weight:600}
+.s-working{color:var(--live)}.s-partial{color:var(--hold)}.s-planned{color:var(--ink-2)}
+.bp ol{padding-left:22px;max-width:76ch}
+.bp ol li{margin:0 0 10px}
+.arch{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:1px;background:var(--rule);border:1px solid var(--rule);border-radius:4px;overflow:hidden;margin:8px 0 4px}
+.arch>div{background:var(--paper);padding:12px 14px;font-size:14px}
+.arch h4{font-size:15px;margin-bottom:6px}
+.arch ul{margin:0;padding-left:18px}
+@media (max-width:860px){.arch{grid-template-columns:1fr 1fr}}
+@media (max-width:520px){.arch{grid-template-columns:1fr}}
+
+/* ===== guest gallery ===== */
+.g{--brand:#1F3A5F;--brand-ink:#fff;min-height:100%}
+.g-ad{display:block;background:var(--paper-2);text-align:center}
+.g-ad img{display:block;width:100%;max-height:120px;object-fit:cover}
+.g-cover{height:clamp(130px,26vw,300px);background:var(--brand) center/cover no-repeat}
+.g-cover.empty{height:clamp(40px,7vw,84px)}
+.g-head{padding:18px clamp(16px,4vw,44px) 10px;display:flex;gap:18px;align-items:flex-end;flex-wrap:wrap}
+.g-logo{height:60px;width:auto;max-width:170px;object-fit:contain;flex:none}
+.g-head h1{font-stretch:125%;font-weight:850;font-size:clamp(28px,5vw,48px);letter-spacing:-.015em;line-height:1.04;overflow-wrap:anywhere}
+.g-meta{color:var(--ink-2);margin-top:6px}
+.g-live{display:flex;gap:8px;align-items:center;font-size:14px;margin-top:6px}
+.g-live b{font-stretch:75%;font-size:16px}
+.g-sticky{position:sticky;top:env(safe-area-inset-top,0px);z-index:15}
+.g-bar{background:var(--paper);display:flex;gap:10px;align-items:center;padding:10px clamp(12px,4vw,44px);border-bottom:1px solid var(--rule);flex-wrap:wrap}
+.g .chip[aria-pressed="true"]{background:var(--brand);color:var(--brand-ink);border-color:var(--brand)}
+.g-search{flex:1 1 160px;max-width:360px;min-height:36px;padding:6px 12px;border-radius:999px}
+.g-selbar{display:flex;gap:8px;align-items:center;flex-wrap:wrap;background:var(--brand);color:var(--brand-ink);padding:8px clamp(12px,4vw,44px)}
+.g-selbar .btn{background:transparent;color:inherit;border-color:currentColor}
+.g-note{padding:10px clamp(16px,4vw,44px);color:var(--ink-2);font-size:14px}
+.g-grid{display:flex;flex-wrap:wrap;gap:4px;padding:4px clamp(4px,1vw,12px) 24px;--rowh:230px}
+.g-grid::after{content:"";flex-grow:999999}
+.g-item{position:relative;flex:var(--r) 1 calc(var(--r) * var(--rowh));aspect-ratio:var(--r);border:0;padding:0;margin:0;background:var(--paper-3);cursor:pointer;overflow:hidden;display:block}
+.g-item img{width:100%;height:100%;object-fit:cover;display:block}
+.g-item .play{position:absolute;left:8px;bottom:8px;width:28px;height:28px;border-radius:50%;background:rgba(0,0,0,.6);display:grid;place-items:center}
+.g-item .play::before{content:"";border-left:10px solid #fff;border-top:6px solid transparent;border-bottom:6px solid transparent;margin-left:3px}
+.g-item .tick{position:absolute;top:8px;right:8px;width:24px;height:24px;border-radius:50%;border:2px solid #fff;background:rgba(0,0,0,.25)}
+.g-item.sel .tick{background:var(--brand);border-color:#fff}
+.g-item.sel .tick::after{content:"";position:absolute;left:6px;top:2px;width:6px;height:11px;border:solid var(--brand-ink);border-width:0 2px 2px 0;transform:rotate(45deg)}
+.g-item.sel img{opacity:.8}
+.g-grid.square{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr))}
+.g-grid.square::after{display:none}
+.g-grid.square .g-item{aspect-ratio:1}
+@media (max-width:620px){.g-grid{--rowh:128px}.g-grid.square{grid-template-columns:repeat(3,1fr)}.g-bar .chips{flex-basis:100%;flex-wrap:nowrap;overflow-x:auto;padding-bottom:2px}.g-search{max-width:none}}
+/* the one orchestrated motion: a frame arrives like a flash going off */
+.g-item.fresh::after{content:"";position:absolute;inset:0;background:#fff;animation:flash 1.1s ease-out forwards;pointer-events:none}
+.g-item.fresh img{animation:develop 1.6s ease-out}
+@keyframes flash{0%{opacity:.95}100%{opacity:0}}
+@keyframes develop{0%{filter:saturate(0) brightness(1.4)}100%{filter:none}}
+@media (prefers-reduced-motion:reduce){.g-item.fresh::after,.g-item.fresh img,.dot.on{animation:none}.drawer{transition:none}}
+.g-empty{padding:60px 20px;text-align:center;color:var(--ink-2)}
+.g-empty h2{color:var(--ink);font-stretch:125%;font-size:24px;margin-bottom:6px}
+.g-foot{padding:28px clamp(16px,4vw,44px) 40px;border-top:1px solid var(--rule);display:grid;gap:18px}
+.g-card{display:flex;gap:14px;align-items:center}
+.g-card .av{width:48px;height:48px;border-radius:50%;background:var(--brand);color:var(--brand-ink);display:grid;place-items:center;font-weight:800;font-stretch:125%;flex:none}
+.g-card b{display:block}
+.g-pill{position:fixed;left:50%;transform:translateX(-50%);top:calc(env(safe-area-inset-top,0px) + 70px);z-index:30;background:var(--brand);color:var(--brand-ink);border:0;border-radius:999px;padding:8px 16px;font-weight:600;cursor:pointer;box-shadow:0 4px 16px rgba(0,0,0,.25)}
+.g-load{position:fixed;inset:0;z-index:90;background:var(--brand);color:var(--brand-ink);display:grid;place-items:center;text-align:center;padding:24px;transition:opacity .45s ease}
+.g-load.gone{opacity:0;pointer-events:none}
+.g-load img{max-width:min(60vw,360px);max-height:40vh;object-fit:contain;display:block;margin:0 auto 18px}
+.g-load h2{font-stretch:125%;font-weight:850;font-size:clamp(26px,5vw,44px)}
+.edit-back{position:fixed;right:16px;bottom:calc(16px + env(safe-area-inset-bottom,0px));z-index:40}
+
+/* lightbox */
+.lb{position:fixed;inset:0;z-index:70;background:rgba(8,9,10,.95);color:#fff;display:grid;grid-template-rows:auto minmax(0,1fr) auto;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+.lb-top{display:flex;align-items:center;gap:10px;padding:10px 14px;font-size:14px}
+.lb-top .count{font-stretch:75%;font-size:16px;opacity:.8}
+.lb-x{background:none;border:0;color:#fff;width:40px;height:40px;cursor:pointer;font-size:26px;line-height:1}
+.lb-stage{position:relative;display:flex;align-items:center;justify-content:center;min-height:0;padding:0 8px;touch-action:pan-y}
+.lb-frame{position:relative;display:inline-block;line-height:0}
+.lb-frame img,.lb-frame video{max-width:calc(100vw - 32px);max-height:calc(100vh - 150px);max-height:calc(100dvh - 150px);display:block}
+.lb-nav{position:absolute;top:50%;transform:translateY(-50%);width:44px;height:64px;background:rgba(255,255,255,.08);border:0;color:#fff;cursor:pointer;font-size:24px;border-radius:3px}
+.lb-nav:hover{background:rgba(255,255,255,.18)}
+.lb-prev{left:10px}.lb-next{right:10px}
+@media (max-width:620px){.lb-nav{display:none}}
+.lb-bar{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;padding:10px 14px 14px}
+.lb-bar .btn{background:transparent;color:#fff;border-color:rgba(255,255,255,.4)}
+.lb-bar .btn.pri{background:#fff;color:#111;border-color:#fff}
+.lb-cap{font-size:13px;opacity:.75;text-align:center;padding:0 16px;max-width:70ch;margin:0 auto}
+.wm{position:absolute;pointer-events:none;height:auto}
+.wm.tl{left:3%;top:3%}.wm.tr{right:3%;top:3%}.wm.bl{left:3%;bottom:3%}.wm.br{right:3%;bottom:3%}.wm.c{left:50%;top:50%;transform:translate(-50%,-50%)}
+
+/* home */
+.home{max-width:1000px;margin:0 auto;padding:40px 20px}
+.home h1{font-stretch:125%;font-size:36px;font-weight:850;margin-bottom:20px}
+.albums{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:20px}
+.albums a{text-decoration:none;display:block}
+.albums .c{aspect-ratio:3/2;background:var(--paper-3) center/cover;margin-bottom:8px}
+.albums b{display:block;font-size:17px}
+</style>
+</head>
+<body>
+<div id="app"></div>
+<div id="toast" role="status" aria-live="polite"></div>
+<script>
+"use strict";
+/* ============================================================
+   LensDrop — live event photo delivery (prototype)
+   Core: state, capabilities, imaging, EXIF, zip, helpers
+   ============================================================ */
+const SHARE_BASE = "https://claude.ai/artifact/HqFmAnSab1cxTgPop8LJMm"; // galleries live at SHARE_BASE + "#slug"
+const RESERVED = new Set(["settings","sidebar","customize","upgrade","downloads","console","home"]);
+const MAX_ZIP = 60;
+
+const $ = (s, r = document) => r.querySelector(s);
+const $$ = (s, r = document) => [...r.querySelectorAll(s)];
+const esc = (s) => String(s ?? "").replace(/[&<>"']/g, c => ({ "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;" }[c]));
+const rid = () => Date.now().toString(36) + Math.random().toString(36).slice(2, 8);
+const blobUrl = (id) => id ? "/_blob/" + id : "";
+const sleep = (ms) => new Promise(r => setTimeout(r, ms));
+const clamp = (v, a, b) => Math.min(b, Math.max(a, v));
+const plural = (n, one, many) => `${n.toLocaleString()} ${n === 1 ? one : (many || one + "s")}`;
+
+function fmtBytes(n){ if(!n && n!==0) return ""; if(n<1024) return n+" B"; if(n<1048576) return (n/1024).toFixed(0)+" KB"; return (n/1048576).toFixed(1)+" MB"; }
+function fmtDate(v){ if(!v) return ""; const d = typeof v === "number" ? new Date(v) : new Date(v + (String(v).length===10 ? "T12:00:00" : "")); if(isNaN(d)) return ""; return d.toLocaleDateString(undefined,{day:"numeric",month:"short",year:"numeric"}); }
+function fmtTime(ts){ if(!ts) return ""; return new Date(ts).toLocaleString(undefined,{month:"short",day:"numeric",hour:"2-digit",minute:"2-digit",second:"2-digit"}); }
+function timeAgo(ts){ if(!ts) return ""; const s = Math.max(0,(Date.now()-ts)/1000); if(s<10) return "just now"; if(s<60) return `${s|0} s ago`; if(s<3600) return `${(s/60)|0} min ago`; if(s<86400) return `${(s/3600)|0} h ago`; return fmtDate(ts); }
+function slugify(t){
+  const s = String(t||"").toLowerCase().normalize("NFKD").replace(/[\u0300-\u036f]/g,"").replace(/[^a-z0-9\s-]/g," ").trim().replace(/[\s_-]+/g,"-").replace(/^-+|-+$/g,"").slice(0,40).replace(/-+$/,"");
+  return s.length >= 3 ? s : ("album-" + Math.random().toString(36).slice(2,6));
+}
+function slugProblem(s, selfId){
+  if(!/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(s)) return "Use lowercase letters, numbers and single hyphens.";
+  if(s.length < 3 || s.length > 40) return "Use 3 to 40 characters.";
+  if(RESERVED.has(s) || s.startsWith("comment-")) return "That address is reserved. Pick another.";
+  for(const [id,a] of S.albums) if(id!==selfId && a.slug===s) return "Another album already uses this address.";
+  return "";
+}
+function galleryLink(album, pid){ if(!SHARE_BASE || !album) return ""; return SHARE_BASE.replace(/#.*$/,"") + "#" + album.slug + (pid ? "--" + pid : ""); }
+function contrastInk(hex){
+  const m = /^#?([0-9a-f]{6})$/i.exec(hex||""); if(!m) return "#FFFFFF";
+  const n = parseInt(m[1],16), r=(n>>16)&255, g=(n>>8)&255, b=n&255;
+  const lin = v => { v/=255; return v<=0.03928 ? v/12.92 : Math.pow((v+0.055)/1.055,2.4); };
+  const L = 0.2126*lin(r)+0.7152*lin(g)+0.0722*lin(b);
+  return L > 0.42 ? "#14171A" : "#FFFFFF";
+}
+function safeLink(u){ try{ const x = new URL(u); return (x.protocol==="https:"||x.protocol==="http:") ? x.href : ""; }catch{ return ""; } }
+
+let toastTimer;
+function toast(msg){ const t = $("#toast"); t.textContent = msg; t.classList.add("on"); clearTimeout(toastTimer); toastTimer = setTimeout(()=>t.classList.remove("on"), 2800); }
+
+/* ---------- global state ---------- */
+const S = {
+  db:null, user:null, assets:null, downloads:null, sample:null, aiLimits:null, aiTier:undefined,
+  me:{ id:null, canEdit:false, isOwner:false },
+  albums:new Map(), albumsConfirmed:false, albumsSlow:false, albumsError:null,
+  route:{ mode:"", slug:"", pid:"" },
+  current:null,
+  photos:new Map(), photosAlbum:null, photosMode:"", photosUnsub:null, photosConfirmed:false, photosSlow:false, photosError:null, photosFirst:false,
+  fresh:new Set(),
+  mounted:"",
+};
+
+async function cap(name){
+  try{ if(!window.claude || typeof window.claude.use !== "function") return null; return await window.claude.use(name); }
+  catch{ return null; }
+}
+
+let renderQueued = false;
+function scheduleRender(){ if(renderQueued) return; renderQueued = true; requestAnimationFrame(()=>{ renderQueued = false; try{ render(); }catch(e){ console.error(e); } }); }
+
+/* ---------- people ---------- */
+const Names = {
+  map:new Map(), pending:new Set(), timer:null,
+  get(id){
+    if(!id) return "Someone";
+    if(id === S.me.id) return "You";
+    if(!this.map.has(id)){ this.want(id); return "Someone"; }
+    return this.map.get(id) || "Someone";
+  },
+  want(id){ this.pending.add(id); clearTimeout(this.timer); this.timer = setTimeout(()=>this.flush(), 60); },
+  async flush(){
+    if(!S.user){ return; }
+    const ids = [...this.pending]; this.pending.clear(); if(!ids.length) return;
+    for(const id of ids) this.map.set(id, "");
+    try{ const ps = await S.user.profiles(ids); for(const id of ids) this.map.set(id, (ps && ps[id] && ps[id].name) || ""); }catch{}
+    Console.refreshNames();
+  }
+};
+
+/* ---------- album defaults ---------- */
+function cfg(album){
+  const s = (album && album.settings) || {};
+  return {
+    publish: s.publish || "live",
+    retouch: s.retouch == null ? "natural" : s.retouch,
+    cullOn: s.cullOn == null ? true : !!s.cullOn,
+    hold: s.hold == null ? true : !!s.hold,
+    blur: s.blur == null ? 80 : +s.blur,
+    aiTag: s.aiTag == null ? true : !!s.aiTag,
+    maxEdge: s.maxEdge || 3200,
+  };
+}
+function brandOf(album){
+  const b = (album && album.brand) || {};
+  const o = (x)=> x || {};
+  return {
+    color: b.color || "#1F3A5F",
+    coverId: b.coverId || null, logoId: b.logoId || null,
+    layout: b.layout || "ratio",
+    wm: { mode:o(b.wm).mode || "off", text:o(b.wm).text || "", pos:o(b.wm).pos || "br", size:o(b.wm).size ?? 22, opacity:o(b.wm).opacity ?? 0.7 },
+    loading: { on: !!o(b.loading).on, seconds: o(b.loading).seconds ?? 2, imageId: o(b.loading).imageId || null },
+    topAd: { imageId: o(b.topAd).imageId || null, link: o(b.topAd).link || "" },
+    footAd: { imageId: o(b.footAd).imageId || null, link: o(b.footAd).link || "" },
+    card: { on: !!o(b.card).on, name: o(b.card).name || "", studio: o(b.card).studio || "", contact: o(b.card).contact || "", link: o(b.card).link || "" },
+  };
+}
+function catsOf(album){ return Array.isArray(album && album.categories) ? album.categories : []; }
+function catName(album, id){ const c = catsOf(album).find(c=>c.id===id); return c ? c.name : ""; }
+
+/* ---------- photo helpers ---------- */
+const SERIOUS = ["eyes closed","motion blur","out of focus","cut-off subject","obstructed"];
+function flagsOf(p){
+  const out = [];
+  const c = p.cull || {};
+  if(c.blurry) out.push("Blurry");
+  if(c.dark) out.push("Too dark");
+  if(c.bright) out.push("Too bright");
+  if(c.dup) out.push("Duplicate");
+  const iss = (p.ai && Array.isArray(p.ai.issues)) ? p.ai.issues.filter(i=>SERIOUS.includes(i)) : [];
+  for(const i of iss) out.push(i[0].toUpperCase()+i.slice(1));
+  return out;
+}
+function photoList(){
+  const arr = [];
+  for(const [id,p] of S.photos) arr.push(Object.assign({ id }, p));
+  arr.sort((a,b)=>(a.uploadedAt||0)-(b.uploadedAt||0) || (a.id<b.id?-1:1));
+  arr.forEach((p,i)=>p.frame=i+1);
+  return arr;
+}
+
+/* ---------- subscriptions ---------- */
+function watchAlbums(){
+  const t = setTimeout(()=>{ if(!S.albumsConfirmed){ S.albumsSlow = true; scheduleRender(); } }, 10000);
+  S.db.collection("albums").onSnapshot(snap=>{
+    const m = new Map(); for(const d of snap.docs) m.set(d.id, d.data());
+    S.albums = m;
+    if(!snap.metadata.fromCache){ S.albumsConfirmed = true; S.albumsSlow = false; clearTimeout(t); }
+    scheduleRender();
+  }, err=>{ clearTimeout(t); S.albumsError = err && err.code || "unavailable"; S.albumsConfirmed = true; scheduleRender(); });
+}
+function watchPhotos(albumId, mode){
+  if(S.photosAlbum === albumId && S.photosMode === mode) return;
+  if(S.photosUnsub){ try{ S.photosUnsub(); }catch{} }
+  S.photos = new Map(); S.photosAlbum = albumId; S.photosMode = mode; S.photosConfirmed = false; S.photosSlow = false; S.photosError = null; S.photosFirst = false; S.fresh.clear(); S.photosUnsub = null;
+  if(!albumId) return;
+  let q = S.db.collection(`albums/${albumId}/photos`);
+  if(mode === "live") q = q.where("status","==","live");
+  const t = setTimeout(()=>{ if(!S.photosConfirmed){ S.photosSlow = true; scheduleRender(); } }, 10000);
+  S.photosUnsub = q.onSnapshot(snap=>{
+    if(S.photosFirst){ for(const ch of snap.docChanges()) if(ch.type === "added") S.fresh.add(ch.doc.id); }
+    S.photosFirst = true;
+    const m = new Map(); for(const d of snap.docs) m.set(d.id, d.data());
+    S.photos = m;
+    if(!snap.metadata.fromCache){ S.photosConfirmed = true; S.photosSlow = false; clearTimeout(t); }
+    scheduleRender();
+  }, err=>{ clearTimeout(t); S.photosError = err && err.code || "unavailable"; S.photosConfirmed = true; scheduleRender(); });
+}
+const photoRef = (albumId, pid) => S.db.doc(`albums/${albumId}/photos/${pid}`);
+const albumRef = (albumId) => S.db.doc(`albums/${albumId}`);
+
+/* ---------- assets ---------- */
+async function uploadBlob(blob, type){
+  if(!S.assets) throw { code:"no_assets" };
+  const opts = type ? { type } : undefined;
+  for(let attempt=0; attempt<2; attempt++){
+    try{ return await S.assets.upload(blob, opts); }
+    catch(e){
+      const code = e && e.code;
+      if(attempt===0 && (code==="store_unavailable" || code==="rate_limited")){ await sleep(code==="rate_limited" ? 3000 : 1500); continue; }
+      throw e;
+    }
+  }
+}
+async function deleteAsset(id){ if(!id || !S.assets) return; try{ await S.assets.delete(id); }catch{} }
+function uploadMessage(e){
+  const c = e && e.code;
+  if(c==="no_assets") return "Uploading needs Editor access to this artifact.";
+  if(c==="too_large") return "This file is over the 20 MB limit.";
+  if(c==="unsupported_type") return "This file type can’t be stored. Use JPEG, PNG, WebP, MP4 or WebM.";
+  if(c==="quota_or_state") return "Storage for this gallery is full. Delete photos you don’t need, then try again.";
+  if(c==="rate_limited") return "Uploads are going too fast. Wait a moment and add the file again.";
+  if(c==="upstream_auth") return "Your session expired. Reload the page and sign in again.";
+  return "The upload didn’t go through. Add the file again.";
+}
+async function fetchBlob(id){
+  try{ const r = await fetch(blobUrl(id)); if(r.ok) return await r.blob(); }catch{}
+  const img = await loadImg(blobUrl(id));
+  const c = mkCanvas(img.naturalWidth, img.naturalHeight); c.getContext("2d").drawImage(img,0,0);
+  return toBlob(c, "image/jpeg", 0.95);
+}
+
+/* ---------- canvas + image ---------- */
+function mkCanvas(w,h){ const c = document.createElement("canvas"); c.width = Math.max(1,Math.round(w)); c.height = Math.max(1,Math.round(h)); return c; }
+function ctx2d(c, read){ return c.getContext("2d", read ? { willReadFrequently:true } : undefined); }
+function fit(w,h,max){ const s = Math.min(1, max/Math.max(w,h)); return { w:Math.max(1,Math.round(w*s)), h:Math.max(1,Math.round(h*s)) }; }
+function toBlob(c, type="image/jpeg", q=0.9){ return new Promise((res,rej)=>c.toBlob(b=>b?res(b):rej(new Error("encode")), type, q)); }
+function loadImg(src){ return new Promise((res,rej)=>{ const i = new Image(); i.decoding = "async"; i.onload = ()=>res(i); i.onerror = ()=>rej(new Error("load")); i.src = src; }); }
+async function decodeFile(file){
+  const url = URL.createObjectURL(file);
+  try{ const img = await loadImg(url); return { img, url }; }
+  catch(e){ URL.revokeObjectURL(url); throw e; }
+}
+function drawScaled(src, w, h){ const c = mkCanvas(w,h); const x = ctx2d(c); x.imageSmoothingEnabled = true; x.imageSmoothingQuality = "high"; x.drawImage(src,0,0,c.width,c.height); return c; }
+function drawCover(x, img, dx, dy, dw, dh){
+  const iw = img.naturalWidth || img.videoWidth || img.width, ih = img.naturalHeight || img.videoHeight || img.height;
+  const s = Math.max(dw/iw, dh/ih); const sw = dw/s, sh = dh/s;
+  x.drawImage(img, (iw-sw)/2, (ih-sh)/2, sw, sh, dx, dy, dw, dh);
+}
+
+/* analysis on a 512px proxy: sharpness, exposure, colour cast, perceptual hash */
+function analyze(img){
+  const W0 = img.naturalWidth || img.width, H0 = img.naturalHeight || img.height;
+  const { w, h } = fit(W0, H0, 512);
+  const c = drawScaled(img, w, h);
+  const d = ctx2d(c, true).getImageData(0,0,w,h).data;
+  const n = w*h, L = new Float32Array(n), hist = new Uint32Array(256);
+  let sum=0, hi=0, lo=0, sr=0, sg=0, sb=0, cnt=0;
+  for(let i=0,j=0;i<n;i++,j+=4){
+    const r=d[j], g=d[j+1], b=d[j+2]; const l = 0.2126*r + 0.7152*g + 0.0722*b;
+    L[i]=l; hist[l|0]++; sum+=l; if(l>=250) hi++; if(l<=5) lo++;
+    if(l>30 && l<225){ sr+=r; sg+=g; sb+=b; cnt++; }
+  }
+  const pct = (p)=>{ const t=n*p; let a=0; for(let v=0;v<256;v++){ a+=hist[v]; if(a>=t) return v; } return 255; };
+  // sharpness: Laplacian variance per tile, keep the sharpest tile (subject may sit on a soft background)
+  const T=4, s1=new Float64Array(T*T), s2=new Float64Array(T*T), sc=new Uint32Array(T*T);
+  for(let y=1;y<h-1;y++){ const ty = Math.min(T-1,(y*T/h)|0);
+    for(let x=1;x<w-1;x++){ const i=y*w+x; const lap = L[i-w]+L[i+w]+L[i-1]+L[i+1]-4*L[i]; const t = ty*T + Math.min(T-1,(x*T/w)|0); s1[t]+=lap; s2[t]+=lap*lap; sc[t]++; } }
+  let sharp = 0; for(let t=0;t<T*T;t++){ if(sc[t]>50){ const m=s1[t]/sc[t]; sharp = Math.max(sharp, s2[t]/sc[t]-m*m); } }
+  // dHash 64-bit
+  const hc = drawScaled(c, 9, 8); const hd = ctx2d(hc, true).getImageData(0,0,9,8).data;
+  let bits = ""; for(let y=0;y<8;y++) for(let x=0;x<8;x++){ const a=(y*9+x)*4, b=(y*9+x+1)*4; const la = hd[a]*.3+hd[a+1]*.59+hd[a+2]*.11, lb = hd[b]*.3+hd[b+1]*.59+hd[b+2]*.11; bits += la < lb ? "1" : "0"; }
+  let hash = ""; for(let i=0;i<64;i+=4) hash += parseInt(bits.slice(i,i+4),2).toString(16);
+  return { W0, H0, mean:sum/n, p003:pct(.003), p997:pct(.997), p05:pct(.05), p95:pct(.95), clipHi:hi/n, clipLo:lo/n,
+           avg: cnt ? [sr/cnt, sg/cnt, sb/cnt] : [128,128,128], sharp: Math.round(sharp), hash };
+}
+const POP4 = [0,1,1,2,1,2,2,3,1,2,2,3,2,3,3,4];
+function hamming(a,b){ if(!a||!b||a.length!==b.length) return 64; let d=0; for(let i=0;i<a.length;i++) d += POP4[parseInt(a[i],16) ^ parseInt(b[i],16)]; return d; }
+function exposureFlags(a){ return { dark: a.p95 < 85 || a.mean < 42, bright: a.p05 > 175 || a.clipHi > 0.22 }; }
+
+/* retouch presets: white balance, levels, tone, vibrance, optional skin smoothing */
+const PRESETS = {
+  off: null,
+  natural:  { wb:.5,  levels:.7, lift:.6, vib:.14, contrast:0,   smooth:0,   warm:0 },
+  vivid:    { wb:.5,  levels:.9, lift:.5, vib:.34, contrast:.22, smooth:0,   warm:0 },
+  portrait: { wb:.55, levels:.7, lift:.7, vib:.08, contrast:.05, smooth:.55, warm:.025 },
+};
+const PRESET_NAMES = { off:"Off", natural:"Natural", vivid:"Vivid", portrait:"Portrait", manual:"Edited by hand" };
+function buildLUT(a, p){
+  const [ar,ag,ab] = a.avg; const gray = (ar+ag+ab)/3;
+  const g = (v)=>clamp(gray/Math.max(1,v), .85, 1.18);
+  const gr = 1+(g(ar)-1)*p.wb + p.warm, gg = 1+(g(ag)-1)*p.wb, gb = 1+(g(ab)-1)*p.wb - p.warm;
+  let lo = Math.min(a.p003, 24)*p.levels, hi = 255-(255-Math.max(a.p997, 222))*p.levels;
+  if(hi-lo < 100){ lo=0; hi=255; }
+  const m = clamp((a.mean-lo)/(hi-lo), .03, .97);
+  let gamma = 1;
+  if(m < .42) gamma = 1 + (clamp(Math.log(.42)/Math.log(m), .68, 1)-1)*p.lift;
+  else if(m > .64) gamma = 1 + (clamp(Math.log(.6)/Math.log(m), 1, 1.25)-1)*p.lift;
+  const mk = (gain)=>{ const t = new Uint8ClampedArray(256);
+    for(let v=0;v<256;v++){ let x = (v*gain-lo)/(hi-lo); x = clamp(x,0,1); x = Math.pow(x, gamma);
+      if(p.contrast) x = x - p.contrast*Math.sin(2*Math.PI*x)/(2*Math.PI);
+      t[v] = Math.round(clamp(x,0,1)*255); }
+    return t; };
+  return [mk(gr), mk(gg), mk(gb)];
+}
+function applyTone(data, a, p){
+  const [R,G,B] = buildLUT(a,p); const vib = p.vib;
+  for(let j=0;j<data.length;j+=4){
+    let r=R[data[j]], g=G[data[j+1]], b=B[data[j+2]];
+    if(vib){ const mx=Math.max(r,g,b), mn=Math.min(r,g,b); let k = vib*(1-(mx-mn)/255); if(r>g && g>b) k*=.5; const av=(r+g+b)/3; r=av+(r-av)*(1+k); g=av+(g-av)*(1+k); b=av+(b-av)*(1+k); }
+    data[j]=r; data[j+1]=g; data[j+2]=b;
+  }
+}
+function band(v, lo, hi, e){ if(v<lo-e || v>hi+e) return 0; if(v<lo) return (v-(lo-e))/e; if(v>hi) return ((hi+e)-v)/e; return 1; }
+function smoothSkin(canvas, imgData, amount){
+  const W = canvas.width, H = canvas.height; const f = Math.max(4, Math.round(Math.max(W,H)/420));
+  const small = drawScaled(canvas, W/f, H/f); const smaller = drawScaled(small, small.width/2, small.height/2);
+  const big = drawScaled(smaller, W, H); const bd = ctx2d(big, true).getImageData(0,0,W,H).data; const d = imgData.data;
+  for(let j=0;j<d.length;j+=4){
+    const r=d[j], g=d[j+1], b=d[j+2];
+    const cb = 128 - .168736*r - .331264*g + .5*b, cr = 128 + .5*r - .418688*g - .081312*b;
+    let w = band(cb,77,127,8) * band(cr,133,173,8); if(w<=0) continue;
+    const diff = (Math.abs(r-bd[j])+Math.abs(g-bd[j+1])+Math.abs(b-bd[j+2]))/3;
+    w *= clamp(1-diff/26, 0, 1); if(w<=0) continue;
+    const k = amount*w; d[j]=r+(bd[j]-r)*k; d[j+1]=g+(bd[j+1]-g)*k; d[j+2]=b+(bd[j+2]-b)*k;
+  }
+}
+/* draw img at delivery size, optionally retouched; returns canvas */
+function renderDelivery(img, a, preset, maxEdge){
+  const { w, h } = fit(a.W0, a.H0, maxEdge);
+  const c = drawScaled(img, w, h);
+  const p = PRESETS[preset];
+  if(p){
+    const x = ctx2d(c, true); const id = x.getImageData(0,0,w,h);
+    applyTone(id.data, a, p); x.putImageData(id,0,0);
+    if(p.smooth){ smoothSkin(c, id, p.smooth); x.putImageData(id,0,0); }
+  }
+  return c;
+}
+
+/* ---------- EXIF (capture time + camera) ---------- */
+async function readExif(file){
+  try{
+    if(!/jpe?g/i.test(file.type) && !/\.jpe?g$/i.test(file.name)) return {};
+    const buf = await file.slice(0, 262144).arrayBuffer(); const v = new DataView(buf);
+    if(v.byteLength < 4 || v.getUint16(0) !== 0xFFD8) return {};
+    let o = 2;
+    while(o + 10 < v.byteLength){
+      const m = v.getUint16(o); if((m & 0xFF00) !== 0xFF00) break; const len = v.getUint16(o+2);
+      if(m === 0xFFE1 && v.getUint32(o+4) === 0x45786966) return parseTiff(v, o+10);
+      if(m === 0xFFDA) break; o += 2 + len;
+    }
+  }catch{}
+  return {};
+}
+function parseTiff(v, t){
+  try{
+    const le = v.getUint16(t) === 0x4949; const u16 = p=>v.getUint16(p,le), u32 = p=>v.getUint32(p,le);
+    const str = (off,cnt)=>{ let s=""; for(let i=0;i<cnt && off+i<v.byteLength;i++){ const c=v.getUint8(off+i); if(!c) break; s+=String.fromCharCode(c); } return s.trim(); };
+    const ifd = (p)=>{ const out={}; const n=u16(p); for(let i=0;i<n;i++){ const e=p+2+i*12; if(e+12>v.byteLength) break; const tag=u16(e), type=u16(e+2), cnt=u32(e+4);
+      if(type===2) out[tag] = str(cnt>4 ? t+u32(e+8) : e+8, cnt); else if(type===4) out[tag]=u32(e+8); else if(type===3) out[tag]=u16(e+8); } return out; };
+    const i0 = ifd(t + u32(t+4)); const ex = i0[0x8769] ? ifd(t + i0[0x8769]) : {};
+    const dt = ex[0x9003] || i0[0x0132]; let takenAt = null;
+    const mm = dt && /^(\d{4}):(\d\d):(\d\d) (\d\d):(\d\d):(\d\d)/.exec(dt);
+    if(mm) takenAt = new Date(+mm[1], mm[2]-1, +mm[3], +mm[4], +mm[5], +mm[6]).getTime();
+    const make = i0[0x010F] || "", model = i0[0x0110] || "";
+    const camera = model ? (model.toLowerCase().startsWith(make.toLowerCase()) || !make ? model : make + " " + model) : (make || null);
+    return { takenAt, camera };
+  }catch{ return {}; }
+}
+
+/* ---------- zip (stored, no compression: JPEGs don’t compress) ---------- */
+const CRC_T = (()=>{ const t = new Uint32Array(256); for(let n=0;n<256;n++){ let c=n; for(let k=0;k<8;k++) c = c&1 ? 0xEDB88320^(c>>>1) : c>>>1; t[n]=c>>>0; } return t; })();
+function crc32(u8){ let c = 0xFFFFFFFF; for(let i=0;i<u8.length;i++) c = CRC_T[(c^u8[i])&0xFF]^(c>>>8); return (c^0xFFFFFFFF)>>>0; }
+async function makeZip(entries){
+  const enc = new TextEncoder(), parts = [], central = []; let off = 0;
+  const now = new Date();
+  const tm = (now.getHours()<<11)|(now.getMinutes()<<5)|((now.getSeconds()/2)|0);
+  const dt = ((now.getFullYear()-1980)<<9)|((now.getMonth()+1)<<5)|now.getDate();
+  const used = new Set();
+  for(const e of entries){
+    let name = e.name.replace(/[\\/:*?"<>|]+/g,"_"); const dot = name.lastIndexOf(".");
+    let k = 2; while(used.has(name.toLowerCase())){ name = dot>0 ? `${e.name.slice(0,dot)}-${k}${e.name.slice(dot)}` : `${e.name}-${k}`; k++; }
+    used.add(name.toLowerCase());
+    const data = new Uint8Array(await e.blob.arrayBuffer()), crc = crc32(data), nb = enc.encode(name);
+    const h = new DataView(new ArrayBuffer(30));
+    h.setUint32(0,0x04034b50,true); h.setUint16(4,20,true); h.setUint16(6,0x0800,true); h.setUint16(8,0,true);
+    h.setUint16(10,tm,true); h.setUint16(12,dt,true); h.setUint32(14,crc,true); h.setUint32(18,data.length,true); h.setUint32(22,data.length,true);
+    h.setUint16(26,nb.length,true); h.setUint16(28,0,true);
+    parts.push(h, nb, data);
+    const c = new DataView(new ArrayBuffer(46));
+    c.setUint32(0,0x02014b50,true); c.setUint16(4,20,true); c.setUint16(6,20,true); c.setUint16(8,0x0800,true); c.setUint16(10,0,true);
+    c.setUint16(12,tm,true); c.setUint16(14,dt,true); c.setUint32(16,crc,true); c.setUint32(20,data.length,true); c.setUint32(24,data.length,true);
+    c.setUint16(28,nb.length,true); c.setUint16(30,0,true); c.setUint16(32,0,true); c.setUint16(34,0,true); c.setUint16(36,0,true); c.setUint32(38,0,true); c.setUint32(42,off,true);
+    central.push(c, nb);
+    off += 30 + nb.length + data.length;
+  }
+  const cd = central.reduce((s,p)=>s+p.byteLength,0);
+  const end = new DataView(new ArrayBuffer(22));
+  end.setUint32(0,0x06054b50,true); end.setUint16(4,0,true); end.setUint16(6,0,true); end.setUint16(8,entries.length,true); end.setUint16(10,entries.length,true);
+  end.setUint32(12,cd,true); end.setUint32(16,off,true); end.setUint16(20,0,true);
+  return new Blob([...parts, ...central, end], { type:"application/zip" });
+}
+
+/* ---------- downloads ---------- */
+async function saveFile(filename, blob){
+  if(!S.downloads){ toast("Saving files isn’t available in this view."); return false; }
+  try{ const r = await S.downloads.save({ filename, data: blob }); if(r && r.status === "saved") toast("Saved " + filename); return true; }
+  catch(e){
+    const c = e && e.code;
+    if(c === "declined") return false;
+    if(c === "rate_limited"){ toast("A save is already waiting for your answer."); return false; }
+    if(c === "too_large"){ toast("That file is too large to save here. Pick fewer photos."); return false; }
+    toast("Saving didn’t work in this view."); return false;
+  }
+}
+function baseName(n){ const s = String(n||"photo"); const i = s.lastIndexOf("."); return i>0 ? s.slice(0,i) : s; }
+function fileStamp(){ const d = new Date(); return `${d.getFullYear()}${String(d.getMonth()+1).padStart(2,"0")}${String(d.getDate()).padStart(2,"0")}`; }
+
+/* ---------- watermark ---------- */
+const wmCache = new Map();
+async function fontsReady(){ try{ await Promise.all([document.fonts.load('800 60px "Archivo"'), document.fonts.load('400 30px "Archivo"')]); }catch{} }
+async function watermarkImage(album){
+  const b = brandOf(album).wm; if(b.mode === "off") return null;
+  const key = album.id + JSON.stringify(b) + (brandOf(album).logoId||"");
+  if(wmCache.has(key)) return wmCache.get(key);
+  let out = null;
+  try{
+    if(b.mode === "logo"){
+      const id = brandOf(album).logoId; if(id){ const img = await loadImg(blobUrl(id)); out = { img, url: blobUrl(id), aspect: img.naturalWidth/img.naturalHeight }; }
+    }else if(b.text.trim()){
+      await fontsReady();
+      const txt = b.text.trim(); const fs = 120; const m = mkCanvas(10,10).getContext("2d"); m.font = `800 ${fs}px Archivo, Arial, sans-serif`;
+      const tw = Math.ceil(m.measureText(txt).width) + 24; const c = mkCanvas(tw, fs*1.35); const x = c.getContext("2d");
+      x.font = m.font; x.textBaseline = "middle"; x.shadowColor = "rgba(0,0,0,.45)"; x.shadowBlur = 10; x.fillStyle = "#fff"; x.fillText(txt, 12, c.height/2);
+      const url = c.toDataURL("image/png"); const img = await loadImg(url); out = { img, url, aspect: c.width/c.height };
+    }
+  }catch{ out = null; }
+  wmCache.set(key, out); return out;
+}
+async function drawWatermark(x, bx, by, bw, bh, album){
+  const b = brandOf(album).wm; const w = await watermarkImage(album); if(!w) return;
+  const ww = bw * clamp(b.size,5,80)/100, wh = ww / w.aspect, m = bw*0.03;
+  let px = bx + bw - ww - m, py = by + bh - wh - m;
+  if(b.pos==="tl"){ px=bx+m; py=by+m; } else if(b.pos==="tr"){ py=by+m; } else if(b.pos==="bl"){ px=bx+m; } else if(b.pos==="c"){ px=bx+(bw-ww)/2; py=by+(bh-wh)/2; }
+  x.save(); x.globalAlpha = clamp(b.opacity,.1,1); x.drawImage(w.img, px, py, ww, wh); x.restore();
+}
+async function wmOverlayHTML(album){
+  const w = await watermarkImage(album); if(!w) return "";
+  const b = brandOf(album).wm;
+  return `<img class="wm ${esc(b.pos)}" alt="" src="${esc(w.url)}" style="width:${clamp(b.size,5,80)}%;opacity:${clamp(b.opacity,.1,1)}">`;
+}
+async function downloadableBlob(p, album){
+  const raw = await fetchBlob(p.assetId);
+  if(p.kind === "video" || brandOf(album).wm.mode === "off") return raw;
+  const img = await loadImg(URL.createObjectURL(raw)); const c = mkCanvas(img.naturalWidth, img.naturalHeight); const x = c.getContext("2d");
+  x.drawImage(img,0,0); await drawWatermark(x,0,0,c.width,c.height,album); URL.revokeObjectURL(img.src);
+  return toBlob(c,"image/jpeg",.92);
+}
+
+/* ---------- QR ---------- */
+function qrMatrix(text){
+  if(!text || typeof window.qrcode !== "function") return null;
+  try{ const q = window.qrcode(0, "M"); q.addData(text); q.make(); const n = q.getModuleCount(); return { n, dark:(r,c)=>q.isDark(r,c) }; }catch{ return null; }
+}
+function qrSVG(text){
+  const m = qrMatrix(text); if(!m) return "";
+  const q = 4, N = m.n + q*2; let d = "";
+  for(let r=0;r<m.n;r++) for(let c=0;c<m.n;c++) if(m.dark(r,c)) d += `M${c+q} ${r+q}h1v1h-1z`;
+  return `<svg viewBox="0 0 ${N} ${N}" role="img" aria-label="QR code for the gallery link" shape-rendering="crispEdges"><rect width="${N}" height="${N}" fill="#fff"/><path d="${d}" fill="#111"/></svg>`;
+}
+function drawQR(x, text, px, py, size){
+  const m = qrMatrix(text); if(!m) return false;
+  const q = 3, N = m.n + q*2, s = size/N;
+  x.fillStyle = "#fff"; x.fillRect(px,py,size,size); x.fillStyle = "#111";
+  for(let r=0;r<m.n;r++) for(let c=0;c<m.n;c++) if(m.dark(r,c)) x.fillRect(Math.floor(px+(c+q)*s), Math.floor(py+(r+q)*s), Math.ceil(s), Math.ceil(s));
+  return true;
+}
+/* ============================================================
+   Pipeline: ingest, AI tagging, retouch again, replace, tracking, posters
+   ============================================================ */
+const Store = {
+  get(k, d){ try{ const v = localStorage.getItem("lensdrop." + k); return v == null ? d : JSON.parse(v); }catch{ return d; } },
+  set(k, v){ try{ localStorage.setItem("lensdrop." + k, JSON.stringify(v)); }catch{} }
+};
+
+async function uploadAll(items){
+  const rs = await Promise.allSettled(items.map(([b,t])=>uploadBlob(b,t)));
+  const bad = rs.find(r=>r.status==="rejected");
+  if(bad){ for(const r of rs) if(r.status==="fulfilled") deleteAsset(r.value.id); throw bad.reason; }
+  return rs.map(r=>r.value);
+}
+
+const Ingest = {
+  jobs: [], active: 0, CONC: 2, recent: [],
+  add(files, albumId, category, mode){
+    const list = [...files];
+    for(const file of list){
+      const kind = /^video\//.test(file.type) ? "video" : "photo";
+      const job = { key: rid(), file, name: file.name, kind, albumId, category: category || null, mode: mode || "new", stage: "Waiting", err: false, ms: null, thumb: null, status: null };
+      if(mode === "replace"){
+        const matches = photoList().filter(x => baseName(x.name).toLowerCase() === baseName(file.name).toLowerCase() && x.kind !== "video");
+        if(matches.length !== 1){ job.stage = matches.length ? "Ambiguous filename: select a unique photo ID before returning this edit" : "No frame in this album has this file name"; job.err = true; job.done = true; }
+        else job.target = matches[0].id;
+      }
+      this.jobs.push(job);
+    }
+    // Only successful, completed history is bounded. Pending/running/error records survive.
+    let keptCompleted = 0;
+    this.jobs = this.jobs.slice().reverse().filter(j => {
+      if(!j.done || j.running || j.err) return true;
+      if(keptCompleted++ < 400) return true;
+      if(j.thumb) URL.revokeObjectURL(j.thumb);
+      return false;
+    }).reverse();
+    this.render(); this.pump();
+  },
+  pump(){
+    while(this.active < this.CONC){
+      const job = this.jobs.find(j => !j.done && !j.running); if(!job) break;
+      job.running = true; this.active++;
+      const run = job.mode === "replace" ? replaceJob(job) : processJob(job);
+      run.catch(e=>{ job.err = true; job.stage = (e && e.msg) || uploadMessage(e); })
+         .finally(()=>{ job.done = true; job.running = false; this.active--; this.render(); this.pump(); });
+    }
+  },
+  stage(job, s){ job.stage = s; this.render(); },
+  render(){ if(Console.mountedTab === "ingest") Console.tabs.ingest.renderQueue(); },
+};
+
+function findDup(albumId, hash, takenAt){
+  const pool = [];
+  if(S.photosAlbum === albumId) for(const [id,p] of S.photos) if(p.cull && p.cull.hash) pool.push({ id, hash: p.cull.hash, takenAt: p.takenAt });
+  for(const r of Ingest.recent) if(r.albumId === albumId && !S.photos.has(r.id)) pool.push(r);
+  // a failed upload leaves a recent entry that never became a frame; that’s harmless for matching
+  let best = null, bd = 99;
+  for(const c of pool.slice(-500)){
+    const d = hamming(hash, c.hash);
+    if(d < bd && (!takenAt || !c.takenAt || Math.abs(takenAt - c.takenAt) < 90000)){ bd = d; best = c; }
+  }
+  return bd <= 5 ? best.id : null;
+}
+
+async function processJob(job){
+  const t0 = performance.now();
+  const album = S.albums.get(job.albumId); if(!album) throw { msg: "This album no longer exists." };
+  const c = cfg(album);
+  if(job.kind === "video") return processVideo(job, c, t0);
+  Ingest.stage(job, "Reading");
+  const exif = await readExif(job.file);
+  let dec; try{ dec = await decodeFile(job.file); }catch{ throw { msg: "This file can’t be opened in this browser. Export it as JPEG and add it again." }; }
+  try{
+    Ingest.stage(job, "Culling");
+    await sleep(0);
+    const a = analyze(dec.img); const ex = exposureFlags(a);
+    const blurry = c.cullOn && a.sharp < c.blur, dark = c.cullOn && ex.dark, bright = c.cullOn && ex.bright;
+    const takenAt = exif.takenAt || job.file.lastModified || null;
+    const dupOf = c.cullOn ? findDup(job.albumId, a.hash, exif.takenAt || null) : null;
+    const flagged = blurry || dark || bright || !!dupOf;
+    const pid = rid();
+    Ingest.recent.push({ albumId: job.albumId, id: pid, hash: a.hash, takenAt: exif.takenAt || null });
+    if(Ingest.recent.length > 600) Ingest.recent.splice(0, 100);
+    const retouch = PRESETS[c.retouch] ? c.retouch : null;
+    Ingest.stage(job, retouch ? "Retouching" : "Preparing");
+    await sleep(0);
+    let sourceBlob = null;
+    if(retouch) sourceBlob = await toBlob(renderDelivery(dec.img, a, "off", c.maxEdge), "image/jpeg", .9);
+    const del = renderDelivery(dec.img, a, retouch || "off", c.maxEdge);
+    const delBlob = await toBlob(del, "image/jpeg", .9);
+    const tf = fit(del.width, del.height, 640); const thumbBlob = await toBlob(drawScaled(del, tf.w, tf.h), "image/jpeg", .82);
+    let aiBlob = null;
+    if(c.aiTag && S.sample && S.aiLimits && !AI.disabled){ const af = fit(del.width, del.height, 1280); aiBlob = await toBlob(drawScaled(del, af.w, af.h), "image/jpeg", .85); }
+    job.thumb = URL.createObjectURL(thumbBlob);
+    Ingest.stage(job, "Uploading");
+    const items = [[delBlob,"image/jpeg"],[thumbBlob,"image/jpeg"]]; if(sourceBlob) items.push([sourceBlob,"image/jpeg"]);
+    const [up, th, src] = await uploadAll(items);
+    const status = (flagged && c.hold) ? "review" : (c.publish === "live" ? "live" : "review");
+    const ingestMs = Math.round(performance.now() - t0);
+    const doc = {
+      kind: "photo", name: job.file.name, assetId: up.id, thumbId: th.id, sourceId: src ? src.id : null,
+      w: del.width, h: del.height, bytes: up.sizeBytes || delBlob.size, origBytes: job.file.size,
+      takenAt, uploadedAt: Date.now(), uploader: S.me.id || null, category: job.category, status, pick: false,
+      retouch, camera: exif.camera || null, ingestMs,
+      cull: { checked: c.cullOn, sharp: a.sharp, mean: Math.round(a.mean), hash: a.hash, blurry, dark, bright, dup: !!dupOf, dupOf: dupOf || null },
+      ai: null,
+    };
+    try{ await photoRef(job.albumId, pid).set(doc); }
+    catch(e){ for(const r of [up,th,src]) if(r) deleteAsset(r.id); throw { msg: (e && e.code === "quota_exceeded") ? "This album has reached its photo limit. Delete frames you don’t need." : "Saving the frame didn’t work. Add the file again." }; }
+    job.pid = pid; job.ms = ingestMs; job.status = status;
+    const fl = flagsOf(doc);
+    Ingest.stage(job, status === "live" ? (fl.length ? "Live, flagged: " + fl.join(", ").toLowerCase() : "Live in the gallery") : (fl.length && c.hold ? "Held for review: " + fl.join(", ").toLowerCase() : "Waiting for review"));
+    if(aiBlob) AI.enqueue([{ albumId: job.albumId, pid, blob: aiBlob }]);
+  }finally{ URL.revokeObjectURL(dec.url); }
+}
+
+async function processVideo(job, c, t0){
+  if(!/^video\/(mp4|webm)$/.test(job.file.type)) throw { msg: "Convert this clip to MP4 or WebM to add it." };
+  if(job.file.size > 20*1024*1024) throw { msg: "Clips can be up to 20 MB here. Trim or compress it, then add it again." };
+  Ingest.stage(job, "Reading");
+  const url = URL.createObjectURL(job.file);
+  try{
+    const v = document.createElement("video"); v.muted = true; v.playsInline = true; v.preload = "auto"; v.src = url;
+    await new Promise((res, rej)=>{ v.onloadeddata = res; v.onerror = ()=>rej({ msg: "This clip can’t be played in this browser." }); setTimeout(()=>rej({ msg: "This clip took too long to open." }), 15000); });
+    await new Promise(res=>{ v.onseeked = res; try{ v.currentTime = Math.min(.6, (v.duration || 1)/3); }catch{ res(); } setTimeout(res, 3000); });
+    const vw = v.videoWidth || 1280, vh = v.videoHeight || 720; const tf = fit(vw, vh, 640);
+    const pc = mkCanvas(tf.w, tf.h); pc.getContext("2d").drawImage(v, 0, 0, tf.w, tf.h);
+    const thumbBlob = await toBlob(pc, "image/jpeg", .82); job.thumb = URL.createObjectURL(thumbBlob);
+    Ingest.stage(job, "Uploading");
+    const [up, th] = await uploadAll([[job.file, job.file.type], [thumbBlob, "image/jpeg"]]);
+    const pid = rid(); const status = c.publish === "live" ? "live" : "review"; const ingestMs = Math.round(performance.now() - t0);
+    await photoRef(job.albumId, pid).set({
+      kind: "video", name: job.file.name, assetId: up.id, thumbId: th.id, sourceId: null, w: vw, h: vh, duration: Math.round((v.duration||0)*10)/10,
+      bytes: up.sizeBytes || job.file.size, origBytes: job.file.size, takenAt: job.file.lastModified || null, uploadedAt: Date.now(),
+      uploader: S.me.id || null, category: job.category, status, pick: false, retouch: null, camera: null, ingestMs, cull: null, ai: null,
+    });
+    job.pid = pid; job.ms = ingestMs; job.status = status;
+    Ingest.stage(job, status === "live" ? "Live in the gallery" : "Waiting for review");
+  }finally{ URL.revokeObjectURL(url); }
+}
+
+/* a retoucher returns an edited file: it replaces the frame with the same file name */
+async function replaceJob(job){
+  const t0 = performance.now();
+  const p = S.photos.get(job.target); if(!p) throw { msg: "That frame was deleted." };
+  const album = S.albums.get(job.albumId); const c = cfg(album);
+  Ingest.stage(job, "Reading");
+  let dec; try{ dec = await decodeFile(job.file); }catch{ throw { msg: "This file can’t be opened in this browser. Export it as JPEG." }; }
+  try{
+    const a = analyze(dec.img);
+    const del = renderDelivery(dec.img, a, "off", c.maxEdge);
+    const delBlob = await toBlob(del, "image/jpeg", .92);
+    const tf = fit(del.width, del.height, 640); const thumbBlob = await toBlob(drawScaled(del, tf.w, tf.h), "image/jpeg", .82);
+    job.thumb = URL.createObjectURL(thumbBlob);
+    Ingest.stage(job, "Uploading");
+    const [up, th] = await uploadAll([[delBlob,"image/jpeg"],[thumbBlob,"image/jpeg"]]);
+    const keepSource = p.sourceId || p.assetId;
+    const ex = exposureFlags(a);
+    const nextStatus = (p.status === "editing" || p.status === "review") ? (c.publish === "live" ? "live" : "review") : p.status;
+    await photoRef(job.albumId, job.target).update({
+      assetId: up.id, thumbId: th.id, sourceId: keepSource, w: del.width, h: del.height, bytes: up.sizeBytes || delBlob.size,
+      retouch: "manual", editedAt: Date.now(), editor: S.me.id || null, status: nextStatus,
+      cull: { sharp: a.sharp, mean: Math.round(a.mean), blurry: false, dark: ex.dark && c.cullOn, bright: ex.bright && c.cullOn, dup: false, dupOf: null },
+    });
+    if(p.assetId && p.assetId !== keepSource) deleteAsset(p.assetId);
+    if(p.thumbId) deleteAsset(p.thumbId);
+    job.pid = job.target; job.ms = Math.round(performance.now() - t0); job.status = nextStatus;
+    Ingest.stage(job, nextStatus === "live" ? "Edited version is live" : "Edited version saved");
+  }finally{ URL.revokeObjectURL(dec.url); }
+}
+
+/* run a different retouch preset from the untouched source */
+async function retouchAgain(albumId, pid, preset){
+  const p = S.photos.get(pid); if(!p || p.kind === "video") return;
+  const album = S.albums.get(albumId); const c = cfg(album);
+  const base = p.sourceId || p.assetId;
+  const raw = await fetchBlob(base); const u = URL.createObjectURL(raw);
+  try{
+    const img = await loadImg(u); const a = analyze(img);
+    let newAsset, del;
+    if(!PRESETS[preset]){ del = drawScaled(img, img.naturalWidth, img.naturalHeight); newAsset = { id: base }; }
+    else{ del = renderDelivery(img, a, preset, c.maxEdge); newAsset = await uploadBlob(await toBlob(del, "image/jpeg", .9), "image/jpeg"); }
+    const tf = fit(del.width, del.height, 640); const th = await uploadBlob(await toBlob(drawScaled(del, tf.w, tf.h), "image/jpeg", .82), "image/jpeg");
+    await photoRef(albumId, pid).update({ assetId: newAsset.id, thumbId: th.id, sourceId: base, retouch: PRESETS[preset] ? preset : null, w: del.width, h: del.height });
+    if(p.assetId && p.assetId !== base && p.assetId !== newAsset.id) deleteAsset(p.assetId);
+    if(p.thumbId) deleteAsset(p.thumbId);
+  }finally{ URL.revokeObjectURL(u); }
+}
+
+async function deletePhoto(albumId, pid){
+  const p = S.photos.get(pid); if(!p) return;
+  await photoRef(albumId, pid).delete();
+  for(const id of [p.assetId, p.thumbId, p.sourceId]) if(id) await deleteAsset(id);
+}
+
+/* ---------- Claude tagging: captions, search words, numbers, outfits, quality issues ---------- */
+const AI_ISSUES = ["eyes closed","motion blur","out of focus","cut-off subject","obstructed","too dark","too bright"];
+function aiPrompt(n){
+  return `You are tagging ${n} event photo${n>1?"s":""} for a searchable live gallery. The images are attached in order.
+For each image return one object with these fields:
+"caption": one short sentence describing the scene and action. Never name or identify any person.
+"tags": 5 to 12 lowercase search words for the scene, activity, objects, setting and mood.
+"numbers": every clearly readable bib, race, jersey or table number as strings, or [].
+"outfits": up to 6 short descriptions of visible clothing, like "red dress" or "navy suit, white shirt", or [].
+"issues": those of ${JSON.stringify(AI_ISSUES)} that clearly apply to the main subject, or [].
+Return only a JSON array of ${n} objects in image order.`;
+}
+function normAI(r){
+  const arr = (v, max, len) => (Array.isArray(v) ? v : []).map(x=>String(x).trim()).filter(Boolean).slice(0, max).map(s=>s.slice(0, len));
+  return {
+    caption: String((r && r.caption) || "").slice(0, 220),
+    tags: arr(r && r.tags, 15, 40).map(s=>s.toLowerCase()),
+    numbers: arr(r && r.numbers, 12, 12).map(s=>s.replace(/[^0-9A-Za-z-]/g,"")).filter(Boolean),
+    outfits: arr(r && r.outfits, 8, 60).map(s=>s.toLowerCase()),
+    issues: arr(r && r.issues, 7, 30).map(s=>s.toLowerCase()).filter(s=>AI_ISSUES.includes(s)),
+    at: Date.now(),
+  };
+}
+const AI = {
+  q: [], busy: false, paused: false, disabled: false, note: "", done: 0, failed: 0,
+  enqueue(jobs){
+    if(this.disabled || !S.sample || !S.aiLimits){ toast("Claude tagging isn’t available in this view."); return; }
+    this.q.push(...jobs); this.render(); this.pump();
+  },
+  resume(){ this.paused = false; this.note = ""; this.render(); this.pump(); },
+  async pump(){
+    if(this.busy || this.paused || !this.q.length) return;
+    this.busy = true; this.render();
+    try{
+      while(this.q.length && !this.paused && !this.disabled){
+        const max = Math.max(1, Math.min((S.aiLimits && S.aiLimits.maxCount) || 1, 4));
+        await this.batch(this.q.splice(0, max));
+        this.render();
+      }
+    }finally{ this.busy = false; this.render(); }
+  },
+  async blobFor(job){
+    if(job.blob) return job.blob;
+    const p = S.photos.get(job.pid); if(!p) throw new Error("gone");
+    const raw = await fetchBlob(p.assetId); const u = URL.createObjectURL(raw);
+    try{ const img = await loadImg(u); const f = fit(img.naturalWidth, img.naturalHeight, 1280); return await toBlob(drawScaled(img, f.w, f.h), "image/jpeg", .85); }
+    finally{ URL.revokeObjectURL(u); }
+  },
+  async batch(jobs){
+    const ok = [], blobs = [];
+    for(const j of jobs){ try{ blobs.push(await this.blobFor(j)); ok.push(j); }catch{ this.failed++; } }
+    if(!ok.length) return;
+    try{
+      const opts = { images: blobs }; if(S.aiTier) opts.modelTier = S.aiTier;
+      const out = await S.sample.json(aiPrompt(ok.length), opts);
+      const arr = Array.isArray(out) ? out : (out && Array.isArray(out.photos) ? out.photos : [out]);
+      for(let i=0;i<ok.length;i++){
+        const r = arr[i]; if(!r || typeof r !== "object"){ this.failed++; continue; }
+        try{ await photoRef(ok[i].albumId, ok[i].pid).update({ ai: normAI(r) }); this.done++; }catch{ this.failed++; }
+      }
+    }catch(e){
+      const c = e && e.code;
+      if(["not_granted","sampling_disabled","not_declared","capability_disabled","capability_removed","images_unavailable"].includes(c)){
+        this.disabled = true; this.q = []; this.note = c === "not_granted" ? "Claude tagging is off because permission wasn’t given." : "Claude tagging isn’t available in this view.";
+      }else if(c === "rate_limited" || c === "session_expired" || c === "upstream_error"){
+        this.paused = true; this.q.unshift(...ok);
+        this.note = c === "rate_limited" ? "Claude’s usage limit was reached. Resume tagging later." : c === "session_expired" ? "Your session expired. Reload, then resume tagging." : "Tagging stopped after a connection problem.";
+      }else{ this.failed += ok.length; }
+    }
+  },
+  render(){ if(Console.mountedTab === "ingest") Console.tabs.ingest.renderAI(); }
+};
+
+/* ---------- guest analytics: de-identified, one record per browser, no account ids ---------- */
+function hourKey(ts){ const d = new Date(ts || Date.now()); return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}T${String(d.getHours()).padStart(2,"0")}`; }
+function sessionId(){ let v = Store.get("sid", null); if(!v || !/^[a-z0-9]{8,40}$/.test(v)){ v = (rid() + rid()).slice(0, 24); Store.set("sid", v); } return v; }
+const Track = {
+  ref: null, data: null, albumId: null, dirty: false, timer: null, busy: false, off: false,
+  async start(albumId){
+    if(this.albumId === albumId) return;
+    const prev = this.flush(); this.albumId = albumId; this.data = null; this.ref = null; await prev;
+    if(S.me.canEdit || this.off || !S.db) return;
+    const ref = S.db.doc(`stats/${albumId}/sessions/${sessionId()}`);
+    let data;
+    try{ const s = await ref.get(); data = s.exists ? JSON.parse(JSON.stringify(s.data())) : { opens: 0, pv: {}, dl: {}, posters: 0, hours: {} }; }
+    catch{ this.off = true; return; }
+    if(this.albumId !== albumId) return;
+    this.ref = ref; this.data = data;
+    this.bump("open");
+  },
+  bump(kind, pid){
+    if(!this.data || this.off) return;
+    const a = this.data;
+    if(kind === "open"){ a.opens = (a.opens||0)+1; a.hours = a.hours || {}; const h = hourKey(); a.hours[h] = (a.hours[h]||0)+1; }
+    else if(kind === "view"){ a.pv = a.pv || {}; a.pv[pid] = (a.pv[pid]||0)+1; }
+    else if(kind === "dl"){ a.dl = a.dl || {}; a.dl[pid] = (a.dl[pid]||0)+1; }
+    else if(kind === "poster"){ a.posters = (a.posters||0)+1; }
+    this.dirty = true; this.schedule();
+  },
+  schedule(){ if(this.timer) return; this.timer = setTimeout(()=>{ this.timer = null; this.flush(); }, 4000); },
+  async flush(){
+    if(!this.dirty || !this.ref || this.off) return;
+    if(this.busy){ this.schedule(); return; }
+    this.busy = true; this.dirty = false;
+    try{ await this.ref.set(this.data); }
+    catch(e){ if(e && (e.code === "invalid_argument" || e.code === "revoked")) this.off = true; else this.dirty = true; }
+    finally{ this.busy = false; }
+  }
+};
+document.addEventListener("visibilitychange", ()=>{ if(document.visibilityState === "hidden") Track.flush(); });
+
+/* ---------- posters, carousel slides, table cards ---------- */
+function wrapLines(x, text, maxW, maxLines){
+  const words = String(text||"").split(/\s+/).filter(Boolean); const lines = []; let line = "";
+  for(const w of words){
+    const t = line ? line + " " + w : w;
+    if(x.measureText(t).width <= maxW || !line){ line = t; }
+    else{ lines.push(line); line = w; if(lines.length === maxLines){ line = ""; break; } }
+  }
+  if(line && lines.length < maxLines) lines.push(line);
+  if(lines.length === maxLines && words.join(" ") !== lines.join(" ")){
+    let last = lines[maxLines-1]; while(last && x.measureText(last + "…").width > maxW) last = last.slice(0,-1); lines[maxLines-1] = last.trimEnd() + "…";
+  }
+  return lines;
+}
+function setWide(x){ try{ if("fontStretch" in x) x.fontStretch = "expanded"; }catch{} }
+function setNormal(x){ try{ if("fontStretch" in x) x.fontStretch = "normal"; }catch{} }
+async function renderPoster(album, p, fmt, idx, total){
+  await fontsReady(); try{ await document.fonts.load('800 expanded 60px "Archivo"'); }catch{}
+  const B = brandOf(album), bg = B.color, fg = contrastInk(bg);
+  const [W,H] = ({ post:[1080,1350], story:[1080,1920], card:[1200,1800], slide:[1080,1350] })[fmt];
+  const c = mkCanvas(W,H), x = c.getContext("2d");
+  x.fillStyle = bg; x.fillRect(0,0,W,H);
+  let logo = null; if(B.logoId){ try{ logo = await loadImg(blobUrl(B.logoId)); }catch{} }
+  let img = null; if(p && p.kind !== "video"){ try{ img = await loadImg(blobUrl(p.assetId)); }catch{} } else if(p){ try{ img = await loadImg(blobUrl(p.thumbId)); }catch{} }
+  const link = galleryLink(album);
+  const meta = [fmtDate(album.date), album.venue].filter(Boolean).join(", ");
+  const drawLogo = (lx, ly, maxH, maxW)=>{ if(!logo) return 0; const s = Math.min(maxH/logo.naturalHeight, maxW/logo.naturalWidth); const w = logo.naturalWidth*s, h = logo.naturalHeight*s; x.drawImage(logo, lx, ly + (maxH-h)/2, w, h); return w; };
+  x.fillStyle = fg; x.textBaseline = "alphabetic";
+  if(fmt === "slide"){
+    const band = 150;
+    if(img){ drawCover(x, img, 0, 0, W, H-band); await drawWatermark(x, 0, 0, W, H-band, album); }
+    x.fillStyle = bg; x.fillRect(0, H-band, W, band); x.fillStyle = fg;
+    const lw = drawLogo(56, H-band+35, 80, 220);
+    setWide(x); x.font = "800 40px Archivo, Arial, sans-serif";
+    const tl = wrapLines(x, album.title, W - 112 - (lw ? lw+28 : 0) - 120, 1);
+    x.fillText(tl[0] || "", 56 + (lw ? lw+28 : 0), H - band/2 + 14);
+    setNormal(x); x.font = "600 30px Archivo, Arial, sans-serif"; x.textAlign = "right"; x.fillText(`${idx}/${total}`, W-56, H - band/2 + 12); x.textAlign = "left";
+  }else if(fmt === "card"){
+    const m = 90; let y = 170;
+    const lw = logo ? drawLogo(m, 70, 110, 420) : 0;
+    if(lw) y = 270;
+    setWide(x); x.font = "850 86px Archivo, Arial, sans-serif";
+    for(const l of wrapLines(x, album.title, W-2*m, 3)){ x.fillText(l, m, y); y += 96; }
+    setNormal(x); x.font = "400 38px Archivo, Arial, sans-serif"; if(meta){ x.globalAlpha=.85; x.fillText(meta, m, y+6); x.globalAlpha=1; y += 70; }
+    const qs = 640, qx = (W-qs)/2, qy = Math.max(y + 40, 760);
+    if(link && drawQR(x, link, qx, qy, qs)){
+      x.fillStyle = fg; x.font = "700 46px Archivo, Arial, sans-serif"; x.textAlign = "center";
+      x.fillText("Scan to see the photos live", W/2, qy + qs + 86); x.textAlign = "left";
+    }else{ x.font = "600 40px Archivo, Arial, sans-serif"; x.fillText("Ask the photographer for the gallery link.", m, qy + 60); }
+  }else{
+    const m = 64, ph = fmt === "story" ? 1240 : 870;
+    if(img){ drawCover(x, img, m, m, W-2*m, ph); if(p.kind !== "video") await drawWatermark(x, m, m, W-2*m, ph, album); }
+    const qs = fmt === "story" ? 240 : 200, hasQR = !!(link && qrMatrix(link));
+    const textW = W - 2*m - (hasQR ? qs + 36 : 0);
+    let y = m + ph + (fmt === "story" ? 110 : 92);
+    setWide(x); x.font = `850 ${fmt === "story" ? 64 : 56}px Archivo, Arial, sans-serif`; x.fillStyle = fg;
+    for(const l of wrapLines(x, album.title, textW, 2)){ x.fillText(l, m, y); y += fmt === "story" ? 74 : 64; }
+    setNormal(x); x.font = "400 30px Archivo, Arial, sans-serif";
+    if(meta){ x.globalAlpha = .85; x.fillText(meta, m, y + 4); x.globalAlpha = 1; }
+    if(logo) drawLogo(m, H - m - 90, 90, 360);
+    if(hasQR){ const qy = fmt === "story" ? H - m - qs - 40 : m + ph + 40; drawQR(x, link, W - m - qs, qy, qs); x.font = "500 22px Archivo, Arial, sans-serif"; x.fillStyle = fg; x.textAlign = "center"; x.fillText("All photos", W - m - qs/2, qy + qs + 32); x.textAlign = "left"; }
+  }
+  return toBlob(c, fmt === "card" ? "image/png" : "image/jpeg", .92);
+}
+/* ============================================================
+   Photographer console
+   ============================================================ */
+const TABS = [["ingest","Upload"],["sheet","Contact sheet"],["brand","Branding"],["share","Share"],["insights","Insights"],["blueprint","Build plan"]];
+const STATUS = { live:"Live", review:"Review", editing:"Editing", hidden:"Hidden" };
+const MARK_X = "M18 14 C 36 28, 58 42, 84 56 M83 12 C 62 30, 40 44, 15 57";
+const MARK_O = "M50 6 C 80 5, 95 20, 93 35 C 91 55, 68 63, 46 61 C 21 59, 6 47, 8 30 C 10 15, 30 7, 56 9";
+
+function setPath(obj, path, val){ const ks = path.split("."); let o = obj; for(let i=0;i<ks.length-1;i++) o = o[ks[i]] = o[ks[i]] || {}; o[ks[ks.length-1]] = val; return obj; }
+function getPath(obj, path){ return path.split(".").reduce((o,k)=>o==null?undefined:o[k], obj); }
+function pickFile(accept, multiple){ return new Promise(res=>{ const i = document.createElement("input"); i.type = "file"; i.accept = accept; i.multiple = !!multiple; i.onchange = ()=>res(i.files ? [...i.files] : []); i.click(); }); }
+function confirmDialog(title, body, okLabel, danger){
+  return new Promise(res=>{
+    const d = document.createElement("dialog");
+    d.innerHTML = `<h2>${esc(title)}</h2><p class="muted">${esc(body)}</p><div class="actions"><button class="btn ghost" value="no">Cancel</button><button class="btn ${danger?"danger":""}" value="yes">${esc(okLabel)}</button></div>`;
+    document.body.appendChild(d);
+    d.querySelectorAll("button").forEach(b=>b.onclick = ()=>{ d.close(b.value); });
+    d.onclose = ()=>{ res(d.returnValue === "yes"); d.remove(); };
+    d.showModal();
+  });
+}
+function syncList(container, items, make, update){
+  const existing = new Map(); for(const el of [...container.children]) if(el.dataset && el.dataset.id) existing.set(el.dataset.id, el); else el.remove();
+  let prev = null;
+  for(const it of items){
+    let el = existing.get(it.id);
+    if(el){ existing.delete(it.id); update(el, it); } else { el = make(it); }
+    const want = prev ? prev.nextSibling : container.firstChild;
+    if(want !== el) container.insertBefore(el, want);
+    prev = el;
+  }
+  for(const el of existing.values()) el.remove();
+}
+async function shrinkImage(file, maxEdge, type){
+  const { img, url } = await decodeFile(file);
+  try{ const f = fit(img.naturalWidth, img.naturalHeight, maxEdge); return await toBlob(drawScaled(img, f.w, f.h), type, .88); }
+  finally{ URL.revokeObjectURL(url); }
+}
+
+const Console = {
+  tab: Store.get("tab", "ingest"), mountedTab: "", mountedKey: "",
+  sel: new Set(), lastSel: null,
+  filter: { status: "all", cat: "", by: "", sort: "new" },
+  drawerId: null, drawerSig: "",
+  writeTimer: null,
+
+  render(){
+    if(S.mounted !== "console") this.mountShell();
+    const panel = $("#panel");
+    if(S.albumsError){ panel.innerHTML = `<h1>Gallery data isn’t reachable</h1><p class="lede">Reload the page to try again.</p>`; this.mountedKey = ""; return; }
+    if(!S.albumsConfirmed && !S.albums.size){ panel.innerHTML = `<p class="muted">${S.albumsSlow ? "The gallery data can’t be reached yet. It will appear as soon as the connection recovers." : "Loading albums…"}</p>`; this.mountedKey = ""; return; }
+    if(!S.albums.size){ this.firstRun(); return; }
+    $("#nav").hidden = false; $(".top .album-pick").hidden = false;
+    if(!S.current || !S.albums.has(S.current)){
+      const remembered = Store.get("album", null);
+      S.current = S.albums.has(remembered) ? remembered : [...S.albums.entries()].sort((a,b)=>(b[1].createdAt||0)-(a[1].createdAt||0))[0][0];
+    }
+    watchPhotos(S.current, "all");
+    this.updateTop();
+    const key = this.tab + "|" + S.current;
+    if(this.mountedKey !== key){ this.mountTab(); }
+    else{ const t = this.tabs[this.tab]; if(t.update) t.update(this.album()); }
+    this.updateDrawer();
+  },
+  album(){ const a = S.albums.get(S.current); return a ? Object.assign({ id: S.current }, a) : null; },
+  unmount(){ if(this.tabs[this.mountedTab] && this.tabs[this.mountedTab].unmount) this.tabs[this.mountedTab].unmount(); this.mountedTab = ""; this.mountedKey = ""; this.closeDrawer(); },
+
+  mountShell(){
+    S.mounted = "console"; this.mountedKey = ""; this.mountedTab = "";
+    document.title = "LensDrop console";
+    $("#app").innerHTML = `
+      <header class="top">
+        <div class="wordmark"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="2" y="5" width="20" height="14" rx="1.5" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="12" cy="12" r="3.6" fill="currentColor"/><path d="M7 2.5h5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>LensDrop</div>
+        <label class="album-pick" hidden><span class="sr">Album</span><select class="in" id="albumSel"></select></label>
+        <button class="btn ghost sm" id="newAlbum">New album</button>
+        <div class="livecount" id="liveCount"></div>
+        <span class="spacer"></span>
+        <button class="btn ghost sm" id="guestView">Open guest view</button>
+      </header>
+      <div class="layout">
+        <nav class="nav" id="nav" aria-label="Console sections" hidden>${TABS.map(([k,l])=>`<button data-tab="${k}">${l}<span class="navcount" data-count="${k}"></span></button>`).join("")}</nav>
+        <main class="panel" id="panel"></main>
+      </div>
+      <div class="drawer-scrim" id="scrim"></div>
+      <aside class="drawer" id="drawer" aria-label="Frame details"></aside>`;
+    $("#nav").onclick = (e)=>{ const b = e.target.closest("button[data-tab]"); if(!b) return; this.tab = b.dataset.tab; Store.set("tab", this.tab); scheduleRender(); };
+    $("#albumSel").onchange = (e)=>{ S.current = e.target.value; Store.set("album", S.current); this.sel.clear(); this.closeDrawer(); scheduleRender(); };
+    $("#newAlbum").onclick = ()=>this.newAlbumDialog();
+    $("#guestView").onclick = ()=>{ const a = this.album(); if(a) location.hash = a.slug; };
+    $("#scrim").onclick = ()=>this.closeDrawer();
+  },
+  updateTop(){
+    const sel = $("#albumSel"); const list = [...S.albums.entries()].sort((a,b)=>(b[1].createdAt||0)-(a[1].createdAt||0));
+    const sig = list.map(([id,a])=>id+a.title).join("|") + S.current;
+    if(sel.dataset.sig !== sig){ sel.innerHTML = list.map(([id,a])=>`<option value="${esc(id)}" ${id===S.current?"selected":""}>${esc(a.title || "Untitled album")}</option>`).join(""); sel.dataset.sig = sig; }
+    const ps = photoList(); const live = ps.filter(p=>p.status==="live").length, rev = ps.filter(p=>p.status==="review").length;
+    const last = ps.reduce((m,p)=>Math.max(m,p.uploadedAt||0),0); const recent = last && Date.now()-last < 15*60000;
+    $("#liveCount").innerHTML = S.photosConfirmed || ps.length ? `<span class="dot ${recent?"on":"off"}"></span><span><b>${live}</b> live</span><span><b>${rev}</b> waiting for review</span>` : "";
+    $$("#nav button").forEach(b=>b.setAttribute("aria-current", b.dataset.tab === this.tab ? "page" : "false"));
+    const sc = $('[data-count="sheet"]'); if(sc) sc.textContent = ps.length ? ps.length : "";
+  },
+  mountTab(){
+    if(this.tabs[this.mountedTab] && this.tabs[this.mountedTab].unmount) this.tabs[this.mountedTab].unmount();
+    this.mountedTab = this.tab; this.mountedKey = this.tab + "|" + S.current;
+    const panel = $("#panel"); panel.innerHTML = ""; panel.scrollTop = 0;
+    this.tabs[this.tab].mount(panel, this.album());
+  },
+  refreshNames(){ if(this.mountedTab === "sheet") this.tabs.sheet.renderFilters(); if(this.mountedTab === "insights") this.tabs.insights.update(this.album()); this.drawerSig = ""; this.updateDrawer(); },
+
+  firstRun(){
+    $("#nav").hidden = true; $(".top .album-pick").hidden = true; $("#liveCount").innerHTML = "";
+    if(this.mountedKey === "first") return; this.mountedKey = "first"; this.mountedTab = "";
+    $("#panel").innerHTML = `<div style="max-width:620px"><h1>Start your first album</h1><p class="lede">An album is one event. Photographers upload into it, and guests watch it fill up live from a link or QR code.</p><div id="firstForm"></div></div>`;
+    this.albumForm($("#firstForm"));
+  },
+  newAlbumDialog(){
+    const d = document.createElement("dialog"); d.innerHTML = `<h2>New album</h2><div id="naForm"></div>`; document.body.appendChild(d);
+    d.onclose = ()=>d.remove(); this.albumForm($("#naForm", d), d); d.showModal();
+  },
+  albumForm(host, dialog){
+    const today = new Date().toISOString().slice(0,10);
+    host.innerHTML = `
+      <label class="field"><span>Event name</span><input class="in" id="afTitle" maxlength="90" placeholder="Spring graduation 2026" required></label>
+      <div class="two"><label class="field"><span>Date</span><input class="in" type="date" id="afDate" value="${today}"></label>
+      <label class="field"><span>Venue</span><input class="in" id="afVenue" maxlength="80" placeholder="Main hall"></label></div>
+      <label class="field"><span>Gallery address <span class="hint">the end of the guest link</span></span><input class="in" id="afSlug" maxlength="40" placeholder="spring-graduation-2026"></label>
+      <label class="field"><span>Categories <span class="hint">separate with commas, optional</span></span><input class="in" id="afCats" placeholder="Ceremony, Portraits, Party"></label>
+      <p class="tiny" id="afErr" style="color:var(--marker)"></p>
+      <div class="actions" style="display:flex;gap:10px;justify-content:flex-end">${dialog?`<button class="btn ghost" id="afCancel">Cancel</button>`:""}<button class="btn" id="afCreate">Create album</button></div>`;
+    let slugTouched = false;
+    $("#afTitle",host).oninput = (e)=>{ if(!slugTouched) $("#afSlug",host).value = slugify(e.target.value); };
+    $("#afSlug",host).oninput = ()=>{ slugTouched = true; };
+    if(dialog) $("#afCancel",host).onclick = ()=>dialog.close();
+    $("#afCreate",host).onclick = async ()=>{
+      const title = $("#afTitle",host).value.trim(); const slug = ($("#afSlug",host).value.trim() || slugify(title)).toLowerCase();
+      const err = !title ? "Give the album a name." : slugProblem(slug, null);
+      if(err){ $("#afErr",host).textContent = err; return; }
+      const cats = $("#afCats",host).value.split(",").map(s=>s.trim()).filter(Boolean).slice(0,20).map(name=>({ id: rid(), name: name.slice(0,40) }));
+      const id = rid(); $("#afCreate",host).disabled = true;
+      try{
+        await albumRef(id).set({ title, slug, date: $("#afDate",host).value || null, venue: $("#afVenue",host).value.trim(), categories: cats, createdAt: Date.now(), createdBy: S.me.id || null, settings: {}, brand: {} });
+        S.current = id; Store.set("album", id); this.tab = "ingest"; Store.set("tab","ingest"); if(dialog) dialog.close(); toast("Album created"); scheduleRender();
+      }catch(e){ $("#afCreate",host).disabled = false; $("#afErr",host).textContent = (e && e.code === "invalid_argument") ? "Creating albums needs Editor access to this artifact." : "The album wasn’t saved. Try again."; }
+    };
+  },
+  saveSettings(patch){
+    const a = this.album(); if(!a) return;
+    this.pendingSettings = Object.assign(this.pendingSettings || {}, patch);
+    clearTimeout(this.writeTimer);
+    this.writeTimer = setTimeout(async ()=>{ const p = this.pendingSettings; this.pendingSettings = null; try{ await albumRef(a.id).update({ settings: p }); }catch{ toast("Settings weren’t saved. Check your connection."); } }, 500);
+  },
+
+  /* ---------- drawer ---------- */
+  openDrawer(pid){ this.drawerId = pid; this.drawerSig = ""; $("#drawer").classList.add("open"); $("#scrim").classList.add("open"); this.updateDrawer(); setTimeout(()=>{ const b = $("#dClose"); if(b) b.focus(); }, 50); },
+  closeDrawer(){ this.drawerId = null; const d = $("#drawer"); if(d){ d.classList.remove("open"); } const s = $("#scrim"); if(s) s.classList.remove("open"); },
+  updateDrawer(){
+    if(!this.drawerId) return; const dr = $("#drawer"); if(!dr) return;
+    const p0 = S.photos.get(this.drawerId); if(!p0){ this.closeDrawer(); return; }
+    const sig = JSON.stringify(p0); if(sig === this.drawerSig) return;
+    if(dr.contains(document.activeElement) && /INPUT|TEXTAREA|SELECT/.test(document.activeElement.tagName) && this.drawerSig) return;
+    this.drawerSig = sig;
+    const album = this.album(); const list = photoList(); const p = list.find(x=>x.id === this.drawerId);
+    const fl = flagsOf(p); const c = p.cull || {}; const ai = p.ai;
+    const cmp = p.kind === "video"
+      ? `<div class="cmp"><video src="${blobUrl(p.assetId)}" controls playsinline poster="${blobUrl(p.thumbId)}"></video></div>`
+      : (p.sourceId && p.sourceId !== p.assetId)
+        ? `<div class="cmp" id="cmp" style="--x:50%"><img src="${blobUrl(p.sourceId)}" alt="Before retouch"><div class="after"><img src="${blobUrl(p.assetId)}" alt="After retouch"></div><div class="bar"></div><span class="lbl" style="left:8px">Before</span><span class="lbl" style="right:8px">After</span><input type="range" min="0" max="100" value="50" aria-label="Compare before and after"></div>`
+        : `<div class="cmp"><img src="${blobUrl(p.assetId)}" alt=""></div>`;
+    const dupFrame = c.dupOf ? (list.find(x=>x.id===c.dupOf) || {}).frame : null;
+    dr.innerHTML = `
+      <div class="row"><h2>Frame ${p.frame}</h2><span class="spacer"></span><button class="lb-x" style="color:var(--ink)" id="dClose" aria-label="Close details">×</button></div>
+      <p class="sub">${esc(p.name)}</p>
+      ${cmp}
+      <div class="row" style="margin-bottom:10px"><div class="seg" id="dStatus" role="group" aria-label="Status">${Object.entries(STATUS).map(([k,l])=>`<button data-v="${k}" aria-pressed="${p.status===k}">${l}</button>`).join("")}</div></div>
+      <div class="row"><button class="btn ghost sm" id="dPick">${p.pick ? "Picked for highlights" : "Pick for highlights"}</button>
+        <select class="in" id="dCat" style="width:auto;min-height:30px;padding:3px 8px;font-size:13px"><option value="">No category</option>${catsOf(album).map(k=>`<option value="${esc(k.id)}" ${k.id===p.category?"selected":""}>${esc(k.name)}</option>`).join("")}</select></div>
+      ${fl.length ? `<p class="flagtxt" style="margin-top:12px">Flagged: ${esc(fl.join(", "))}</p>` : ""}
+      <dl class="meta">
+        <dt>Taken</dt><dd>${esc(fmtTime(p.takenAt) || "Unknown")}</dd>
+        <dt>Uploaded</dt><dd>${esc(fmtTime(p.uploadedAt))} by ${esc(Names.get(p.uploader))}</dd>
+        ${p.ingestMs ? `<dt>To gallery</dt><dd>${(p.ingestMs/1000).toFixed(1)} s from file to frame</dd>` : ""}
+        ${p.camera ? `<dt>Camera</dt><dd>${esc(p.camera)}</dd>` : ""}
+        <dt>Size</dt><dd>${p.w}×${p.h}, ${fmtBytes(p.bytes)}${p.duration ? `, ${p.duration} s` : ""}</dd>
+        ${p.kind !== "video" && c.sharp != null ? `<dt>Sharpness</dt><dd>${c.sharp}${c.blurry ? ' <span class="flagtxt">below the blur threshold</span>' : ""}</dd><dt>Brightness</dt><dd>${c.mean}/255${c.dark ? ' <span class="flagtxt">dark</span>' : c.bright ? ' <span class="flagtxt">bright</span>' : ""}</dd>` : ""}
+        ${dupFrame ? `<dt>Repeat of</dt><dd><button class="link" id="dDup">Frame ${dupFrame}</button></dd>` : ""}
+        <dt>Retouch</dt><dd>${esc(PRESET_NAMES[p.retouch] || "None")}${p.editedAt ? ` by ${esc(Names.get(p.editor))}` : ""}</dd>
+      </dl>
+      ${p.kind !== "video" ? `<div class="dsec"><h3>Retouch again</h3><div class="row"><select class="in" id="dPreset" style="width:auto">${["off","natural","vivid","portrait"].map(k=>`<option value="${k}" ${k===(p.retouch||"off")?"selected":""}>${PRESET_NAMES[k]}</option>`).join("")}</select><button class="btn sm" id="dRetouch">Apply</button></div><p class="tiny muted" style="margin-top:6px">Runs from the untouched original, so presets never stack.</p></div>` : ""}
+      <div class="dsec"><h3>Claude’s description</h3>
+        ${ai ? `<p class="small">${esc(ai.caption || "No caption")}</p>
+          <label class="field" style="margin-top:10px"><span>Search words</span><input class="in" id="dTags" value="${esc((ai.tags||[]).join(", "))}"></label>
+          <label class="field"><span>Bib or jersey numbers</span><input class="in" id="dNums" value="${esc((ai.numbers||[]).join(", "))}"></label>
+          ${(ai.outfits||[]).length ? `<p class="tiny muted">Outfits</p><div class="tags">${ai.outfits.map(o=>`<span class="tag">${esc(o)}</span>`).join("")}</div>` : ""}
+          ${(ai.issues||[]).length ? `<p class="flagtxt small" style="margin-top:8px">Claude noticed: ${esc(ai.issues.join(", "))}</p>` : ""}
+          <div class="row" style="margin-top:10px"><button class="btn sm" id="dSaveTags">Save search words</button><button class="btn ghost sm" id="dTag">Describe again</button></div>`
+        : `<p class="small muted">Not described yet. Claude adds a caption, search words, readable numbers and outfits.</p><div class="row" style="margin-top:8px"><button class="btn sm" id="dTag" ${p.kind==="video"?"disabled":""}>Describe with Claude</button></div>`}
+      </div>
+      <div class="dsec"><h3>Edit by hand</h3><p class="small muted">Download the original, edit it, then upload the result. It replaces this frame and goes live.</p>
+        <div class="row" style="margin-top:8px"><button class="btn ghost sm" id="dDown">Download original</button>${p.kind!=="video"?`<button class="btn ghost sm" id="dReplace">Replace with edited file</button>`:""}</div></div>
+      <div class="dsec"><button class="btn danger sm" id="dDelete">Delete frame</button></div>`;
+    const A = S.current, pid = p.id;
+    $("#dClose").onclick = ()=>this.closeDrawer();
+    const cm = $("#cmp"); if(cm){ const r = $("input", cm); r.oninput = ()=>cm.style.setProperty("--x", r.value + "%"); }
+    $("#dStatus").onclick = async (e)=>{ const b = e.target.closest("button"); if(!b) return; try{ await photoRef(A,pid).update({ status: b.dataset.v, ...(b.dataset.v==="editing" ? { editor: S.me.id || null } : {}) }); }catch{ toast("That change wasn’t saved."); } };
+    $("#dPick").onclick = async ()=>{ try{ await photoRef(A,pid).update({ pick: !p.pick }); }catch{ toast("That change wasn’t saved."); } };
+    $("#dCat").onchange = async (e)=>{ try{ await photoRef(A,pid).update({ category: e.target.value || null }); }catch{ toast("That change wasn’t saved."); } };
+    const dd = $("#dDup"); if(dd) dd.onclick = ()=>this.openDrawer(c.dupOf);
+    const rt = $("#dRetouch"); if(rt) rt.onclick = async ()=>{ rt.disabled = true; rt.textContent = "Working…"; try{ await retouchAgain(A, pid, $("#dPreset").value); toast("Retouch applied"); }catch{ toast("Retouching didn’t finish. Try again."); rt.disabled = false; rt.textContent = "Apply"; } };
+    const st = $("#dSaveTags"); if(st) st.onclick = async ()=>{ const tags = $("#dTags").value.split(",").map(s=>s.trim().toLowerCase()).filter(Boolean).slice(0,20); const numbers = $("#dNums").value.split(",").map(s=>s.trim()).filter(Boolean).slice(0,12); try{ await photoRef(A,pid).update({ ai: Object.assign({}, p.ai, { tags, numbers }) }); toast("Search words saved"); }catch{ toast("That change wasn’t saved."); } };
+    const tg = $("#dTag"); if(tg) tg.onclick = ()=>{ AI.enqueue([{ albumId: A, pid }]); toast("Sent to Claude"); };
+    $("#dDown").onclick = async ()=>{ try{ const b = await fetchBlob(p.sourceId || p.assetId); await saveFile(p.name || "frame.jpg", b); }catch{ toast("The original couldn’t be loaded."); } };
+    const rp = $("#dReplace"); if(rp) rp.onclick = async ()=>{ const [f] = await pickFile("image/jpeg,image/png,image/webp", false); if(!f) return; const job = { key: rid(), file: f, name: f.name, kind: "photo", albumId: A, mode: "replace", target: pid, stage: "Waiting" }; Ingest.jobs.push(job); Ingest.pump(); toast("Replacing frame " + p.frame); };
+    $("#dDelete").onclick = async ()=>{ if(!(await confirmDialog("Delete frame " + p.frame + "?", "The photo and its retouched versions are removed for everyone. This can’t be undone.", "Delete frame", true))) return; this.closeDrawer(); try{ await deletePhoto(A, pid); toast("Frame deleted"); }catch{ toast("The frame wasn’t deleted. Try again."); } };
+  },
+
+  tabs: {}
+};
+
+/* ---------- Upload tab ---------- */
+Console.tabs.ingest = {
+  mount(panel, album){
+    const c = cfg(album); const cats = catsOf(album);
+    const myCat = Store.get("cat." + album.id, cats[0] ? cats[0].id : "");
+    const hint = { off:"Photos go out exactly as shot.", natural:"Balances white and exposure, lifts shadows a touch.", vivid:"Natural, plus stronger colour and contrast.", portrait:"Natural, plus softer skin and a warmer tone." };
+    const aiNote = !S.sample ? "Claude isn’t available in this view." : !S.aiLimits ? "This view can’t send photos to Claude." : "Uses your Claude usage. The first photo asks for your permission.";
+    panel.innerHTML = `
+      <h1>Upload</h1>
+      <p class="lede">Each photo is culled, retouched, described and published in order, usually within a few seconds. Drop files straight off the card, out of your camera’s tethering folder, or from your phone.</p>
+      ${!S.assets ? `<p class="flagtxt" style="margin-bottom:14px">Uploading needs Editor access to this artifact. Ask the owner to share it with you as an Editor.</p>` : ""}
+      <div class="pipe">
+        <div class="step"><h3><span class="n">1</span>Transfer</h3>
+          <label class="field"><span>Category</span><select class="in" id="iCat">${cats.length ? cats.map(k=>`<option value="${esc(k.id)}" ${k.id===myCat?"selected":""}>${esc(k.name)}</option>`).join("") : `<option value="">No categories yet</option>`}</select></label>
+          <label class="field"><span>Delivery size</span><select class="in" id="iSize">${[2048,3200,4096].map(v=>`<option value="${v}" ${v===c.maxEdge?"selected":""}>${v} px long edge</option>`).join("")}</select></label>
+        </div>
+        <div class="step"><h3><span class="n">2</span>Cull</h3>
+          <label class="check"><input type="checkbox" id="iCull" ${c.cullOn?"checked":""}><span>Flag blurry, badly exposed and repeated frames</span></label>
+          <label class="check"><input type="checkbox" id="iHold" ${c.hold?"checked":""}><span>Hold flagged frames for review</span></label>
+          <label class="field" style="margin-top:8px"><span>Blur threshold <span class="hint" id="iBlurV">${c.blur}</span></span><input type="range" id="iBlur" min="20" max="300" step="5" value="${c.blur}"></label>
+        </div>
+        <div class="step"><h3><span class="n">3</span>Retouch</h3>
+          <div class="seg" id="iRet">${["off","natural","vivid","portrait"].map(k=>`<button data-v="${k}" aria-pressed="${(c.retouch||"off")===k}">${PRESET_NAMES[k]}</button>`).join("")}</div>
+          <p class="hint" id="iRetH">${hint[c.retouch||"off"]}</p>
+        </div>
+        <div class="step"><h3><span class="n">4</span>Describe</h3>
+          <label class="check"><input type="checkbox" id="iAI" ${c.aiTag?"checked":""} ${S.sample&&S.aiLimits?"":"disabled"}><span>Have Claude describe each photo so guests can search by scene, outfit or bib number</span></label>
+          <p class="hint">${aiNote}</p>
+        </div>
+        <div class="step"><h3><span class="n">5</span>Publish</h3>
+          <div class="seg" id="iPub"><button data-v="live" aria-pressed="${c.publish==="live"}">Straight to gallery</button><button data-v="review" aria-pressed="${c.publish==="review"}">Review first</button></div>
+          <p class="hint">${c.publish==="live" ? "Frames appear for guests the moment they finish." : "Frames wait on the contact sheet until you publish them."}</p>
+        </div>
+      </div>
+      <div class="drop" id="drop">
+        <h2>Drop photos and clips here</h2>
+        <p>JPEG, PNG or WebP photos, and MP4 or WebM clips up to 20 MB.</p>
+        <div class="row" style="justify-content:center"><button class="btn" id="iPick" ${S.assets?"":"disabled"}>Choose files</button><button class="btn ghost" id="iEdited" ${S.assets?"":"disabled"}>Return edited files</button></div>
+        <p class="tiny muted" style="margin:12px 0 0">Returned files replace the frame with the same file name and go live.</p>
+      </div>
+      <div class="q"><div class="q-head"><h2>Queue</h2><span class="muted small" id="qSum"></span><span class="spacer"></span><button class="link small" id="qClear">Clear finished</button></div><div id="qList"></div></div>
+      <div class="ai-line" id="aiLine"></div>`;
+    const A = album.id;
+    $("#iCat").onchange = (e)=>Store.set("cat." + A, e.target.value);
+    $("#iSize").onchange = (e)=>Console.saveSettings({ maxEdge: +e.target.value });
+    $("#iCull").onchange = (e)=>Console.saveSettings({ cullOn: e.target.checked });
+    $("#iHold").onchange = (e)=>Console.saveSettings({ hold: e.target.checked });
+    $("#iBlur").oninput = (e)=>{ $("#iBlurV").textContent = e.target.value; };
+    $("#iBlur").onchange = (e)=>Console.saveSettings({ blur: +e.target.value });
+    $("#iRet").onclick = (e)=>{ const b = e.target.closest("button"); if(!b) return; $$("#iRet button").forEach(x=>x.setAttribute("aria-pressed", x===b)); $("#iRetH").textContent = hint[b.dataset.v]; Console.saveSettings({ retouch: b.dataset.v }); };
+    $("#iAI").onchange = (e)=>Console.saveSettings({ aiTag: e.target.checked });
+    $("#iPub").onclick = (e)=>{ const b = e.target.closest("button"); if(!b) return; $$("#iPub button").forEach(x=>x.setAttribute("aria-pressed", x===b)); b.closest(".step").querySelector(".hint").textContent = b.dataset.v==="live" ? "Frames appear for guests the moment they finish." : "Frames wait on the contact sheet until you publish them."; Console.saveSettings({ publish: b.dataset.v }); };
+    const add = (files, mode)=>{ if(!S.assets){ toast("Uploading needs Editor access."); return; } const ok = files.filter(f=>/^(image|video)\//.test(f.type) || /\.(jpe?g|png|webp|heic|heif)$/i.test(f.name)); if(!ok.length){ toast("Those aren’t photos or clips."); return; } Ingest.add(ok, A, $("#iCat").value || null, mode); };
+    $("#iPick").onclick = async ()=>add(await pickFile("image/jpeg,image/png,image/webp,image/heic,image/heif,video/mp4,video/webm", true), "new");
+    $("#iEdited").onclick = async ()=>add(await pickFile("image/jpeg,image/png,image/webp", true), "replace");
+    const drop = $("#drop");
+    drop.ondragover = (e)=>{ e.preventDefault(); drop.classList.add("over"); };
+    drop.ondragleave = ()=>drop.classList.remove("over");
+    drop.ondrop = (e)=>{ e.preventDefault(); drop.classList.remove("over"); add([...(e.dataTransfer.files||[])], "new"); };
+    $("#qClear").onclick = ()=>{ Ingest.jobs = Ingest.jobs.filter(j=>!j.done); this.renderQueue(); };
+    this.renderQueue(); this.renderAI();
+  },
+  update(album){ /* settings are written by this view; nothing to refresh live */ },
+  renderQueue(){
+    const host = $("#qList"); if(!host) return;
+    const jobs = Ingest.jobs.filter(j=>j.albumId === S.current).slice().reverse().slice(0, 150);
+    const done = jobs.filter(j=>j.done && !j.err), live = done.filter(j=>j.status==="live"), times = done.filter(j=>j.ms).map(j=>j.ms);
+    const avg = times.length ? (times.reduce((a,b)=>a+b,0)/times.length/1000).toFixed(1) : null;
+    $("#qSum").textContent = jobs.length ? `${done.length} of ${jobs.length} done, ${live.length} live${avg ? `, ${avg} s average` : ""}` : "";
+    if(!jobs.length){ host.innerHTML = `<p class="muted small" style="padding:10px 0">Nothing uploading. Files you add appear here with their progress.</p>`; return; }
+    syncList(host, jobs.map(j=>({ id: j.key, j })), ({ id, j })=>{ const el = document.createElement("div"); el.className = "q-row"; el.dataset.id = id; el.innerHTML = `<img class="q-thumb" alt=""><div style="min-width:0"><div class="q-name"></div><div class="q-stage"></div></div><div class="q-time"></div>`; this.fillRow(el, j); return el; }, (el, { j })=>this.fillRow(el, j));
+  },
+  fillRow(el, j){
+    const img = $("img", el); if(j.thumb && img.getAttribute("src") !== j.thumb) img.src = j.thumb;
+    $(".q-name", el).textContent = j.name;
+    const st = $(".q-stage", el); st.textContent = j.stage; st.classList.toggle("err", !!j.err);
+    const t = $(".q-time", el); t.textContent = j.ms ? (j.ms/1000).toFixed(1) + " s" : (j.running ? "…" : ""); t.classList.toggle("live", j.status === "live" && !j.err);
+  },
+  renderAI(){
+    const el = $("#aiLine"); if(!el) return;
+    if(!AI.q.length && !AI.busy && !AI.done && !AI.failed && !AI.note){ el.innerHTML = ""; return; }
+    el.innerHTML = `<span>${AI.busy ? "Claude is describing photos." : AI.paused ? "Describing is paused." : "Claude descriptions:"} ${AI.done} done${AI.q.length ? `, ${AI.q.length} waiting` : ""}${AI.failed ? `, ${AI.failed} couldn’t be described` : ""}.</span>${AI.note ? `<span class="flagtxt">${esc(AI.note)}</span>` : ""}${AI.paused ? `<button class="btn ghost sm" id="aiResume">Resume</button>` : ""}`;
+    const r = $("#aiResume"); if(r) r.onclick = ()=>AI.resume();
+  }
+};
+
+/* ---------- Contact sheet tab ---------- */
+Console.tabs.sheet = {
+  mount(panel, album){
+    panel.innerHTML = `
+      <h1>Contact sheet</h1>
+      <p class="lede">Every frame in upload order. Red crosses mark frames the culling flagged; circles mark your picks. Open a frame to compare the retouch, fix its words or replace it.</p>
+      <div class="tools"><div class="chips" id="sChips"></div></div>
+      <div class="tools"><select class="in" id="sCat" aria-label="Category"></select><select class="in" id="sBy" aria-label="Photographer"></select>
+        <select class="in" id="sSort" aria-label="Order"><option value="new">Newest first</option><option value="old">Frame order</option></select>
+        <span class="spacer"></span><button class="btn ghost sm" id="sAll">Select all shown</button></div>
+      <div class="bulk" id="bulk" hidden></div>
+      <div class="sheet" id="sheet"></div>`;
+    $("#sSort").value = Console.filter.sort;
+    $("#sChips").onclick = (e)=>{ const b = e.target.closest("button[data-v]"); if(!b) return; Console.filter.status = b.dataset.v; this.update(Console.album()); };
+    $("#sCat").onchange = (e)=>{ Console.filter.cat = e.target.value; this.update(Console.album()); };
+    $("#sBy").onchange = (e)=>{ Console.filter.by = e.target.value; this.update(Console.album()); };
+    $("#sSort").onchange = (e)=>{ Console.filter.sort = e.target.value; this.update(Console.album()); };
+    $("#sAll").onclick = ()=>{ const vis = this.visible(); const all = vis.every(p=>Console.sel.has(p.id)); vis.forEach(p=>all ? Console.sel.delete(p.id) : Console.sel.add(p.id)); this.update(Console.album()); };
+    const sheet = $("#sheet");
+    sheet.onclick = (e)=>{
+      const f = e.target.closest(".f"); if(!f) return; const id = f.dataset.id;
+      if(e.target.classList.contains("f-sel")){ this.toggle(id, e.shiftKey); return; }
+      if(Console.sel.size && (e.metaKey || e.ctrlKey || e.shiftKey)){ this.toggle(id, e.shiftKey); return; }
+      Console.openDrawer(id);
+    };
+    sheet.onkeydown = (e)=>{ const f = e.target.closest(".f"); if(!f || e.target.classList.contains("f-sel")) return; if(e.key === "Enter"){ e.preventDefault(); Console.openDrawer(f.dataset.id); } else if(e.key === " "){ e.preventDefault(); this.toggle(f.dataset.id, e.shiftKey); } };
+    this.renderFilters(); this.update(album);
+  },
+  toggle(id, range){
+    const vis = this.visible();
+    if(range && Console.lastSel){ const a = vis.findIndex(p=>p.id===Console.lastSel), b = vis.findIndex(p=>p.id===id); if(a>=0 && b>=0){ const [lo,hi] = a<b?[a,b]:[b,a]; for(let i=lo;i<=hi;i++) Console.sel.add(vis[i].id); } }
+    else if(Console.sel.has(id)) Console.sel.delete(id); else Console.sel.add(id);
+    Console.lastSel = id; this.update(Console.album());
+  },
+  visible(){
+    const f = Console.filter; let ps = photoList();
+    ps = ps.filter(p=>{
+      if(f.status === "flagged") { if(!flagsOf(p).length) return false; }
+      else if(f.status === "picks") { if(!p.pick) return false; }
+      else if(f.status !== "all" && p.status !== f.status) return false;
+      if(f.cat === "none" ? !!p.category : (f.cat && p.category !== f.cat)) return false;
+      if(f.by && p.uploader !== f.by) return false;
+      return true;
+    });
+    if(f.sort === "new") ps.reverse();
+    return ps;
+  },
+  renderFilters(){
+    const album = Console.album(); if(!album || !$("#sCat")) return; const ps = photoList();
+    const cats = catsOf(album); const by = [...new Set(ps.map(p=>p.uploader).filter(Boolean))];
+    $("#sCat").innerHTML = `<option value="">All categories</option>${cats.map(k=>`<option value="${esc(k.id)}">${esc(k.name)}</option>`).join("")}<option value="none">No category</option>`; $("#sCat").value = Console.filter.cat;
+    $("#sBy").innerHTML = `<option value="">Every photographer</option>${by.map(id=>`<option value="${esc(id)}">${esc(Names.get(id))}</option>`).join("")}`; $("#sBy").value = by.includes(Console.filter.by) ? Console.filter.by : "";
+    this.filterSig = cats.map(c=>c.id+c.name).join() + by.join() + "|" + [...Names.map.entries()].join();
+  },
+  update(album){
+    if(!$("#sheet")) return;
+    const ps = photoList(); for(const id of [...Console.sel]) if(!S.photos.has(id)) Console.sel.delete(id);
+    const cats = catsOf(album); const by = [...new Set(ps.map(p=>p.uploader).filter(Boolean))];
+    if(this.filterSig !== cats.map(c=>c.id+c.name).join() + by.join() + "|" + [...Names.map.entries()].join()) this.renderFilters();
+    const n = (fn)=>ps.filter(fn).length;
+    const chips = [["all","All",ps.length],["live","Live",n(p=>p.status==="live")],["review","Review",n(p=>p.status==="review")],["editing","Editing",n(p=>p.status==="editing")],["hidden","Hidden",n(p=>p.status==="hidden")],["flagged","Flagged",n(p=>flagsOf(p).length>0)],["picks","Picks",n(p=>p.pick)]];
+    $("#sChips").innerHTML = chips.map(([v,l,c])=>`<button class="chip" data-v="${v}" aria-pressed="${Console.filter.status===v}">${l}<span class="c">${c}</span></button>`).join("");
+    const vis = this.visible(); const sheet = $("#sheet");
+    sheet.classList.toggle("selecting", Console.sel.size > 0);
+    if(!vis.length){
+      sheet.innerHTML = `<div class="sheet-empty">${!S.photosConfirmed ? (S.photosSlow ? "Frames can’t be loaded yet. They’ll appear when the connection recovers." : "Loading frames…") : ps.length ? "No frames match these filters." : "No frames yet. Upload photos and they land here as they finish."}</div>`;
+    }else{
+      const empty = $(".sheet-empty", sheet); if(empty) empty.remove();
+      syncList(sheet, vis, (p)=>this.makeFrame(p), (el,p)=>this.fillFrame(el,p));
+    }
+    this.renderBulk(album);
+  },
+  makeFrame(p){
+    const el = document.createElement("div"); el.className = "f"; el.dataset.id = p.id; el.tabIndex = 0;
+    el.innerHTML = `<div class="f-img"><img alt="" loading="lazy"><svg class="mk" viewBox="0 0 100 66" preserveAspectRatio="none" aria-hidden="true"><path class="mx" d="${MARK_X}"/><path class="mo" d="${MARK_O}"/></svg></div><span class="f-no"></span><span class="f-st"></span><input type="checkbox" class="f-sel"><span class="f-flag" hidden></span>`;
+    this.fillFrame(el, p); return el;
+  },
+  fillFrame(el, p){
+    const img = $("img", el); const src = blobUrl(p.thumbId); if(img.getAttribute("src") !== src) img.src = src;
+    $(".f-no", el).textContent = String(p.frame).padStart(3, "0");
+    const st = $(".f-st", el); st.className = "f-st st-" + p.status; st.textContent = STATUS[p.status] || p.status;
+    const fl = flagsOf(p); const ff = $(".f-flag", el); ff.hidden = !fl.length; ff.textContent = fl[0] ? (fl.length > 1 ? `${fl[0]} +${fl.length-1}` : fl[0]) : "";
+    $(".mx", el).style.display = fl.length ? "" : "none"; $(".mo", el).style.display = p.pick ? "" : "none";
+    const cb = $(".f-sel", el); cb.checked = Console.sel.has(p.id); cb.setAttribute("aria-label", "Select frame " + p.frame);
+    el.classList.toggle("sel", cb.checked);
+    el.setAttribute("aria-label", `Frame ${p.frame}, ${STATUS[p.status]}${fl.length ? ", flagged " + fl.join(", ") : ""}`);
+    let v = $(".f-vid", el); if(p.kind === "video" && !v){ v = document.createElement("span"); v.className = "f-vid"; v.textContent = "Clip"; $(".f-img", el).appendChild(v); }
+  },
+  renderBulk(album){
+    const bar = $("#bulk"); const n = Console.sel.size; bar.hidden = !n; if(!n) return;
+    const sig = n + "|" + catsOf(album).map(c=>c.id).join();
+    if(bar.dataset.sig === sig) return; bar.dataset.sig = sig;
+    bar.innerHTML = `<span><b>${n}</b> selected</span>
+      <button class="btn sm" data-a="live">Publish</button><button class="btn sm" data-a="review">Hold</button><button class="btn sm" data-a="editing">Send to editing</button><button class="btn sm" data-a="hidden">Hide</button>
+      <button class="btn sm" data-a="pick">Pick</button><button class="btn sm" data-a="unpick">Unpick</button>
+      ${catsOf(album).length ? `<select data-a="cat" aria-label="Move to category"><option value="">Move to category…</option>${catsOf(album).map(k=>`<option value="${esc(k.id)}">${esc(k.name)}</option>`).join("")}</select>` : ""}
+      <select data-a="retouch" aria-label="Retouch again"><option value="">Retouch again…</option>${["off","natural","vivid","portrait"].map(k=>`<option value="${k}">${PRESET_NAMES[k]}</option>`).join("")}</select>
+      <button class="btn sm" data-a="tag">Describe with Claude</button><button class="btn sm" data-a="zip">Download</button><button class="btn sm" data-a="delete">Delete</button>
+      <span class="spacer"></span><button class="btn sm" data-a="clear">Clear</button>`;
+    bar.onclick = (e)=>{ const b = e.target.closest("button[data-a]"); if(b) this.bulk(b.dataset.a, null, b); };
+    bar.onchange = (e)=>{ const s = e.target.closest("select[data-a]"); if(s && s.value){ this.bulk(s.dataset.a, s.value, s); s.value = ""; } };
+  },
+  async bulk(action, value, ctrl){
+    const A = S.current; const ids = [...Console.sel].filter(id=>S.photos.has(id)); if(!ids.length) return;
+    const each = async (fn)=>{ let ok = 0; for(const id of ids){ try{ await fn(id); ok++; }catch{} } return ok; };
+    if(action === "clear"){ Console.sel.clear(); this.update(Console.album()); return; }
+    if(["live","review","editing","hidden"].includes(action)){ const n = await each(id=>photoRef(A,id).update({ status: action, ...(action==="editing"?{ editor: S.me.id || null }:{}) })); toast(`${plural(n,"frame")} set to ${STATUS[action].toLowerCase()}`); return; }
+    if(action === "pick" || action === "unpick"){ await each(id=>photoRef(A,id).update({ pick: action === "pick" })); return; }
+    if(action === "cat"){ const n = await each(id=>photoRef(A,id).update({ category: value })); toast(`${plural(n,"frame")} moved`); return; }
+    if(action === "retouch"){ toast(`Retouching ${plural(ids.length,"frame")}…`); const n = await each(id=>retouchAgain(A, id, value)); toast(`${plural(n,"frame")} retouched`); return; }
+    if(action === "tag"){ AI.enqueue(ids.filter(id=>S.photos.get(id).kind !== "video").map(pid=>({ albumId: A, pid }))); toast("Sent to Claude"); return; }
+    if(action === "zip"){
+      if(ids.length > MAX_ZIP){ toast(`Pick up to ${MAX_ZIP} frames per download.`); return; }
+      ctrl.disabled = true; ctrl.textContent = "Packing…";
+      try{ const entries = []; for(const id of ids){ const p = S.photos.get(id); entries.push({ name: p.name || id + ".jpg", blob: await fetchBlob(p.sourceId || p.assetId) }); }
+        await saveFile(`${(Console.album().slug)}-originals-${fileStamp()}.zip`, await makeZip(entries)); }
+      catch{ toast("Some originals couldn’t be loaded."); }
+      ctrl.disabled = false; ctrl.textContent = "Download"; return;
+    }
+    if(action === "delete"){
+      if(!(await confirmDialog(`Delete ${plural(ids.length,"frame")}?`, "They’re removed for everyone, including guests who already have the gallery open. This can’t be undone.", "Delete frames", true))) return;
+      const n = await each(id=>deletePhoto(A,id)); Console.sel.clear(); toast(`${plural(n,"frame")} deleted`); return;
+    }
+  }
+};
+
+/* ---------- Branding tab ---------- */
+Console.tabs.brand = {
+  mount(panel, album){
+    const b = brandOf(album); this.cats = catsOf(album).map(c=>Object.assign({}, c));
+    const img = (path, label, hint, cover)=>{ const id = getPath({ brand: b }, path); return `<div class="imgfield" data-path="${path}"><div class="pv ${cover?"cover":""}" style="${id?`background-image:url(${blobUrl(id)})`:""}"></div><div><div class="t">${label}</div><div class="tiny muted">${hint}</div><div class="row" style="margin-top:6px"><button class="btn ghost sm" data-up>${id?"Replace":"Upload"}</button>${id?`<button class="btn ghost sm" data-rm>Remove</button>`:""}</div></div></div>`; };
+    panel.innerHTML = `
+      <h1>Branding</h1>
+      <p class="lede">How the gallery looks to guests. Images save as soon as you upload them; everything else saves when you press Save changes.</p>
+      <div class="brand-grid"><div>
+        <fieldset class="fs"><legend>Event</legend>
+          <label class="field"><span>Event name</span><input class="in" id="bTitle" maxlength="90" value="${esc(album.title)}"></label>
+          <div class="two"><label class="field"><span>Date</span><input class="in" type="date" id="bDate" value="${esc(album.date||"")}"></label><label class="field"><span>Venue</span><input class="in" id="bVenue" maxlength="80" value="${esc(album.venue||"")}"></label></div>
+          <label class="field"><span>Gallery address</span><input class="in" id="bSlug" maxlength="40" value="${esc(album.slug)}"><span class="hint" id="bSlugErr"></span></label>
+          <div class="field"><span>Categories</span><div class="cats" id="bCats"></div><div class="row"><input class="in" id="bCatNew" maxlength="40" placeholder="New category" style="max-width:240px"><button class="btn ghost sm" id="bCatAdd">Add</button></div></div>
+        </fieldset>
+        <fieldset class="fs"><legend>Look</legend>
+          ${img("brand.coverId","Cover image","Wide image across the top, 3:1 works well.",true)}
+          ${img("brand.logoId","Logo","PNG with a transparent background looks best.")}
+          <div class="two"><label class="field"><span>Brand colour</span><div class="row"><input type="color" id="bColor" value="${esc(b.color)}"><span class="tiny muted">Buttons, poster background and loading screen</span></div></label>
+          <label class="field"><span>Grid</span><select class="in" id="bLayout"><option value="ratio" ${b.layout==="ratio"?"selected":""}>Keep each photo’s shape</option><option value="square" ${b.layout==="square"?"selected":""}>Square tiles</option></select></label></div>
+        </fieldset>
+        <fieldset class="fs"><legend>Watermark</legend>
+          <div class="seg" id="bWm" style="margin-bottom:12px">${[["off","None"],["text","Text"],["logo","Logo"]].map(([k,l])=>`<button data-v="${k}" aria-pressed="${b.wm.mode===k}">${l}</button>`).join("")}</div>
+          <label class="field"><span>Watermark text</span><input class="in" id="bWmText" maxlength="60" value="${esc(b.wm.text)}" placeholder="© Your studio"></label>
+          <div class="two"><label class="field"><span>Position</span><select class="in" id="bWmPos">${[["br","Bottom right"],["bl","Bottom left"],["tr","Top right"],["tl","Top left"],["c","Centre"]].map(([k,l])=>`<option value="${k}" ${b.wm.pos===k?"selected":""}>${l}</option>`).join("")}</select></label>
+          <label class="field"><span>Width <span class="hint" id="bWmSizeV">${b.wm.size}% of the photo</span></span><input type="range" id="bWmSize" min="8" max="60" value="${b.wm.size}"></label></div>
+          <label class="field"><span>Opacity <span class="hint" id="bWmOpV">${Math.round(b.wm.opacity*100)}%</span></span><input type="range" id="bWmOp" min="15" max="100" value="${Math.round(b.wm.opacity*100)}"></label>
+          <p class="tiny muted">Shown on full-size views, downloads and posters. Grid thumbnails stay clean.</p>
+        </fieldset>
+        <fieldset class="fs"><legend>Loading screen</legend>
+          <label class="check"><input type="checkbox" id="bLoadOn" ${b.loading.on?"checked":""}><span>Show a branded screen while the gallery opens</span></label>
+          <label class="field"><span>Show for <span class="hint" id="bLoadSV">${b.loading.seconds} s</span></span><input type="range" id="bLoadS" min="1" max="5" value="${b.loading.seconds}"></label>
+          ${img("brand.loading.imageId","Loading image","Uses the logo when empty.")}
+        </fieldset>
+        <fieldset class="fs"><legend>Sponsor banners</legend>
+          ${img("brand.topAd.imageId","Top banner","Above the cover, about 6:1.",true)}
+          <label class="field"><span>Top banner link</span><input class="in" id="bTopLink" value="${esc(b.topAd.link)}" placeholder="https://"></label>
+          ${img("brand.footAd.imageId","Footer banner","Below the photos, about 6:1.",true)}
+          <label class="field"><span>Footer banner link</span><input class="in" id="bFootLink" value="${esc(b.footAd.link)}" placeholder="https://"></label>
+        </fieldset>
+        <fieldset class="fs"><legend>Photographer card</legend>
+          <label class="check"><input type="checkbox" id="bCardOn" ${b.card.on?"checked":""}><span>Show who shot the event at the end of the gallery</span></label>
+          <div class="two"><label class="field"><span>Name</span><input class="in" id="bCardName" maxlength="60" value="${esc(b.card.name)}"></label><label class="field"><span>Studio</span><input class="in" id="bCardStudio" maxlength="60" value="${esc(b.card.studio)}"></label></div>
+          <div class="two"><label class="field"><span>Contact</span><input class="in" id="bCardContact" maxlength="80" value="${esc(b.card.contact)}" placeholder="Email, phone or handle"></label><label class="field"><span>Booking link</span><input class="in" id="bCardLink" value="${esc(b.card.link)}" placeholder="https://"></label></div>
+        </fieldset>
+        <div class="row"><button class="btn" id="bSave">Save changes</button><button class="btn ghost" id="bOpen">Open guest view</button><span class="tiny muted" id="bSaved"></span></div>
+      </div>
+      <aside class="preview" id="bPrev" aria-label="Preview"></aside></div>`;
+    this.renderCats(); this.wmMode = b.wm.mode;
+    $("#bCatAdd").onclick = ()=>{ const v = $("#bCatNew").value.trim(); if(!v) return; if(this.cats.length >= 20){ toast("Up to 20 categories per album."); return; } this.cats.push({ id: rid(), name: v.slice(0,40) }); $("#bCatNew").value = ""; this.renderCats(); };
+    $("#bCatNew").onkeydown = (e)=>{ if(e.key === "Enter"){ e.preventDefault(); $("#bCatAdd").click(); } };
+    $("#bWm").onclick = (e)=>{ const x = e.target.closest("button"); if(!x) return; this.wmMode = x.dataset.v; $$("#bWm button").forEach(y=>y.setAttribute("aria-pressed", y===x)); this.preview(); };
+    $("#bWmSize").oninput = (e)=>{ $("#bWmSizeV").textContent = e.target.value + "% of the photo"; this.preview(); };
+    $("#bWmOp").oninput = (e)=>{ $("#bWmOpV").textContent = e.target.value + "%"; this.preview(); };
+    $("#bLoadS").oninput = (e)=>{ $("#bLoadSV").textContent = e.target.value + " s"; };
+    const grid = $(".brand-grid", panel);
+    grid.oninput = (e)=>{ if(["bTitle","bColor","bWmText","bVenue","bDate"].includes(e.target.id)) this.preview(); };
+    $("#bWmPos").onchange = ()=>this.preview();
+    grid.onclick = (e)=>{ const f = e.target.closest(".imgfield"); if(!f) return; if(e.target.closest("[data-up]")) this.uploadImg(f.dataset.path); if(e.target.closest("[data-rm]")) this.removeImg(f.dataset.path); };
+    $("#bSave").onclick = ()=>this.save();
+    $("#bOpen").onclick = ()=>{ location.hash = Console.album().slug; };
+    this.preview();
+  },
+  update(album){
+    // refresh image previews after uploads; keep typed text untouched
+    const b = { brand: brandOf(album) };
+    $$(".imgfield").forEach(f=>{ const id = getPath(b, f.dataset.path); const pv = $(".pv", f); const want = id ? `url("${blobUrl(id)}")` : ""; if(pv.style.backgroundImage.replace(/"/g,"") !== want.replace(/"/g,"")) pv.style.backgroundImage = want;
+      const row = $(".row", f); const sig = id ? "1" : "0"; if(row.dataset.sig !== sig){ row.dataset.sig = sig; row.innerHTML = `<button class="btn ghost sm" data-up>${id?"Replace":"Upload"}</button>${id?`<button class="btn ghost sm" data-rm>Remove</button>`:""}`; } });
+    this.preview();
+  },
+  renderCats(){ const host = $("#bCats"); host.innerHTML = this.cats.length ? this.cats.map((c,i)=>`<span class="cat">${esc(c.name)}<button aria-label="Remove ${esc(c.name)}" data-i="${i}">×</button></span>`).join("") : `<span class="tiny muted">No categories. Guests see one stream of photos.</span>`; host.onclick = (e)=>{ const b = e.target.closest("button[data-i]"); if(!b) return; this.cats.splice(+b.dataset.i,1); this.renderCats(); }; },
+  async uploadImg(path){
+    if(!S.assets){ toast("Uploading needs Editor access."); return; }
+    const [f] = await pickFile("image/jpeg,image/png,image/webp", false); if(!f) return;
+    const isLogo = /logo|loading/.test(path); const A = S.current;
+    try{
+      const blob = await shrinkImage(f, isLogo ? 1200 : 2400, isLogo ? "image/png" : "image/jpeg");
+      const up = await uploadBlob(blob, blob.type);
+      const old = getPath({ brand: brandOf(S.albums.get(A)) }, path);
+      await albumRef(A).update(setPath({}, path, up.id));
+      if(old && old !== up.id) deleteAsset(old);
+      wmCache.clear(); toast("Image saved");
+    }catch(e){ toast(e && e.code ? uploadMessage(e) : "That image couldn’t be read."); }
+  },
+  async removeImg(path){ const A = S.current; const old = getPath({ brand: brandOf(S.albums.get(A)) }, path); try{ await albumRef(A).update(setPath({}, path, null)); if(old) deleteAsset(old); wmCache.clear(); }catch{ toast("That change wasn’t saved."); } },
+  collect(){
+    return {
+      title: $("#bTitle").value.trim(), date: $("#bDate").value || null, venue: $("#bVenue").value.trim(), slug: $("#bSlug").value.trim().toLowerCase(), categories: this.cats,
+      brand: { color: $("#bColor").value, layout: $("#bLayout").value,
+        wm: { mode: this.wmMode, text: $("#bWmText").value.trim(), pos: $("#bWmPos").value, size: +$("#bWmSize").value, opacity: +$("#bWmOp").value/100 },
+        loading: { on: $("#bLoadOn").checked, seconds: +$("#bLoadS").value },
+        topAd: { link: safeLink($("#bTopLink").value.trim()) }, footAd: { link: safeLink($("#bFootLink").value.trim()) },
+        card: { on: $("#bCardOn").checked, name: $("#bCardName").value.trim(), studio: $("#bCardStudio").value.trim(), contact: $("#bCardContact").value.trim(), link: safeLink($("#bCardLink").value.trim()) } }
+    };
+  },
+  async save(){
+    const v = this.collect(); const err = !v.title ? "Give the album a name." : slugProblem(v.slug, S.current);
+    $("#bSlugErr").textContent = err; $("#bSlugErr").style.color = err ? "var(--marker)" : "";
+    if(err){ toast(err); return; }
+    try{ await albumRef(S.current).update(v); wmCache.clear(); $("#bSaved").textContent = "Saved " + new Date().toLocaleTimeString(undefined,{hour:"2-digit",minute:"2-digit"}); toast("Changes saved"); }
+    catch{ toast("Changes weren’t saved. Try again."); }
+  },
+  async preview(){
+    const host = $("#bPrev"); if(!host) return; const album = Console.album(); const v = this.collect();
+    const fake = Object.assign({}, album, { title: v.title, venue: v.venue, date: v.date, brand: Object.assign({}, album.brand, v.brand, { logoId: brandOf(album).logoId, coverId: brandOf(album).coverId }) });
+    const B = brandOf(fake); const last = photoList().filter(p=>p.kind!=="video").pop();
+    const wm = await wmOverlayHTML(fake);
+    host.innerHTML = `<div class="pc" style="background-color:${esc(B.color)};${B.coverId?`background-image:url(${blobUrl(B.coverId)})`:""}"></div>
+      <div class="pt">${B.logoId?`<img src="${blobUrl(B.logoId)}" alt="" style="height:36px;margin-bottom:8px;display:block">`:""}<h3>${esc(v.title||"Untitled album")}</h3><p class="tiny muted">${esc([fmtDate(v.date), v.venue].filter(Boolean).join(", "))}</p>
+      <div class="row" style="margin-top:10px"><span class="chip" style="background:${esc(B.color)};color:${contrastInk(B.color)};border-color:${esc(B.color)}">All</span><span class="chip">Highlights</span></div></div>
+      <div class="pframe" style="${last?`background-image:url(${blobUrl(last.thumbId)})`:""}">${wm}</div>`;
+  }
+};
+
+/* ---------- Share tab ---------- */
+Console.tabs.share = {
+  mount(panel, album){
+    const link = galleryLink(album);
+    panel.innerHTML = `
+      <h1>Share</h1>
+      <p class="lede">Guests open the live gallery from this link or QR code. Put the table card on tables and at the entrance; it prints at 4×6 inches.</p>
+      <div class="share-grid"><div>
+        <label class="field"><span>Gallery link</span><div class="row" style="flex-wrap:nowrap"><input class="in" readonly id="shLink" value="${esc(link || "Available once the page is published")}"><button class="btn" id="shCopy" ${link?"":"disabled"}>Copy link</button></div></label>
+        <div class="row"><button class="btn ghost" id="shOpen">Open guest view</button><button class="btn ghost" id="shCard" ${link?"":"disabled"}>Save table card</button><button class="btn ghost" id="shQR" ${link?"":"disabled"}>Save QR code</button></div>
+        <div class="sec"><h2>Who can open it</h2><p class="muted" style="max-width:64ch">People open the gallery through this artifact’s link, so it follows the artifact’s sharing settings in Claude. Share it with the people who should see the photos. Photographers and retouchers who upload need Editor access. Guests counted in Insights need Contributor access.</p></div>
+        <div class="sec"><h2>What guests can do</h2><p class="muted" style="max-width:64ch">Watch new frames arrive live, filter by category or highlights, search by scene, outfit or bib number once Claude has described the photos, download single photos or a batch, and make a share poster or a carousel from any photo.</p></div>
+      </div><div class="qrbox" id="shQRBox">${link ? qrSVG(link) + `<p>${esc(album.title)}</p>` : `<p>The QR code appears once the page has its link.</p>`}</div></div>`;
+    $("#shOpen").onclick = ()=>{ location.hash = album.slug; };
+    $("#shCopy").onclick = async ()=>{ const i = $("#shLink"); try{ await navigator.clipboard.writeText(link); toast("Link copied"); }catch{ i.focus(); i.select(); toast("Press Ctrl+C or ⌘C to copy"); } };
+    $("#shCard").onclick = async (e)=>{ e.target.disabled = true; try{ await saveFile(`${album.slug}-table-card.png`, await renderPoster(album, null, "card")); }catch{ toast("The card couldn’t be made."); } e.target.disabled = false; };
+    $("#shQR").onclick = async ()=>{ const c = mkCanvas(1024,1024); if(drawQR(c.getContext("2d"), link, 0, 0, 1024)) await saveFile(`${album.slug}-qr.png`, await toBlob(c,"image/png")); };
+  },
+  update(album){}
+};
+
+/* ---------- Insights tab ---------- */
+Console.tabs.insights = {
+  views: [], unsub: null, confirmed: false,
+  mount(panel, album){
+    panel.innerHTML = `<h1>Insights</h1><p class="lede">How guests use this gallery. Counts are kept per browser, with no names or accounts attached. Only visitors with permission to save data are counted, usually members of your organization with Contributor access, and editors previewing the gallery aren’t counted.</p><div id="inBody"><p class="muted">Loading…</p></div>`;
+    this.confirmed = false; this.views = [];
+    try{
+      this.unsub = S.db.collection(`stats/${album.id}/sessions`).onSnapshot(snap=>{ this.views = snap.docs.map(d=>d.data()); if(!snap.metadata.fromCache) this.confirmed = true; this.update(Console.album()); }, ()=>{ this.confirmed = true; this.views = []; this.update(Console.album()); });
+    }catch{ this.confirmed = true; }
+    this.update(album);
+  },
+  unmount(){ if(this.unsub){ try{ this.unsub(); }catch{} this.unsub = null; } },
+  update(album){
+    const host = $("#inBody"); if(!host || !album) return;
+    let visitors = 0, opens = 0, pv = 0, dl = 0, posters = 0; const per = new Map(), hours = new Map();
+    for(const a of this.views){ if(!a) continue; visitors++; opens += a.opens||0; posters += a.posters||0;
+      for(const [k,n] of Object.entries(a.pv||{})){ pv += n; const r = per.get(k) || { v:0, d:0 }; r.v += n; per.set(k, r); }
+      for(const [k,n] of Object.entries(a.dl||{})){ dl += n; const r = per.get(k) || { v:0, d:0 }; r.d += n; per.set(k, r); }
+      for(const [h,n] of Object.entries(a.hours||{})) hours.set(h, (hours.get(h)||0) + n); }
+    const ps = photoList(); const live = ps.filter(p=>p.status==="live").length;
+    const keys = [...hours.keys()].sort().slice(-36); const max = Math.max(1, ...keys.map(k=>hours.get(k)));
+    const slots = Math.max(keys.length, 24), bw = 600/slots;
+    const chart = keys.length ? `<svg class="chart" viewBox="0 0 600 150" role="img" aria-label="Gallery opens by hour">${keys.map((k,i)=>{ const h = Math.max(2, hours.get(k)/max*112); return `<rect x="${(i*bw+bw*.18).toFixed(1)}" y="${(122-h).toFixed(1)}" width="${(bw*.64).toFixed(1)}" height="${h.toFixed(1)}"><title>${esc(k.replace("T"," "))}:00, ${plural(hours.get(k),"open")}</title></rect><text x="${(i*bw+bw/2).toFixed(1)}" y="${(116-h).toFixed(1)}" text-anchor="middle">${hours.get(k)}</text>`; }).join("")}<line x1="0" x2="600" y1="122.5" y2="122.5" stroke="var(--rule)"/><text x="0" y="142">${esc(keys[0].slice(5).replace("T"," "))}:00</text>${keys.length>1?`<text x="${((keys.length-1)*bw+bw/2).toFixed(1)}" y="142" text-anchor="middle">${esc(keys[keys.length-1].slice(5).replace("T"," "))}:00</text>`:""}</svg>` : `<p class="muted small">No opens recorded yet.</p>`;
+    const top = [...per.entries()].filter(([id])=>S.photos.has(id)).sort((a,b)=>(b[1].v+b[1].d*3)-(a[1].v+a[1].d*3)).slice(0,12);
+    const cats = [{ id: null, name: "No category" }].concat(catsOf(album)); const byC = new Map();
+    for(const p of ps){ const k = catsOf(album).some(c=>c.id===p.category) ? p.category : null; const r = byC.get(k) || { n:0, live:0, v:0, d:0 }; r.n++; if(p.status==="live") r.live++; const q = per.get(p.id); if(q){ r.v += q.v; r.d += q.d; } byC.set(k, r); }
+    host.innerHTML = `
+      <div class="stats">
+        <div class="stat"><b>${visitors}</b><span>Visitors (browsers)</span></div><div class="stat"><b>${opens}</b><span>Gallery opens</span></div>
+        <div class="stat"><b>${pv}</b><span>Photo views</span></div><div class="stat"><b>${dl}</b><span>Downloads</span></div>
+        <div class="stat"><b>${posters}</b><span>Posters made</span></div><div class="stat"><b>${live}</b><span>Photos live</span></div></div>
+      <div class="sec"><h2>Gallery opens by hour</h2>${chart}</div>
+      <div class="sec"><h2>Most popular photos</h2>${top.length ? `<div class="top-photos">${top.map(([id,r])=>{ const p = ps.find(x=>x.id===id); return `<figure><img src="${blobUrl(p.thumbId)}" alt="Frame ${p.frame}" loading="lazy"><figcaption>Frame ${p.frame}: ${plural(r.v,"view")}, ${plural(r.d,"download")}</figcaption></figure>`; }).join("")}</div>` : `<p class="muted small">Views and downloads show up here as guests open photos.</p>`}</div>
+      <div class="sec"><h2>By category</h2>${byC.size ? `<div class="table-wrap"><table><thead><tr><th>Category</th><th>Frames</th><th>Live</th><th>Views</th><th>Downloads</th></tr></thead><tbody>${cats.filter(c=>byC.has(c.id)).map(c=>{ const r = byC.get(c.id); return `<tr><td>${esc(c.name)}</td><td class="num">${r.n}</td><td class="num">${r.live}</td><td class="num">${r.v}</td><td class="num">${r.d}</td></tr>`; }).join("")}</tbody></table></div>` : `<p class="muted small">No frames yet.</p>`}</div>`;
+  }
+};
+/* ============================================================
+   Guest gallery
+   ============================================================ */
+function lookSig(a){ return JSON.stringify([a.title, a.date, a.venue, a.brand, a.categories]); }
+function photoMatches(p, q, album){
+  const toks = q.toLowerCase().split(/[\s,]+/).filter(Boolean); if(!toks.length) return true;
+  const ai = p.ai || {}; const hay = [ai.caption, ...(ai.tags||[]), ...(ai.outfits||[]), catName(album, p.category)].join(" ").toLowerCase();
+  const nums = (ai.numbers||[]).map(n=>String(n).toLowerCase());
+  return toks.every(t => nums.includes(t) || hay.includes(t));
+}
+
+const Gallery = {
+  albumId: null, lookSig: "", cat: "all", q: "", sel: new Set(), selecting: false, lb: null, pending: 0, openedPid: "",
+  album(){ const a = S.albums.get(this.albumId); return a ? Object.assign({ id: this.albumId }, a) : null; },
+  render(){
+    const slug = S.route.slug; let album = null;
+    for(const [k,a] of S.albums) if(a.slug === slug){ album = Object.assign({ id: k }, a); break; }
+    if(!album){
+      if(!S.albumsConfirmed) return this.state("Opening the gallery…", "");
+      return this.state("This gallery isn’t here", "The link may be mistyped, or the album was renamed or removed. Ask the photographer for the current link.");
+    }
+    if(S.mounted !== "gallery:" + album.id) this.mount(album);
+    watchPhotos(album.id, "live");
+    Track.start(album.id);
+    if(lookSig(album) !== this.lookSig) this.renderLook(album);
+    this.update(album);
+  },
+  state(title, body){
+    const key = "gstate:" + title; if(S.mounted === key) return; S.mounted = key; this.albumId = null;
+    $("#app").innerHTML = `<div class="state"><h1>${esc(title)}</h1>${body?`<p>${esc(body)}</p>`:""}${S.me.canEdit?`<p style="margin-top:18px"><button class="btn" id="gHome">Back to console</button></p>`:""}</div>`;
+    const b = $("#gHome"); if(b) b.onclick = ()=>{ location.hash = ""; };
+  },
+  unmount(){ this.closeLB(); this.albumId = null; Track.flush(); },
+  mount(album){
+    S.mounted = "gallery:" + album.id; this.albumId = album.id; this.cat = "all"; this.q = ""; this.sel.clear(); this.selecting = false; this.lookSig = ""; this.pending = 0; this.openedPid = "";
+    $("#app").innerHTML = `<div class="g" id="g">
+      <div id="gTop"></div>
+      <div class="g-sticky"><div class="g-bar" id="gBar"><div class="chips" id="gChips"></div><input class="in g-search" id="gSearch" type="search" placeholder="Search: stage, red dress, 1234" aria-label="Search photos" hidden><span class="spacer"></span><button class="btn ghost sm" id="gSelect">Select</button></div>
+      <div class="g-selbar" id="gSelbar" hidden></div></div>
+      <p class="g-note" id="gNote" hidden></p>
+      <main class="g-grid" id="gGrid" aria-label="Photos"></main>
+      <div class="g-empty" id="gEmpty" hidden></div>
+      <footer class="g-foot" id="gFoot"></footer>
+      <button class="g-pill" id="gPill" hidden></button>
+    </div>${S.me.canEdit ? `<button class="btn edit-back" id="gBack">Back to console</button>` : ""}`;
+    const b = $("#gBack"); if(b) b.onclick = ()=>{ location.hash = ""; };
+    $("#gChips").onclick = (e)=>{ const c = e.target.closest("button[data-v]"); if(!c) return; this.cat = c.dataset.v; this.update(this.album()); };
+    let t; $("#gSearch").oninput = (e)=>{ clearTimeout(t); t = setTimeout(()=>{ this.q = e.target.value.trim(); this.update(this.album()); }, 180); };
+    $("#gSelect").onclick = ()=>{ this.selecting = !this.selecting; if(!this.selecting) this.sel.clear(); this.update(this.album()); };
+    $("#gGrid").onclick = (e)=>{ const it = e.target.closest(".g-item"); if(!it) return; const id = it.dataset.id;
+      if(this.selecting){ if(this.sel.has(id)) this.sel.delete(id); else this.sel.add(id); this.update(this.album()); } else this.openLB(id); };
+    $("#gPill").onclick = ()=>{ window.scrollTo({ top: 0, behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth" }); this.pending = 0; $("#gPill").hidden = true; };
+    const B = brandOf(album);
+    if(B.loading.on){
+      const img = B.loading.imageId || B.logoId;
+      const l = document.createElement("div"); l.className = "g-load"; l.setAttribute("role","presentation");
+      l.innerHTML = `<div>${img?`<img src="${blobUrl(img)}" alt="">`:""}<h2>${esc(album.title)}</h2></div>`;
+      l.style.setProperty("--brand", B.color); l.style.setProperty("--brand-ink", contrastInk(B.color));
+      document.body.appendChild(l);
+      setTimeout(()=>{ l.classList.add("gone"); setTimeout(()=>l.remove(), 500); }, clamp(B.loading.seconds,1,5)*1000);
+      l.onclick = ()=>{ l.classList.add("gone"); setTimeout(()=>l.remove(), 500); };
+    }
+  },
+  renderLook(album){
+    this.lookSig = lookSig(album); const B = brandOf(album); const g = $("#g");
+    g.style.setProperty("--brand", B.color); g.style.setProperty("--brand-ink", contrastInk(B.color));
+    document.title = album.title + " — live photos";
+    const ad = (a)=> a.imageId ? (safeLink(a.link) ? `<a class="g-ad" href="${esc(safeLink(a.link))}" target="_blank" rel="noopener noreferrer"><img src="${blobUrl(a.imageId)}" alt="Sponsor"></a>` : `<div class="g-ad"><img src="${blobUrl(a.imageId)}" alt="Sponsor"></div>`) : "";
+    const meta = [fmtDate(album.date), album.venue].filter(Boolean).join(", ");
+    $("#gTop").innerHTML = `${ad(B.topAd)}<div class="g-cover${B.coverId?"":" empty"}" style="${B.coverId?`background-image:url(${blobUrl(B.coverId)})`:""}"></div>
+      <div class="g-head">${B.logoId?`<img class="g-logo" src="${blobUrl(B.logoId)}" alt="">`:""}<div style="min-width:0"><h1>${esc(album.title)}</h1>${meta?`<p class="g-meta">${esc(meta)}</p>`:""}<p class="g-live" id="gLive"></p></div></div>`;
+    const card = B.card; const initials = (card.name || card.studio || "").split(/\s+/).filter(Boolean).slice(0,2).map(s=>s[0].toUpperCase()).join("");
+    $("#gFoot").innerHTML = `${card.on && (card.name || card.studio) ? `<div class="g-card"><div class="av" aria-hidden="true">${esc(initials)}</div><div><span class="tiny muted">Photographed by</span><b>${esc(card.name || card.studio)}</b>${card.name && card.studio ? `<span class="small muted">${esc(card.studio)}</span>` : ""}${card.contact ? `<span class="small"> ${esc(card.contact)}</span>` : ""}${safeLink(card.link) ? ` <a class="small" href="${esc(safeLink(card.link))}" target="_blank" rel="noopener noreferrer">Book a shoot</a>` : ""}</div></div>` : ""}${ad(B.footAd)}`;
+    $("#gFoot").hidden = !$("#gFoot").innerHTML.trim();
+    $("#gGrid").classList.toggle("square", B.layout === "square");
+    wmCache.clear();
+  },
+  list(album){
+    let ps = []; for(const [id,p] of S.photos) if(p.status === "live") ps.push(Object.assign({ id }, p));
+    ps.sort((a,b)=>(b.uploadedAt||0)-(a.uploadedAt||0));
+    return ps;
+  },
+  filtered(album, ps){
+    return ps.filter(p=>{
+      if(this.cat === "picks" && !p.pick) return false;
+      if(this.cat !== "all" && this.cat !== "picks" && p.category !== this.cat) return false;
+      return photoMatches(p, this.q, album);
+    });
+  },
+  update(album){
+    if(!album || !$("#gGrid")) return;
+    const ps = this.list(album); const vis = this.filtered(album, ps);
+    const last = ps[0] && ps[0].uploadedAt; const recent = last && Date.now() - last < 15*60000;
+    $("#gLive").innerHTML = ps.length ? `<span class="dot ${recent?"on":"off"}"></span><span>${recent ? "Live now" : "Updated " + esc(timeAgo(last))}, <b>${ps.length.toLocaleString()}</b> ${ps.length===1?"photo":"photos"}</span>` : (S.photosConfirmed ? `<span class="dot off"></span><span>Waiting for the first photos</span>` : "");
+    const cats = catsOf(album).filter(c=>ps.some(p=>p.category===c.id)); const hasPicks = ps.some(p=>p.pick);
+    if(this.cat !== "all" && this.cat !== "picks" && !cats.some(c=>c.id===this.cat)) this.cat = "all";
+    if(this.cat === "picks" && !hasPicks) this.cat = "all";
+    const chips = [["all","All"]].concat(hasPicks ? [["picks","Highlights"]] : []).concat(cats.map(c=>[c.id, c.name]));
+    const csig = chips.map(c=>c.join(":")).join("|") + this.cat;
+    const ch = $("#gChips"); if(ch.dataset.sig !== csig){ ch.dataset.sig = csig; ch.innerHTML = chips.length > 1 ? chips.map(([v,l])=>`<button class="chip" data-v="${esc(v)}" aria-pressed="${this.cat===v}">${esc(l)}</button>`).join("") : ""; }
+    $("#gSearch").hidden = !ps.some(p=>p.ai && (p.ai.tags||[]).length);
+    $("#gSelect").textContent = this.selecting ? "Done" : "Select";
+    $("#gSelect").hidden = !ps.length || !S.downloads;
+    const note = $("#gNote"); if(this.q){ note.hidden = false; note.textContent = `${plural(vis.length,"photo")} match “${this.q}”.`; } else note.hidden = true;
+    const grid = $("#gGrid");
+    const arrivals = [];
+    syncList(grid, vis, (p)=>{ const el = this.makeItem(p); if(S.fresh.has(p.id)){ arrivals.push(p.id); el.classList.add("fresh"); setTimeout(()=>el.classList.remove("fresh"), 1700); } S.fresh.delete(p.id); return el; }, (el,p)=>this.fillItem(el,p));
+    for(const id of S.fresh) if(!S.photos.has(id) || S.photos.get(id).status !== "live") S.fresh.delete(id);
+    if(arrivals.length && window.scrollY > 600){ this.pending += arrivals.length; const pill = $("#gPill"); pill.hidden = false; pill.textContent = `${plural(this.pending,"new photo")} at the top`; }
+    const empty = $("#gEmpty");
+    if(!vis.length){ empty.hidden = false; empty.innerHTML = !S.photosConfirmed ? (S.photosSlow ? `<h2>Still connecting</h2><p>Photos will appear as soon as the connection recovers.</p>` : `<p>Loading photos…</p>`) : ps.length ? `<h2>No matches</h2><p>Try fewer words, or a bib number on its own.</p>` : `<h2>The first photos are on their way</h2><p>Keep this page open. New photos appear here as the photographer takes them.</p>`; }
+    else empty.hidden = true;
+    this.renderSelbar(album);
+    if(S.route.pid && S.route.pid !== this.openedPid && S.photos.has(S.route.pid) && S.photos.get(S.route.pid).status === "live"){ this.openedPid = S.route.pid; this.openLB(S.route.pid); }
+    if(this.lb){ if(!S.photos.has(this.lb.id) || S.photos.get(this.lb.id).status !== "live") this.closeLB(); else this.lbCount(); }
+  },
+  makeItem(p){
+    const el = document.createElement("button"); el.type = "button"; el.className = "g-item"; el.dataset.id = p.id;
+    el.innerHTML = `<img alt="" loading="lazy" decoding="async">${p.kind==="video"?`<span class="play" aria-hidden="true"></span>`:""}<span class="tick" hidden></span>`;
+    this.fillItem(el, p); return el;
+  },
+  fillItem(el, p){
+    el.style.setProperty("--r", clamp((p.w||3)/(p.h||2), .5, 2.4).toFixed(3));
+    const img = $("img", el); const src = blobUrl(p.thumbId); if(img.getAttribute("src") !== src) img.src = src;
+    const alt = (p.ai && p.ai.caption) || (p.kind === "video" ? "Video clip" : "Photo"); if(img.alt !== alt) img.alt = alt;
+    el.setAttribute("aria-label", this.selecting ? (this.sel.has(p.id) ? "Selected, " : "Select, ") + alt : "Open " + alt);
+    $(".tick", el).hidden = !this.selecting; el.classList.toggle("sel", this.selecting && this.sel.has(p.id));
+  },
+  renderSelbar(album){
+    const bar = $("#gSelbar"); bar.hidden = !this.selecting; if(!this.selecting) return;
+    const n = this.sel.size; const photos = [...this.sel].filter(id=>S.photos.has(id) && S.photos.get(id).kind !== "video").length;
+    const sig = n + ":" + photos; if(bar.dataset.sig === sig) return; bar.dataset.sig = sig;
+    bar.innerHTML = `<span><b>${n}</b> selected</span><button class="btn sm" id="gsDl" ${n?"":"disabled"}>Download</button><button class="btn sm" id="gsCar" ${photos?"":"disabled"}>Make carousel</button><span class="spacer"></span><button class="btn sm" id="gsAll">Select all</button>`;
+    $("#gsAll").onclick = ()=>{ for(const p of this.filtered(album, this.list(album))) this.sel.add(p.id); this.update(this.album()); };
+    $("#gsDl").onclick = async (e)=>{
+      const ids = [...this.sel].filter(id=>S.photos.has(id)); if(ids.length > 50){ toast("Pick up to 50 photos per download."); return; }
+      e.target.disabled = true; e.target.textContent = "Packing…"; const a = this.album();
+      try{ const entries = []; for(const id of ids){ const p = Object.assign({ id }, S.photos.get(id)); entries.push({ name: `${a.slug}-${baseName(p.name)}.${p.kind==="video" ? (p.name.split(".").pop()||"mp4") : "jpg"}`, blob: await downloadableBlob(p, a) }); }
+        if(await saveFile(`${a.slug}-photos.zip`, await makeZip(entries))) ids.forEach(id=>Track.bump("dl", id)); }
+      catch{ toast("Some photos couldn’t be loaded. Try fewer at a time."); }
+      bar.dataset.sig = ""; this.renderSelbar(this.album());
+    };
+    $("#gsCar").onclick = async (e)=>{
+      const ids = [...this.sel].filter(id=>S.photos.has(id) && S.photos.get(id).kind !== "video").slice(0,10);
+      e.target.disabled = true; e.target.textContent = "Making slides…"; const a = this.album();
+      try{ const entries = []; let i = 1; for(const id of ids){ entries.push({ name: `${a.slug}-slide-${i}.jpg`, blob: await renderPoster(a, Object.assign({ id }, S.photos.get(id)), "slide", i, ids.length) }); i++; }
+        if(await saveFile(`${a.slug}-carousel.zip`, await makeZip(entries))) Track.bump("poster"); }
+      catch{ toast("The carousel couldn’t be made."); }
+      bar.dataset.sig = ""; this.renderSelbar(this.album());
+    };
+  },
+
+  /* ---------- lightbox ---------- */
+  openLB(id){
+    const album = this.album(); if(!album) return;
+    if(!this.lb){
+      const el = document.createElement("div"); el.className = "lb"; el.setAttribute("role","dialog"); el.setAttribute("aria-modal","true"); el.setAttribute("aria-label","Photo viewer");
+      el.innerHTML = `<div class="lb-top"><span class="count" id="lbCount"></span><span class="spacer"></span><button class="lb-x" id="lbX" aria-label="Close viewer">×</button></div>
+        <div class="lb-stage" id="lbStage"><button class="lb-nav lb-prev" id="lbPrev" aria-label="Previous photo">‹</button><div class="lb-frame" id="lbFrame"></div><button class="lb-nav lb-next" id="lbNext" aria-label="Next photo">›</button></div>
+        <div><p class="lb-cap" id="lbCap"></p><div class="lb-bar"><button class="btn pri" id="lbDl">Download</button><button class="btn" id="lbPoster">Make poster</button><button class="btn" id="lbLink">Copy link</button></div></div>`;
+      document.body.appendChild(el);
+      const keys = (e)=>{ if(document.querySelector("dialog[open]")) return; if(e.key === "Escape") this.closeLB(); else if(e.key === "ArrowRight") this.step(1); else if(e.key === "ArrowLeft") this.step(-1); };
+      document.addEventListener("keydown", keys);
+      this.lb = { el, id, keys, last: document.activeElement };
+      $("#lbX").onclick = ()=>this.closeLB(); $("#lbPrev").onclick = ()=>this.step(-1); $("#lbNext").onclick = ()=>this.step(1);
+      let sx = null; const st = $("#lbStage");
+      st.addEventListener("pointerdown", e=>{ sx = e.clientX; }); st.addEventListener("pointerup", e=>{ if(sx == null) return; const dx = e.clientX - sx; sx = null; if(Math.abs(dx) > 50) this.step(dx < 0 ? 1 : -1); });
+      $("#lbDl").onclick = ()=>this.download(); $("#lbPoster").onclick = ()=>this.posterDialog(); $("#lbLink").onclick = ()=>this.copyLink();
+      $("#lbDl").hidden = !S.downloads; $("#lbPoster").hidden = !S.downloads; $("#lbLink").hidden = !SHARE_BASE;
+      setTimeout(()=>$("#lbX").focus(), 30);
+    }
+    this.lb.id = id; this.showLB(album);
+  },
+  async showLB(album){
+    const p = Object.assign({ id: this.lb.id }, S.photos.get(this.lb.id)); const fr = $("#lbFrame");
+    const token = Symbol(); this.lb.token = token;
+    if(p.kind === "video"){ fr.innerHTML = `<video src="${blobUrl(p.assetId)}" poster="${blobUrl(p.thumbId)}" controls playsinline></video>`; }
+    else{
+      fr.innerHTML = `<img src="${blobUrl(p.thumbId)}" alt="${esc((p.ai && p.ai.caption) || "Photo")}">`;
+      const full = new Image(); full.onload = async ()=>{ if(this.lb && this.lb.token === token){ const i = $("img", fr); if(i) i.src = full.src; fr.insertAdjacentHTML("beforeend", await wmOverlayHTML(album)); } }; full.src = blobUrl(p.assetId);
+    }
+    $("#lbCap").textContent = (p.ai && p.ai.caption) || "";
+    this.lbCount(); Track.bump("view", p.id);
+  },
+  lbCount(){ const album = this.album(); if(!album || !this.lb) return; const vis = this.filtered(album, this.list(album)); const i = vis.findIndex(p=>p.id===this.lb.id); $("#lbCount").textContent = i >= 0 ? `${i+1} of ${vis.length}` : ""; },
+  step(d){ const album = this.album(); if(!album || !this.lb) return; const vis = this.filtered(album, this.list(album)); if(!vis.length) return; let i = vis.findIndex(p=>p.id===this.lb.id); i = (i + d + vis.length) % vis.length; this.lb.id = vis[i].id; this.showLB(album); },
+  closeLB(){ if(!this.lb) return; document.removeEventListener("keydown", this.lb.keys); this.lb.el.remove(); const back = this.lb.last; this.lb = null; if(back && back.focus) back.focus(); },
+  async download(){
+    const album = this.album(); const p = Object.assign({ id: this.lb.id }, S.photos.get(this.lb.id)); const b = $("#lbDl"); b.disabled = true; b.textContent = "Preparing…";
+    try{ const blob = await downloadableBlob(p, album); const ext = p.kind === "video" ? (p.name.split(".").pop() || "mp4") : "jpg"; if(await saveFile(`${album.slug}-${baseName(p.name)}.${ext}`, blob)) Track.bump("dl", p.id); }
+    catch{ toast("This photo couldn’t be loaded."); }
+    b.disabled = false; b.textContent = "Download";
+  },
+  async copyLink(){ const album = this.album(); const link = galleryLink(album, this.lb.id); try{ await navigator.clipboard.writeText(link); toast("Link copied"); }catch{ showLinkDialog(link); } },
+  posterDialog(){
+    const album = this.album(); const p = Object.assign({ id: this.lb.id }, S.photos.get(this.lb.id));
+    const d = document.createElement("dialog"); d.style.width = "min(460px, calc(100% - 24px))";
+    d.innerHTML = `<h2>Make a poster</h2><div class="seg" id="pfmt" style="margin-bottom:12px"><button data-v="post" aria-pressed="true">Post 4:5</button><button data-v="story" aria-pressed="false">Story 9:16</button></div><div id="pprev" style="background:var(--paper-3);min-height:200px;display:grid;place-items:center"><p class="muted small">Drawing…</p></div><div class="actions"><button class="btn ghost" id="pclose">Close</button><button class="btn" id="psave" disabled>Save poster</button></div>`;
+    document.body.appendChild(d); d.onclose = ()=>{ if(d._url) URL.revokeObjectURL(d._url); d.remove(); };
+    let blob = null, fmt = "post";
+    const draw = async ()=>{ $("#psave", d).disabled = true; try{ blob = await renderPoster(album, p, fmt); if(d._url) URL.revokeObjectURL(d._url); d._url = URL.createObjectURL(blob); $("#pprev", d).innerHTML = `<img src="${d._url}" alt="Poster preview" style="display:block;max-height:56vh;width:auto;margin:0 auto">`; $("#psave", d).disabled = false; }catch{ $("#pprev", d).innerHTML = `<p class="muted small">The poster couldn’t be drawn.</p>`; } };
+    $("#pfmt", d).onclick = (e)=>{ const b = e.target.closest("button"); if(!b) return; fmt = b.dataset.v; $$("#pfmt button", d).forEach(x=>x.setAttribute("aria-pressed", x===b)); draw(); };
+    $("#pclose", d).onclick = ()=>d.close();
+    $("#psave", d).onclick = async ()=>{ if(blob && await saveFile(`${album.slug}-${fmt}-poster.jpg`, blob)) Track.bump("poster"); };
+    d.showModal(); draw();
+  }
+};
+
+function showLinkDialog(link){
+  const d = document.createElement("dialog");
+  d.innerHTML = `<h2>Copy this link</h2><input class="in" readonly value="${esc(link)}"><div class="actions"><button class="btn">Done</button></div>`;
+  document.body.appendChild(d); d.onclose = ()=>d.remove(); $("button", d).onclick = ()=>d.close(); d.showModal(); const i = $("input", d); i.focus(); i.select();
+}
+
+/* ============================================================
+   Home for people who can’t edit and arrive without a gallery address
+   ============================================================ */
+const Home = {
+  render(){
+    const list = [...S.albums.entries()].sort((a,b)=>(b[1].createdAt||0)-(a[1].createdAt||0));
+    const sig = "home:" + list.map(([id,a])=>id+a.slug+a.title+(a.brand&&a.brand.coverId)).join("|") + S.albumsConfirmed;
+    if(S.mounted === sig) return; S.mounted = sig; document.title = "Live galleries";
+    $("#app").innerHTML = `<div class="home"><h1>Live galleries</h1>${!S.albumsConfirmed ? `<p class="muted">Loading…</p>` : list.length ? `<div class="albums">${list.map(([id,a])=>`<a href="#${esc(a.slug)}"><div class="c" style="${a.brand&&a.brand.coverId?`background-image:url(${blobUrl(a.brand.coverId)})`:`background-color:${esc((a.brand&&a.brand.color)||"#1F3A5F")}`}"></div><b>${esc(a.title)}</b><span class="small muted">${esc([fmtDate(a.date), a.venue].filter(Boolean).join(", "))}</span></a>`).join("")}</div>` : `<p class="muted">No galleries have been published here yet.</p>`}</div>`;
+  }
+};
+
+/* ============================================================
+   Build plan: what this prototype covers and how to take it to production
+   ============================================================ */
+const PLAN = [
+  ["Capture and transfer", [
+    ["Wired camera transfer","partial","Drop or pick files from the card, a tethering folder or a phone’s photo library.","Android app reading the camera over USB with the platform’s PTP/MTP APIs, and an iOS/iPadOS app using ImageCaptureCore. Both import each new capture without a tap."],
+    ["Wireless camera transfer (FTP)","planned","Browsers can’t run an FTP server.","A small desktop or phone agent runs an FTP server on the venue network. The camera pushes each JPEG to it and the agent hands the file to the same upload pipeline."],
+    ["Several photographers per album","working","Invite each photographer as an Editor. Every frame records who uploaded it and into which category.","Per-album roles and invite links, so photographers don’t need an account with the platform host."],
+    ["Video clips","partial","MP4 or WebM clips up to 20 MB, with a poster frame.","Transcoding to adaptive streams, automatic short highlight edits and vertical crops for social."],
+  ]],
+  ["AI", [
+    ["Automatic retouch","working","White balance, levels, tone and vibrance worked out from each photo’s own histogram, four presets, a before and after slider, and reruns from the untouched original.","GPU workers running learned enhancement models, plus per-client looks learned from a photographer’s own edits."],
+    ["Skin, face and body retouch","partial","Skin smoothing through an edge-aware skin-tone mask.","Face landmark models for blemish removal, eye brightening and subtle reshaping; licence plate detection and blurring for privacy."],
+    ["Culling","working","Blur, exposure and repeated-frame checks run on upload and can hold frames back. Claude adds closed eyes, cut-off subjects and obstructions.","The same checks on the server, plus a learned score that keeps the best frame of each burst."],
+    ["Search by scene, outfit or number","working","Claude writes a caption, search words, readable bib or jersey numbers and outfit descriptions for each photo, and guests search them.","Text plus image embeddings for true semantic search, with batch tagging through the Claude API."],
+    ["Find me by selfie","planned","Not built. Matching a selfie to faces is biometric processing.","Opt-in selfie search through a face-embedding service, with explicit consent, short retention and deletion on request. Review the consent design and regional biometric rules with counsel before launch."],
+    ["Creative AI images","planned","Not built.","An image-generation API for cartoon or themed versions that a guest asks for."],
+  ]],
+  ["Gallery and delivery", [
+    ["Live gallery","working","New frames reach open galleries within seconds and flash as they land. Categories, highlights and a newest-first grid that keeps each photo’s shape.",""],
+    ["Review before publishing","working","Straight to the gallery or hold for review, with flagged frames held automatically.",""],
+    ["Retoucher hand-off","working","Status board, batch download of originals, and edited files returned by file name.","A desktop sync client that mirrors an album folder in both directions."],
+    ["Downloads, posters and carousels","working","Single or zipped downloads, watermarked when set. Branded post and story posters with a QR code, carousel slides, and a printable table card.",""],
+    ["Branding","working","Cover, logo, colour, watermark, loading screen, top and footer sponsor banners, photographer card and a custom gallery address.","Custom domains with automatic certificates on a CDN."],
+    ["Analytics","partial","Visitors, opens by hour, and views, downloads and posters per photo and per category, counted per browser with no names attached.","An anonymous event pipeline that counts every guest, with exports."],
+    ["Public guest access","planned","Guests need access to this artifact.","Public gallery links and PIN-protected private galleries. This is the first production milestone."],
+    ["Photo sales","planned","Not built.","Stripe Checkout for single photos and packages, the clean file after payment, and payouts to photographers."],
+  ]],
+  ["Platform", [
+    ["Plans, storage and credits","planned","Not built.","Subscription tiers, storage quotas and a credit balance for AI processing, billed through Stripe."],
+    ["Developer API","partial","Claude can read and update this artifact’s album data from a chat.","A REST API with keys and webhooks for album setup, gallery data, uploads and AI processing."],
+    ["Booking marketplace and partner programme","planned","Not built.","An event-planner booking flow, photographer vetting and onboarding, scheduling and payouts. Mostly an operations business, so build it last."],
+    ["Mobile apps","partial","The console and gallery work in a phone browser.","iOS and Android apps for transfer, review and sharing."],
+  ]],
+];
+Console.tabs.blueprint = {
+  mount(panel){
+    const label = { working:"Working here", partial:"Partly here", planned:"Production only" };
+    panel.innerHTML = `<div class="bp">
+      <h1 style="font-stretch:125%;font-size:30px;font-weight:850">Build plan</h1>
+      <p class="lede muted" style="margin:6px 0 18px">This prototype runs the core loop of a live event photo service end to end: upload, cull, retouch, describe, publish, browse, download and share. The table maps each capability of the reference product to what works here and what a production build needs. Treat the production column as a starting design to validate, not a finished spec.</p>
+      ${PLAN.map(([g,rows])=>`<h2>${esc(g)}</h2><div class="table-wrap"><table><thead><tr><th>Capability</th><th>Status</th><th>In this build</th><th>Production path</th></tr></thead><tbody>${rows.map(r=>`<tr><td>${esc(r[0])}</td><td class="s s-${r[1]}">${label[r[1]]}</td><td>${esc(r[2])}</td><td>${esc(r[3]) || '<span class="muted">Same approach, on the server</span>'}</td></tr>`).join("")}</tbody></table></div>`).join("")}
+      <h2>Production architecture</h2>
+      <p>Four layers, left to right in the order a photo travels.</p>
+      <div class="arch">
+        <div><h4>Capture</h4><ul><li>Android app with USB camera import</li><li>iOS/iPadOS app with ImageCaptureCore</li><li>Desktop agent with FTP server and watch folder</li><li>Web upload, as in this build</li></ul></div>
+        <div><h4>Ingest and AI</h4><ul><li>Upload API issuing signed URLs</li><li>Object storage for originals and sizes</li><li>Job queue</li><li>Workers: sizes, cull, retouch, Claude descriptions, opt-in face index</li></ul></div>
+        <div><h4>Data and realtime</h4><ul><li>Postgres for albums, frames, statuses</li><li>Search index with text and embeddings</li><li>WebSocket or SSE channel per album</li><li>Analytics event store</li></ul></div>
+        <div><h4>Delivery</h4><ul><li>Gallery web app on a CDN</li><li>Console and retoucher sync client</li><li>Poster rendering</li><li>Public API, payments, custom domains</li></ul></div>
+      </div>
+      <h2>Phases</h2>
+      <ol>
+        <li><b>Public live gallery.</b> Albums, web upload, image sizes, realtime gallery, QR codes and downloads with no guest sign-in. Port this build’s imaging, zip and poster code to the new front end.</li>
+        <li><b>Camera transfer.</b> Desktop agent with a watch folder and FTP server first, since it covers most cameras, then Android USB import, then iOS.</li>
+        <li><b>Server-side AI.</b> Move culling and retouch to workers, call the Claude API for descriptions, add semantic search, then consent-based selfie search after review.</li>
+        <li><b>Teams and branding.</b> Roles, the retoucher sync client, branding, posters and full analytics.</li>
+        <li><b>Revenue.</b> Plans and credits, photo sales, API keys and custom domains.</li>
+        <li><b>Marketplace.</b> Booking and partner onboarding, if the business wants to run it.</li>
+      </ol>
+      <h2>Limits of this build</h2>
+      <p>Everyone who opens the gallery needs access to this artifact in Claude, so it suits events inside your organization rather than public ones. Hidden and held frames are left out of the guest view, but their records stay readable to anyone with access. Analytics count only viewers who can save data, and anyone who can save data could also alter the counts. Storage and record counts follow the artifact’s quotas, and large batches are processed in the browser, so keep zips under ${MAX_ZIP} files.</p>
+    </div>`;
+  }
+};
+
+/* ============================================================
+   Routing and boot
+   ============================================================ */
+function parseHash(){
+  let h = ""; try{ h = decodeURIComponent(location.hash.replace(/^#/,"")); }catch{ h = location.hash.replace(/^#/,""); }
+  h = h.trim().toLowerCase(); if(!h || h === "console") return { mode: "", slug: "", pid: "" };
+  const i = h.indexOf("--"); return { mode: "gallery", slug: i >= 0 ? h.slice(0,i) : h, pid: i >= 0 ? h.slice(i+2) : "" };
+}
+function route(){
+  const r = parseHash(); const was = S.route; S.route = r;
+  if(r.mode !== "gallery" && was.mode === "gallery"){ Gallery.unmount(); }
+  if(r.mode === "gallery" && S.mounted === "console"){ Console.unmount(); }
+  if(r.mode === "gallery" && was.mode === "gallery" && r.slug !== was.slug){ Gallery.unmount(); S.mounted = ""; }
+  scheduleRender();
+}
+function render(){
+  if(!S.db) return;
+  if(S.route.mode === "gallery") return Gallery.render();
+  if(S.me.canEdit) return Console.render();
+  return Home.render();
+}
+function renderUnavailable(){
+  S.mounted = "nodb";
+  $("#app").innerHTML = `<div class="state"><h1>Open this gallery in Claude</h1><p>The live gallery keeps its photos in Claude. Open it from its claude.ai link while signed in, and ask the person who shared it for access if photos don’t load.</p></div>`;
+}
+async function boot(){
+  $("#app").innerHTML = `<div class="state"><p class="muted">Connecting…</p></div>`;
+  S.route = parseHash();
+  const [db, user, assets, downloads, sample] = await Promise.all(["db","user","assets","downloads","sample"].map(cap));
+  S.db = db; S.user = user; S.assets = assets; S.downloads = downloads; S.sample = sample;
+  if(user){ try{ const [isOwner, canEdit, id] = await Promise.all([user.isOwner(), user.canEdit(), user.id()]); S.me = { isOwner: !!isOwner, canEdit: !!canEdit, id: id || null }; }catch{} }
+  if(sample){ try{ const lim = await sample.limits(); S.aiLimits = lim && lim.images ? lim.images : null; S.aiTier = lim && Array.isArray(lim.modelTiers) && lim.modelTiers.includes("quick") ? "quick" : undefined; }catch{ S.aiLimits = null; } }
+  if(!db){ renderUnavailable(); return; }
+  watchAlbums();
+  window.addEventListener("hashchange", route);
+  window.addEventListener("scroll", ()=>{ if(window.scrollY < 300 && Gallery.pending){ Gallery.pending = 0; const p = $("#gPill"); if(p) p.hidden = true; } }, { passive: true });
+  document.addEventListener("keydown", (e)=>{ if(e.key === "Escape" && Console.drawerId && S.mounted === "console" && !document.querySelector("dialog[open]")) Console.closeDrawer(); });
+  window.addEventListener("dragover", (e)=>{ if(S.mounted === "console") e.preventDefault(); });
+  window.addEventListener("drop", (e)=>{ if(S.mounted === "console" && !e.target.closest(".drop")) e.preventDefault(); });
+  setInterval(()=>{ if(S.mounted && S.mounted.startsWith("gallery:")) Gallery.update(Gallery.album()); else if(S.mounted === "console") Console.updateTop(); }, 20000);
+  scheduleRender();
+}
+boot();
+</script>
+</body>
+</html>

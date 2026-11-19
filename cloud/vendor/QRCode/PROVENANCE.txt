@@ -1,0 +1,6 @@
+QRCode for JavaScript, copyright (c) 2009 Kazuhiko Arase.
+Vendored without changes from qrcode-terminal 0.12.0, distributed with npm 10.9.2.
+Upstream: https://github.com/gtanner/qrcode-terminal/tree/v0.12.0/vendor/QRCode
+Vendor QR code is MIT licensed; the containing package license and attribution are retained in LICENSE.txt.
+LensDrop wrapper only accepts printable ASCII URLs (URL.href encodes international domains/paths).
+No CDN, remote QR service, or additional runtime package is needed.
