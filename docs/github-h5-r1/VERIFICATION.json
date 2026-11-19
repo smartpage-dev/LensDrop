@@ -1,0 +1,136 @@
+{
+  "date": "2026-11-19",
+  "type": "documentation-only repack verification",
+  "original_archive": "LensDrop_H5_QR_Pairing_and_Hybrid_Print_GitHub_Ready.zip",
+  "original_sha256": "fe5ffd9cbef222d0d17f3fae6f9f31e105dd73201f2bbc7eb543b24a653b5019",
+  "original_files": 341,
+  "static_checks": [
+    {
+      "name": "Android workflow name",
+      "pass": true
+    },
+    {
+      "name": "Windows workflow name",
+      "pass": true
+    },
+    {
+      "name": "Android manual-only trigger",
+      "pass": true
+    },
+    {
+      "name": "Windows manual-only trigger",
+      "pass": true
+    },
+    {
+      "name": "Android least-privilege contents",
+      "pass": true
+    },
+    {
+      "name": "Windows least-privilege contents",
+      "pass": true
+    },
+    {
+      "name": "Path exists: clients/android/app/build.gradle",
+      "pass": true
+    },
+    {
+      "name": "Path exists: clients/android/settings.gradle",
+      "pass": true
+    },
+    {
+      "name": "Path exists: clients/print-station/native/LensDropStation.csproj",
+      "pass": true
+    },
+    {
+      "name": "Path exists: tools/github/android_ci.py",
+      "pass": true
+    },
+    {
+      "name": "Path exists: tools/github/windows_ci.py",
+      "pass": true
+    },
+    {
+      "name": "Path exists: tools/github/create_private_test_key.py",
+      "pass": true
+    },
+    {
+      "name": "Path exists: docs/h5/LensDrop_H5_Setup_Guide.html",
+      "pass": true
+    },
+    {
+      "name": "Path exists: deploy/LensDrop_Hostinger_Cloud_H5_QR_Pairing_Print.zip",
+      "pass": true
+    },
+    {
+      "name": "Python syntax: android_ci.py",
+      "pass": true
+    },
+    {
+      "name": "Python syntax: windows_ci.py",
+      "pass": true
+    },
+    {
+      "name": "Python syntax: create_private_test_key.py",
+      "pass": true
+    },
+    {
+      "name": "H5 Android version",
+      "pass": true
+    },
+    {
+      "name": "LensDrop application ID",
+      "pass": true
+    },
+    {
+      "name": "Minimum API 29",
+      "pass": true
+    },
+    {
+      "name": "Windows target",
+      "pass": true
+    },
+    {
+      "name": "Windows after protocol tests",
+      "pass": true
+    },
+    {
+      "name": "Uses LensDrop signing secret",
+      "pass": true
+    },
+    {
+      "name": "Android APK artifact name",
+      "pass": true
+    },
+    {
+      "name": "Windows artifact name",
+      "pass": true
+    },
+    {
+      "name": "Original ZIP CRC",
+      "pass": true
+    },
+    {
+      "name": "Original file count",
+      "pass": true
+    },
+    {
+      "name": "Original standalone cloud equals inner archive",
+      "pass": true
+    }
+  ],
+  "rerun_tests": {
+    "policy_assertions": 10,
+    "print_policy_assertions": 15,
+    "ledger_sqlite_bridge_cases": 24
+  },
+  "not_performed": [
+    "Android SDK compile",
+    "Android lint",
+    "Windows native compile",
+    "GitHub Actions run",
+    "Hostinger deployment",
+    "Physical phone/printer test"
+  ],
+  "application_changes": false,
+  "workflow_changes": false
+}

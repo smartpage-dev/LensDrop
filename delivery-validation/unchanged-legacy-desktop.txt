@@ -1,0 +1,2 @@
+6 retained desktop source files byte-identical to H3.1 archive.
+New-only watch and personal QR are NOT added to that legacy Python watcher.

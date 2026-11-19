@@ -1,0 +1,77 @@
+[
+  {
+    "path": ".env",
+    "expected_ignored": true,
+    "passed": true
+  },
+  {
+    "path": "cloud/.env",
+    "expected_ignored": true,
+    "passed": true
+  },
+  {
+    "path": "clients/android/local.properties",
+    "expected_ignored": true,
+    "passed": true
+  },
+  {
+    "path": "lensdrop-data/lensdrop.sqlite",
+    "expected_ignored": true,
+    "passed": true
+  },
+  {
+    "path": "client.keystore",
+    "expected_ignored": true,
+    "passed": true
+  },
+  {
+    "path": "private-signing/key.base64.txt",
+    "expected_ignored": true,
+    "passed": true
+  },
+  {
+    "path": "clients/android/app/build/outputs/apk/debug/app-debug.apk",
+    "expected_ignored": true,
+    "passed": true
+  },
+  {
+    "path": "cloud/node_modules/thing.js",
+    "expected_ignored": true,
+    "passed": true
+  },
+  {
+    "path": "ci-output/android-build.log",
+    "expected_ignored": true,
+    "passed": true
+  },
+  {
+    "path": ".github/workflows/android-debug.yml",
+    "expected_ignored": false,
+    "passed": true
+  },
+  {
+    "path": "tools/github/android_ci.py",
+    "expected_ignored": false,
+    "passed": true
+  },
+  {
+    "path": "clients/android/app/build.gradle",
+    "expected_ignored": false,
+    "passed": true
+  },
+  {
+    "path": "cloud/sample.env",
+    "expected_ignored": false,
+    "passed": true
+  },
+  {
+    "path": "cloud/sample.hostinger.env",
+    "expected_ignored": false,
+    "passed": true
+  },
+  {
+    "path": "deploy/LensDrop_Hostinger_Cloud_H4_NewPhotos_PersonalQR.zip",
+    "expected_ignored": false,
+    "passed": true
+  }
+]

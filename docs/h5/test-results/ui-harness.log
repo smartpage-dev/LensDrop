@@ -1,0 +1,12 @@
+PASS Admin shows H5 pairing and station controls
+PASS Shared Admin shows the station pause status
+PASS Staff invitation renders a local QR SVG
+PASS Staff QR is clearly labelled separately from guest delivery
+PASS UI code confirmation approves the exact cloud identity
+PASS Admin layout fits a 390px viewport
+PASS Station shows simulation and pause explicitly
+PASS Station provides the shared cloud Admin link
+PASS Station loads its published local address
+PASS Station layout fits a narrow viewport
+PASS No script errors in either UI harness
+RESULT 11 UI harness checks passed. No native platform or real browser-network validation claimed.

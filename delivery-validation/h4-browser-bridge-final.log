@@ -1,0 +1,16 @@
+TRANSPORT DOM fetch/image bridge to real local backend; browser navigation/CSP/HTTPS not verified
+PASS Admin loads both QR delivery modes
+PASS Personal auto-release defaults OFF
+PASS Unapproved personal photos render waiting page
+PASS Shared event branding loads
+PASS Independently decoded personal QR matches original stable URL
+PASS Admin release makes only one chosen photo personally visible
+PASS Personal release does not publish whole-event gallery
+PASS Selected preview and download appear
+PASS Mobile gallery has no horizontal overflow
+PASS Same group page receives another approved photograph automatically
+PASS Unrelated single QR does not expose group photos
+PASS Hiding a photo clears its open personal preview
+PASS Revoked personal link clears photos and event logo
+PASS No browser JavaScript errors
+RESULT 14 browser/QR checks passed; transport: DOM fetch/image bridge to real local backend; browser navigation/CSP/HTTPS not verified

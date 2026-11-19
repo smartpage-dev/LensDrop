@@ -1,0 +1,252 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>LensDrop H5 - GitHub Test Builds</title><style>
+:root{color-scheme:light;--ink:#163145;--accent:#176254;--line:#d7e1e8}*{box-sizing:border-box}body{margin:0;background:#f1f5f7;color:var(--ink);font:16px/1.65 system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}header{background:#143246;color:white;padding:28px 24px}header>div{max-width:1000px;margin:auto}header .eyebrow{font-size:12px;letter-spacing:.16em;color:#a9dcd2;font-weight:750}header p{margin:8px 0 0;max-width:70ch}.layout{max-width:1060px;margin:26px auto;padding:0 24px}nav{background:white;border:1px solid var(--line);padding:18px 22px;border-radius:12px;display:grid;grid-template-columns:1fr 1fr;gap:8px 22px;margin-bottom:24px}nav a{color:var(--accent);font-size:14px;text-decoration:none}main{background:white;padding:32px 40px;border:1px solid var(--line);border-radius:14px}h1{font-size:32px;line-height:1.17;margin:0 0 18px}h2{font-size:24px;line-height:1.25;margin:44px 0 16px;scroll-margin-top:20px}p{margin:12px 0}a{color:#12665b;overflow-wrap:anywhere}strong{font-weight:730}code{font-size:.88em;background:#eef3f6;padding:2px 5px;border-radius:4px;overflow-wrap:anywhere}pre{background:#142d40;color:#eaf4f9;border-radius:9px;padding:18px;overflow:auto;line-height:1.55}pre code{background:transparent;padding:0;overflow-wrap:normal;font-size:13px}.table-wrap{overflow:auto;margin:18px 0}table{border-collapse:collapse;width:100%;min-width:510px;font-size:14px}th{text-align:left;background:#eaf2f5}th,td{border:1px solid var(--line);padding:12px 14px;vertical-align:top}ol,ul{padding-left:25px}li{padding:4px 0}footer{max-width:1000px;margin:26px auto;padding:0 24px 30px;color:#577080;font-size:13px}@media(max-width:650px){header{padding:22px 18px}.layout{padding:0 12px;margin:16px auto}main{padding:23px 18px}h1{font-size:27px}h2{font-size:22px}nav{grid-template-columns:1fr;padding:18px}table{min-width:520px}}@media print{body{background:white;font-size:10.5pt}header,nav{display:none}.layout{margin:0;padding:0;max-width:none}main{border:0;padding:0}h2{break-after:avoid}pre,table{font-size:9pt}tr{break-inside:avoid}.table-wrap{overflow:visible}a{color:inherit}footer{display:none}}
+</style></head><body><header><div><div class="eyebrow">LUCE STUDIO / LENSDROP H5</div><p>Manual GitHub upload, Android APK and Windows Print Station builds.</p><p>Documentation-only refresh. Source and workflows preserved; native builds remain unverified.</p></div></header><div class="layout"><nav aria-label="Guide sections"><a href="#section-1">1. Keep the two repositories separate</a><a href="#section-2">2. Choose the complete source package</a><a href="#section-3">3. Upload with GitHub Desktop (recommended)</a><a href="#section-4">4. Browser-only upload alternative</a><a href="#section-5">5. Android: decide the signing identity first</a><a href="#section-6">6. Run the Android build</a><a href="#section-7">7. Run the Windows Print Station build</a><a href="#section-8">8. When a build fails</a><a href="#section-9">9. Hostinger is a separate step</a><a href="#section-10">10. First rehearsal after successful builds</a><a href="#section-11">11. Archive and privacy</a><a href="#section-12">12. What was checked for this revision</a><a href="#section-13">References and exact project sources</a></nav><main><h1>LensDrop H5: GitHub upload and test builds</h1>
+<p><strong>Guide revision r1 | 19 November 2026 | Original application version unchanged</strong></p>
+<p>This is the original LensDrop project, not Luce Printer Lab 58. The package includes Android source, Windows Print Station source, cloud source, two manual GitHub workflows and the existing H5 deployment archive. No APK or compiled Windows application is included. This guide was checked against the actual H5 workflow and build-helper files.</p>
+<p><strong>Use this H5-specific guide instead of the retained H4 GitHub instructions.</strong> All original H5 files are preserved unchanged. This revision adds documentation and verification records only; it does not fix or certify native compilation. Your first GitHub runs may reveal errors that need correction.</p>
+<h2 id="section-1">1. Keep the two repositories separate</h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Repository</th>
+<th>Purpose</th>
+<th>Android application ID</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>LensDrop</code> (recommended name)</td>
+<td>Photographer app, personal QR delivery, cloud and Windows photo Print Station</td>
+<td><code>app.lensdrop.transfer</code></td>
+</tr>
+<tr>
+<td><code>Luce-Printer-Lab-58</code></td>
+<td>Independent Bluetooth receipt-printer experiments</td>
+<td><code>hk.luce.printerlab</code></td>
+</tr>
+</tbody>
+</table></div>
+<p>Do not copy Printer Lab's <code>app/</code>, Gradle files or workflows into LensDrop. The callback and theme patches for Printer Lab are not LensDrop patches. H5 does not yet integrate the Bluetooth QR-ticket printer; receipt-printer development remains separate.</p>
+<p>GitHub stores source and runs build jobs. Hostinger continues to host the live cloud application. Uploading this repository or running either workflow does <strong>not</strong> update Hostinger, connect to your production event, or require the LensDrop Admin Key.</p>
+<h2 id="section-2">2. Choose the complete source package</h2>
+<p>Extract <code>LensDrop_H5_GitHub_Test_Build_Package_r1.zip</code>. Open the inner <code>LensDrop_H5</code> folder and this <code>START_GITHUB_H5.html</code> file.</p>
+<p>Upload the <strong>contents inside</strong> <code>LensDrop_H5</code>, including hidden files, to your repository root. Do not upload just the ZIP, nest <code>LensDrop_H5</code> inside the repository, or use the Hostinger-only ZIP as the complete project.</p>
+<p>The correct repository layout is:</p>
+<pre><code class="language-text">LensDrop/
+  .github/
+    workflows/
+      android-debug.yml
+      windows-print-station.yml
+  .gitignore
+  .gitattributes
+  START_GITHUB_H5.html
+  START_GITHUB_H5.md
+  README.md
+  clients/
+    android/
+      app/build.gradle
+      build.gradle
+      settings.gradle
+    print-station/
+      native/LensDropStation.csproj
+      src/
+    desktop/
+  cloud/
+  deploy/
+    LensDrop_Hostinger_Cloud_H5_QR_Pairing_Print.zip
+  docs/
+  tools/
+    github/
+      android_ci.py
+      windows_ci.py
+      create_private_test_key.py
+</code></pre>
+<p>Existing LensDrop repository: copy/merge this source into that local repository, preserve its <code>.git</code> directory and signing secrets, inspect changes, then commit and push. If the repository already contains your own modifications or a later version, compare first rather than overwriting them.</p>
+<h2 id="section-3">3. Upload with GitHub Desktop (recommended)</h2>
+<p>GitHub Desktop can manage a repository without command-line Git. [G1]</p>
+<ol>
+<li>Sign in to GitHub Desktop with your GitHub account. No ChatGPT connection is needed.</li>
+<li>Create a new repository named <code>LensDrop</code>, or open the existing LensDrop repository. A private repository is recommended.</li>
+<li>Use <strong>Repository -&gt; Show in Finder / Show in Explorer</strong> to open its local folder.</li>
+<li>Copy the extracted project contents into that folder. Include <code>.github</code>, <code>.gitignore</code> and <code>.gitattributes</code>; on macOS, <strong>Command + Shift + Period</strong> reveals dot-prefixed files. Do not replace <code>.git</code>.</li>
+<li>Review the changes. Never add live event photos, runtime databases, device tokens, cloud keys or signing keys.</li>
+<li>Commit with a message such as <code>Import LensDrop H5 source and manual build workflows</code>.</li>
+<li>Use <strong>Publish repository</strong> for a new repository, keeping it private, or <strong>Push origin</strong> for an existing one.</li>
+<li>Check GitHub's Code tab: <code>.github</code>, <code>clients</code>, <code>cloud</code>, <code>docs</code> and <code>tools</code> must appear at the top level.</li>
+</ol>
+<p>The supplied <code>.gitignore</code> reduces accidental staging through Git; it is not a security scan and cannot protect secrets already committed or included inside an arbitrary ZIP.</p>
+<h2 id="section-4">4. Browser-only upload alternative</h2>
+<p>Create/open the private LensDrop repository, then use <strong>Add file -&gt; Upload files</strong>. Upload the extracted folders in batches while preserving paths. GitHub's web uploader accepts up to 100 files at a time and 25 MiB per file; this project exceeds 100 files. [G2]</p>
+<p>Hidden files are easily missed. If necessary, use <strong>Add file -&gt; Create new file</strong>, enter <code>.github/workflows/android-debug.yml</code>, and paste the exact supplied file. Repeat for <code>.github/workflows/windows-print-station.yml</code>. Both helpers under <code>tools/github/</code> and the complete source must also be present; the YAML alone is not enough.</p>
+<p>The workflows must be committed to the repository's default branch, normally <code>main</code>, before manual dispatch is available. [G3] Do not change organization restrictions to circumvent a policy; ask the account owner to authorize the required official actions.</p>
+<h2 id="section-5">5. Android: decide the signing identity first</h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Selection</th>
+<th>Use</th>
+<th>Repository secret</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>temporary-test</code></td>
+<td>Initial compiler check or disposable installation</td>
+<td>None required</td>
+</tr>
+<tr>
+<td><code>persistent-test</code></td>
+<td>Repeated phone testing with in-place updates</td>
+<td><code>LENSDROP_TEST_KEYSTORE_BASE64</code></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>Recommended:</strong> arrange persistent test signing before the first phone installation whose queue/history you want to preserve. Android update acceptance depends on the application ID, signing identity and version code. A different key can block an update; uninstalling removes application data. Do not uninstall or clear an important queue to work around this. [A1]</p>
+<p>If you already have LensDrop's private test key and secret, keep them. Printer Lab's separate secret <code>PRINTERLAB_TEST_KEYSTORE_BASE64</code> is not read by this workflow. Do not replace an established LensDrop signing identity with Printer Lab's key.</p>
+<p>For a new test identity, run the supplied helper <strong>once on your own computer</strong> from the repository root. It requires Python 3 and a JDK with <code>keytool</code>, but not Android Studio:</p>
+<pre><code class="language-sh">python3 tools/github/create_private_test_key.py
+</code></pre>
+<p>On Windows with the Python launcher:</p>
+<pre><code class="language-text">py tools/github/create_private_test_key.py
+</code></pre>
+<p>It writes private files outside the repository in <code>LensDrop-private-signing</code> under your home folder and refuses to overwrite an existing key. Back them up privately. In GitHub, open <strong>Settings -&gt; Secrets and variables -&gt; Actions -&gt; New repository secret</strong>, enter the exact name <code>LENSDROP_TEST_KEYSTORE_BASE64</code>, and paste the Base64 file's contents into the secret value. [G4]</p>
+<p>Never put the key into source, a Release, an artifact or a chat. Base64 is encoding, not encryption. This helper uses the documented private-debug key convention; it is not production signing.</p>
+<h2 id="section-6">6. Run the Android build</h2>
+<p>Open <strong>Actions -&gt; LensDrop Android APK -&gt; Run workflow</strong>. Select the updated default branch, choose the signing mode, review and accept the Android SDK licenses, then click <strong>Run workflow</strong>. [G3]</p>
+<p>The actual H5 configuration is:</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Item</th>
+<th>Included configuration</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Application ID</td>
+<td><code>app.lensdrop.transfer</code></td>
+</tr>
+<tr>
+<td>App version</td>
+<td><code>0.2.0-alpha.6-h5</code> / versionCode <code>5</code></td>
+</tr>
+<tr>
+<td>Minimum API</td>
+<td><code>29</code> (Android 10)</td>
+</tr>
+<tr>
+<td>Compile / target SDK</td>
+<td><code>35</code> / <code>35</code></td>
+</tr>
+<tr>
+<td>Toolchain</td>
+<td>Java 17, Gradle 8.11.1, Android Gradle Plugin 8.9.1</td>
+</tr>
+<tr>
+<td>SDK build tools</td>
+<td><code>35.0.0</code></td>
+</tr>
+<tr>
+<td>Runner</td>
+<td><code>ubuntu-24.04</code></td>
+</tr>
+<tr>
+<td>Build task</td>
+<td><code>:app:assembleDebug</code></td>
+</tr>
+</tbody>
+</table></div>
+<p>The workflow provisions Gradle; this source package does not contain a Gradle wrapper binary. It runs the included JVM policy/ledger checks, attempts APK assembly, verifies the signature, and publishes the output only if those steps succeed.</p>
+<p><strong>Scope:</strong> this existing H5 workflow does not run Android lint, emulator/instrumentation tests or camera/phone tests. A green result is not comprehensive validation. Printer Lab's newer workflow has different steps; do not assume identical coverage or replace this YAML with its workflow.</p>
+<p>After a successful run, open the run's <strong>Summary -&gt; Artifacts</strong> and download <code>LensDrop-H5-APK-&lt;run-number&gt;-&lt;signing-mode&gt;</code>. [G5] Extract the artifact to find:</p>
+<pre><code class="language-text">LensDrop-H5-debug.apk
+BUILD_INFO.json
+SHA256SUMS.txt
+README_INSTALL.txt
+apk-verification.txt
+</code></pre>
+<p>Install the <code>.apk</code>, not the artifact ZIP, on a controlled Android 10+ test device. Verify that <code>BUILD_INFO.json</code> identifies H5 and your intended source commit. Do not enter a cloud Admin Key as a photographer token.</p>
+<h2 id="section-7">7. Run the Windows Print Station build</h2>
+<p>Open <strong>Actions -&gt; LensDrop Windows Print Station -&gt; Run workflow</strong> and select the updated branch. There are no signing inputs for this workflow.</p>
+<p>Two jobs run in sequence:</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Job</th>
+<th>What it attempts</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>protocol-tests</code></td>
+<td>Ubuntu runner, Node 22.23.5, cloud dependency installation, cloud build/tests and station protocol tests</td>
+</tr>
+<tr>
+<td><code>windows-build</code></td>
+<td>Windows 2022 runner, .NET 10 SDK, native x64 compilation, DPAPI encryption round trip, Node runtime packaging and output checksums</td>
+</tr>
+</tbody>
+</table></div>
+<p>A protocol-test failure prevents the Windows build job from starting. It is not automatically a C# compiler error.</p>
+<p>After a successful run, download <code>LensDrop-H5-Windows-x64-&lt;run-number&gt;</code>. Extract the artifact, then extract the inner <code>LensDrop-PrintStation-H5-win-x64.zip</code> completely. Keep the folder and runtime files together; do not copy just the executable. On your Windows test computer, launch:</p>
+<pre><code class="language-text">LensDropStation.exe
+</code></pre>
+<p>This is a <strong>portable, unsigned engineering build</strong>, not an MSI installer or signed production application. It starts paused and in simulation. Keep both protections enabled for first pairing and queue tests. The CI smoke test checks encryption, not paper output, printer compatibility or the complete UI. Never disable Windows security wholesale to run a file; verify its source and recorded hash.</p>
+<p>The intended physical test environment is the event's Windows 11 x64 computer with the printer's validated driver. The Windows artifact cannot run on macOS simply because you triggered its build from a Mac.</p>
+<h2 id="section-8">8. When a build fails</h2>
+<p>Open the failed step and find the first actual compiler, dependency, test or packaging error. The final <code>exit code 1</code> is only a summary. Download the complete available logs rather than sharing just the bottom of the stack trace.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Failed area</th>
+<th>Available artifact / log</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Android build</td>
+<td><code>LensDrop-H5-logs-&lt;run&gt;-&lt;attempt&gt;</code>; usually <code>android-build.log</code></td>
+</tr>
+<tr>
+<td>Protocol precheck</td>
+<td><code>LensDrop-H5-protocol-logs-&lt;run&gt;-&lt;attempt&gt;</code></td>
+</tr>
+<tr>
+<td>Windows native/package</td>
+<td><code>LensDrop-H5-Windows-logs-&lt;run&gt;-&lt;attempt&gt;</code>; <code>windows-build.log</code> and/or <code>windows-package-error.log</code></td>
+</tr>
+</tbody>
+</table></div>
+<p>A very early failure can occur before a log file or artifact exists. Use the job's downloaded log in that case. Do not change Hostinger credentials, disable tests or install Printer Lab patches to hide a LensDrop compiler failure.</p>
+<p>After committing a correction, use a <strong>NEW Run workflow</strong> on the updated branch. Re-running an older job retains that older run's commit SHA, so it can rebuild the same broken source. [G6]</p>
+<p>No successful APK or Windows compilation has been established by this documentation revision. Earlier local protocol checks are not a replacement for your native builds.</p>
+<h2 id="section-9">9. Hostinger is a separate step</h2>
+<p>You can build both applications before making any cloud change. When ready to test H5 staff pairing and hybrid printing, use the compatible H5 backend; a working older H3.1/H4 site does not contain all H5 APIs. Check <code>/health</code> rather than assuming the currently deployed version.</p>
+<p>The intended H5 cloud version is <code>0.2.0-alpha.6-hostinger.5</code>, schema <code>5</code>. Follow <code>docs/h5/LensDrop_H5_Setup_Guide.html</code> before upgrading. Pause clients, stop the cloud service, and back up the complete persistent data directory. Preserve the existing Admin Key, data path and Storage ID. Keep <code>LENSDROP_INITIALIZE_STORAGE=0</code> for an initialized installation.</p>
+<p>Deploy <strong>only</strong> <code>deploy/LensDrop_Hostinger_Cloud_H5_QR_Pairing_Print.zip</code>, never this complete GitHub package. H5 adds a private cloud signing key that belongs in backups, not Git. Rollback requires matching older code and the complete pre-upgrade data backup.</p>
+<p>Neither workflow has a production deployment action. A source commit and successful builds do not upgrade the website.</p>
+<h2 id="section-10">10. First rehearsal after successful builds</h2>
+<p>Use synthetic photos and a separate rehearsal event. Pair the Windows station through its invitation/paste-link flow and Admin approval, then pair one Android phone by staff QR and approve its confirmation code. Configure the real station LAN address, keep simulation enabled, and prepare permissions while online.</p>
+<p>Test one JPEG in Local, Cloud and Hybrid modes before considering a physical print. Verify that the same job identity is retained across retries. H5 uses an explicit JPEG chooser; it does not automatically print the current personal QR photo. Driver submission is not proof of paper output.</p>
+<p>Check Group/Single QR history separately from printing, preserve the receiving group while displaying older QR codes, and retain all source photos during testing. Camera/editor export, phone permissions, background recovery, battery and heat still require physical testing.</p>
+<p>The portable 58B3 QR-ticket printer remains under the separate Printer Lab assessment. Bluetooth ticket printing, station scan-to-select/collection and self-service kiosks are not included in H5 merely because the architectural plan shows them.</p>
+<h2 id="section-11">11. Archive and privacy</h2>
+<p>Keep validated build artifacts and their provenance privately; the supplied workflows request <strong>14 days for app artifacts</strong> and <strong>7 days for uploaded diagnostic artifacts</strong>. Repository/organization policy can constrain retention. This does not change GitHub's job-log retention configuration. Artifacts expire; they are not a permanent source/data backup. [G5]</p>
+<p>Record the source commit, app versions, signing identity and test results. Private GitHub Releases can hold the source ZIP and tested binaries, but never the private keys or real event data. Do not use the repository's Archive setting to pause between active development updates.</p>
+<p>This source package has no live Hostinger data backup. A private repository does not make it appropriate to commit guest photos, databases, <code>.env</code>, credentials, station certificates, runtime ledgers or signing material.</p>
+<h2 id="section-12">12. What was checked for this revision</h2>
+<p>The original H5 ZIP was reopened and CRC-checked. Both workflow files, their helper scripts, expected working directories, version metadata, manual triggers and artifact names were inspected. The original 341 file payloads are retained byte-for-byte in the documentation repack.</p>
+<p>The supplied tests were actually rerun locally: <strong>10 policy assertions, 15 print-policy assertions and 24 WatchLedger/QueueDb JVM + SQLite bridge cases passed</strong>. These are not full Android builds. The final archive's checksums, additions and original-file preservation are recorded in <code>GITHUB_BUILD_PACKAGE_R1.md</code> and <code>docs/github-h5-r1/VERIFICATION.json</code>.</p>
+<p>This revision did not run GitHub Actions, Android SDK compilation/lint, .NET Windows compilation, cloud deployment or hardware tests. It does not include the fixes made specifically to the separate Printer Lab project.</p>
+<h2 id="section-13">References and exact project sources</h2>
+<p>Project facts above come from <code>.github/workflows/android-debug.yml</code>, <code>.github/workflows/windows-print-station.yml</code>, <code>tools/github/android_ci.py</code>, <code>tools/github/windows_ci.py</code>, <code>clients/android/app/build.gradle</code>, <code>clients/print-station/native/LensDropStation.csproj</code> and <code>docs/h5/LensDrop_H5_Setup_Guide.md</code> in this package. Official instructions below were checked on 19 November 2026.</p>
+<ul>
+<li>[G1] <a href="https://docs.github.com/en/desktop/overview/creating-your-first-repository-using-github-desktop">GitHub Desktop: create and publish a repository</a>.</li>
+<li>[G2] <a href="https://docs.github.com/en/repositories/working-with-files/managing-files/adding-a-file-to-a-repository">GitHub: upload files and web limits</a>.</li>
+<li>[G3] <a href="https://docs.github.com/en/actions/how-tos/manage-workflow-runs/manually-run-a-workflow">GitHub: manually run a workflow</a>.</li>
+<li>[G4] <a href="https://docs.github.com/en/actions/how-tos/write-workflows/choose-what-workflows-do/use-secrets">GitHub: repository Actions secrets</a>.</li>
+<li>[G5] <a href="https://docs.github.com/en/actions/how-tos/manage-workflow-runs/download-workflow-artifacts">GitHub: download workflow artifacts</a>.</li>
+<li>[G6] <a href="https://docs.github.com/en/actions/how-tos/manage-workflow-runs/re-run-workflows-and-jobs">GitHub: re-running workflows retains the original commit</a>.</li>
+<li>[A1] <a href="https://developer.android.com/google/play/app-updates">Android: application update and signing requirements</a>.</li>
+</ul>
+</main></div><footer>H5 application source preserved. Keep Printer Lab separate. No live service was changed.</footer></body></html>

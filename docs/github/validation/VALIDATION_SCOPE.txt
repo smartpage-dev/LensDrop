@@ -1,0 +1,8 @@
+Packaging validation only.
+27 workflow/helper checks passed.
+15 gitignore cases passed.
+10 Java policy assertions passed on local JDK 21 (not the workflow JDK 17).
+The ledger harness rerun did not complete within the local 180-second execution limit. Its partial log is retained, NOT a passed regression run.
+No Android SDK, Gradle installation or APK is available in this container; network DNS prevented downloads.
+No GitHub Actions run was made. No physical phone tests.
+Prior H4 validation files are retained as historical evidence, not claimed reruns.

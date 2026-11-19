@@ -1,0 +1,19 @@
+{
+  "checks": [
+    "Admin shows H5 pairing and station controls",
+    "Shared Admin shows the station pause status",
+    "Staff invitation renders a local QR SVG",
+    "Staff QR is clearly labelled separately from guest delivery",
+    "UI code confirmation approves the exact cloud identity",
+    "Admin layout fits a 390px viewport",
+    "Station shows simulation and pause explicitly",
+    "Station provides the shared cloud Admin link",
+    "Station loads its published local address",
+    "Station layout fits a narrow viewport",
+    "No script errors in either UI harness"
+  ],
+  "passed": 11,
+  "browser": "Chromium",
+  "harness": "Exact HTML/CSS/JS; injected location/history/sessionStorage and fetch bridge to real local backend. Navigation blocked by environment. Not native Windows or HTTPS browser test.",
+  "synthetic_data": true
+}

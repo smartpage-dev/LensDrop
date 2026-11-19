@@ -1,0 +1,16 @@
+PASS Simulation is terminal without a physical claim
+PASS Operator-confirmed output is terminal
+PASS Driver submission remains unconfirmed
+PASS Uncertain output is not auto-reprinted
+PASS Partial LAN upload can continue
+PASS Cloud fallback can accept bytes
+PASS Accepted complete jobs do not reupload
+PASS Exact receipt accepted
+PASS Different job rejected
+PASS Different image rejected
+PASS Different byte count rejected
+PASS Different destination rejected
+PASS First worker acquires transfer lane
+PASS Other worker cannot race into same lane
+PASS Lane released after checkpoint
+15 H5 pure-Java assertions passed. Not an Android SDK build.

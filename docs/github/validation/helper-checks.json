@@ -1,0 +1,110 @@
+[
+  {
+    "check": "workflow is manual only",
+    "passed": true
+  },
+  {
+    "check": "workflow has read-only contents permission",
+    "passed": true
+  },
+  {
+    "check": "runner timeout bounded",
+    "passed": true
+  },
+  {
+    "check": "exit ('prepare',): 0",
+    "passed": true
+  },
+  {
+    "check": "exit ('prepare',): 1",
+    "passed": true
+  },
+  {
+    "check": "exit ('prepare',): 1",
+    "passed": true
+  },
+  {
+    "check": "exit ('signing',): 0",
+    "passed": true
+  },
+  {
+    "check": "exit ('signing',): 1",
+    "passed": true
+  },
+  {
+    "check": "exit ('signing',): 1",
+    "passed": true
+  },
+  {
+    "check": "exit ('--directory', PosixPath('/tmp/lensdrop-ci-test-w5agi_jw/keys')): 0",
+    "passed": true
+  },
+  {
+    "check": "exit ('signing',): 0",
+    "passed": true
+  },
+  {
+    "check": "restored keystore matches original",
+    "passed": true
+  },
+  {
+    "check": "secret not printed",
+    "passed": true
+  },
+  {
+    "check": "exit ('--directory', PosixPath('/tmp/lensdrop-ci-test-w5agi_jw/keys')): 1",
+    "passed": true
+  },
+  {
+    "check": "exit ('--directory', PosixPath('/mnt/data/lensdrop_github_work/LensDrop_H4_GitHub_Ready/private-signing')): 2",
+    "passed": true
+  },
+  {
+    "check": "exit ('collect',): 1",
+    "passed": true
+  },
+  {
+    "check": "exit ('cleanup',): 0",
+    "passed": true
+  },
+  {
+    "check": "local cleanup does not delete a developer key",
+    "passed": true
+  },
+  {
+    "check": "exit ('cleanup',): 0",
+    "passed": true
+  },
+  {
+    "check": "runner cleanup deletes restored key",
+    "passed": true
+  },
+  {
+    "check": "shell syntax: Prepare output and validate choices",
+    "passed": true
+  },
+  {
+    "check": "shell syntax: Prepare the matching Android SDK",
+    "passed": true
+  },
+  {
+    "check": "shell syntax: Restore an optional persistent PRIVATE TEST signing key",
+    "passed": true
+  },
+  {
+    "check": "shell syntax: Run H4 queue and policy logic tests (not Android instrumentation)",
+    "passed": true
+  },
+  {
+    "check": "shell syntax: Compile and package the debug APK",
+    "passed": true
+  },
+  {
+    "check": "shell syntax: Verify APK signature and prepare download",
+    "passed": true
+  },
+  {
+    "check": "shell syntax: Remove runner signing key",
+    "passed": true
+  }
+]

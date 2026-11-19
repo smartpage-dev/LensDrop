@@ -1,0 +1,5 @@
+PASS new guide and entry local links (deployment ZIP checked at packaging)
+PASS 11 guide anchors
+PASS guide desktop1280 and mobile390 no horizontal overflow
+PASS all commands presented with Copy buttons
+Visual renders generated for review. Native file navigation not tested.

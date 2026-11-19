@@ -1,0 +1,11 @@
+PASS first pairing
+PASS resume original destination
+PASS pending old work blocks switch
+PASS same source blocked across events
+PASS existing source cannot be repointed
+PASS drained event with distinct source
+PASS known error retained
+PASS raw secret cannot enter diagnostics
+PASS unknown error excluded
+PASS null error safe
+10 pure-Java policy assertions passed. NOT an Android build or device test.

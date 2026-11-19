@@ -1,0 +1,22 @@
+PASS Existing 10,000 accessible identities excluded persistently without jobs
+PASS Old file edits and repeated notifications remain excluded
+PASS Newly arrived old capture timestamp is a candidate, not rejected by date
+PASS Source needs stable size and completed pending flag before job
+PASS Repeated discovery produces exactly one job
+PASS Failed baseline transaction is rolled back, not marked ready
+PASS Existing baseline cannot be silently reset
+PASS Reopen preserves baseline and discovers missed arrivals as candidates
+PASS Group assignment does not occur by default without operator confirmation
+PASS Opt-in ordered source binds first observation before a subsequent group change
+PASS Recovered arrivals do not use trusted auto assignment
+PASS History Show QR changes display only, not receiving group
+PASS Explicit resume changes receiving group but never old job destinations
+PASS Undo empty Next restores prior group and retires accidental QR
+PASS Undo filled group leaves all assigned jobs in their original group
+PASS Undo sees observed but still-writing source assignment, not only ready jobs
+PASS Single selected photo creates one immutable QR; other candidates remain unqueued
+PASS Mode switch preserves previously assigned group and queued jobs
+PASS History and immutable single selection survive reopen
+PASS Changed imported file is flagged, not a fresh candidate or replacement QR
+PASS Pending and unselected candidates prevent a misleading completed wrapup
+PASS Prepared QR pool remains bounded, and cancelled QR cannot be shown

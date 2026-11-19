@@ -1,0 +1,5 @@
+LensDrop H5 engineering source release, 2026-11-17.
+Cloud: 114 passed. Station core: 24 passed. Desktop: 23 passed (zero skips).
+Exact ledger bridge: 24 passed. Java assertions: 10 + 15. UI harness: 11 passed.
+No APK/EXE included; no native build/GitHub run/physical device validation.
+See docs/h5/test-results and release report. Archive checks are provided separately.
