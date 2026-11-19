@@ -1,0 +1,35 @@
+{
+  "prior_archive": "LensDrop_Hostinger_Cloud_v0.2-alpha_H3_Slideshow.zip",
+  "prior_sha256": "0b2153d47c3ffe4ad01dab9b253479b60321bd85e5ba44fbd22d224c93bed974",
+  "changed": [
+    "README.md",
+    "RELEASE_STATUS.json",
+    "START_HERE.html",
+    "START_HERE_GUIDE.txt",
+    "package.json",
+    "scripts/build.cjs",
+    "scripts/generate-secrets.cjs",
+    "server.js",
+    "src/hosting.cjs",
+    "src/server.cjs",
+    "tools/Hostinger_Setup_Helper.html"
+  ],
+  "added": [
+    "docs/archive/README_H3.md",
+    "docs/archive/RELEASE_STATUS_H3.json",
+    "docs/startup-fix/LensDrop_H3_1_Startup_Fix_Report.md",
+    "docs/startup-fix/RECOVER_503.html",
+    "docs/startup-fix/RECOVER_503.md",
+    "docs/validation-h31/h3-baseline-build.log",
+    "docs/validation-h31/h3-before-missing-key.log",
+    "docs/validation-h31/h31-build.log",
+    "docs/validation-h31/h31-cloud-tests.log",
+    "docs/validation-h31/h31-desktop-tests.log",
+    "docs/validation-h31/h31-entrypoint-tests.log",
+    "docs/validation-h31/h31-helper-browser.log",
+    "tests/entrypoint-host.test.cjs",
+    "tests/ui/check_recovery_helper.py"
+  ],
+  "unchanged_count": 116,
+  "removed": []
+}

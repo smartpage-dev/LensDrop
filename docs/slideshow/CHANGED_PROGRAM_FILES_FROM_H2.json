@@ -1,0 +1,187 @@
+[
+  {
+    "path": "package.json",
+    "change": "modified",
+    "sha256": "4b8b500e21d8e293360e712ae10f9944bc3fbb5c6b43577398dd6bee918a0d02"
+  },
+  {
+    "path": "scripts/build-qr.cjs",
+    "change": "added",
+    "sha256": "34f65b16a2c21589b657060dbe21282e6094fc9ce13468a7672286c061e7a8ff"
+  },
+  {
+    "path": "scripts/build.cjs",
+    "change": "modified",
+    "sha256": "9dac8a3b36b73106ca5665cb21b94350fbf11810270ac1b10c43bf03008426ee"
+  },
+  {
+    "path": "public/slideshow-model.js",
+    "change": "added",
+    "sha256": "30f919cc177ba4ee68030f05ba3c8eeb18b5a2cb1f0199c13d35a36ba87286cf"
+  },
+  {
+    "path": "public/app.js",
+    "change": "modified",
+    "sha256": "2bcc09729da11126722e54873bbb47532a68839ad5d29a928edbecab6f300c0a"
+  },
+  {
+    "path": "public/index.html",
+    "change": "modified",
+    "sha256": "31a613f6f2d1cc2d6b712ee4d456df26102e8f913225ec068be5a5c07a54cd7f"
+  },
+  {
+    "path": "public/slideshow.css",
+    "change": "added",
+    "sha256": "e7790a3c505f72d1d77179d7f0adbb8b27d1edd45a4e7f13f6a89757460a7faf"
+  },
+  {
+    "path": "public/slideshow.js",
+    "change": "added",
+    "sha256": "7791ae70e939f58b682b58838d923d2b945105a215fd3294ddf9079fb040ebd5"
+  },
+  {
+    "path": "public/gallery.html",
+    "change": "modified",
+    "sha256": "c874c2d8b4f287baeeb04b40e3010ee1f1efd2acf5a1ac84bed83e4f1cc21914"
+  },
+  {
+    "path": "public/slideshow.html",
+    "change": "added",
+    "sha256": "48751e331e100c2a6f1658fb2362509701a996ca1d85eaac0fb92cf758c893eb"
+  },
+  {
+    "path": "public/presentation-admin.js",
+    "change": "added",
+    "sha256": "7effe0b4347b54139000ef2fe8cb784d59388759f6be614ec6d0ba27e0c1edd7"
+  },
+  {
+    "path": "public/qr.js",
+    "change": "added",
+    "sha256": "bab76b147e2ce00880d6952bbb02ea379b0bb41cd422a611327ebd0c872226fc"
+  },
+  {
+    "path": "public/style.css",
+    "change": "modified",
+    "sha256": "f3298213e185e56a7653e3c323436553609a604654437dbfbf563622d651533c"
+  },
+  {
+    "path": "public/gallery.js",
+    "change": "modified",
+    "sha256": "b760509ed5c329adf5889d9e76d330d6691c9778d34135705185da6072827add"
+  },
+  {
+    "path": "src/qr.cjs",
+    "change": "added",
+    "sha256": "8a62f421d1e73d3c8c95bfa6f0df7aeb7104b35b00d1683b37d9a86233704191"
+  },
+  {
+    "path": "src/server.cjs",
+    "change": "modified",
+    "sha256": "39bf01f687f1d9ed62aa3b072e08055f6625df3f02d976b7f31bc639121bc59b"
+  },
+  {
+    "path": "src/store.cjs",
+    "change": "modified",
+    "sha256": "dfc5c87fc3cae4426db88edd42f37ccd0b744643dd184397fd08e7af18a198f2"
+  },
+  {
+    "path": "src/presentation.cjs",
+    "change": "added",
+    "sha256": "d0abbb46ff41c9e6c66b1054aeacea66a6d38b4c80c77ad67971be57e2c35995"
+  },
+  {
+    "path": "src/operations.cjs",
+    "change": "modified",
+    "sha256": "ff37624dcba639b504b58cf604f2f39092ea98b80d42e245b715b01301752905"
+  },
+  {
+    "path": "tests/presentation.test.cjs",
+    "change": "added",
+    "sha256": "1da543db74ed142ad96a7ebc2b1ec25d2aa47859a77431948ef96a459d8b0bc5"
+  },
+  {
+    "path": "tests/slideshow-model.test.cjs",
+    "change": "added",
+    "sha256": "dedc38c73b02e03dd25919c751052c3e25ac51bdf83deefadfc0ccb863a571d1"
+  },
+  {
+    "path": "tests/ui/check_bridge.py",
+    "change": "added",
+    "sha256": "9ede926484f6d6e2cb91cd84e4efd2ec2e81e2a522e4573e304c5175a622be7d"
+  },
+  {
+    "path": "tests/ui/make_fixtures.py",
+    "change": "added",
+    "sha256": "89af4b0f99df3f76825418f08a21578ada75fda93be4670d554e5cecbb158b24"
+  },
+  {
+    "path": "tests/ui/README.md",
+    "change": "added",
+    "sha256": "3e745a28fdfe2e561838d773c01641d527fecb119505fcd5f25e492f584cc1ed"
+  },
+  {
+    "path": "tests/ui/seed-server.cjs",
+    "change": "added",
+    "sha256": "a49d9a327cad92c830854e06698f6a0ac969475a1a3002c8407b42f392a23228"
+  },
+  {
+    "path": "vendor/QRCode/QRUtil.js",
+    "change": "added",
+    "sha256": "4191ce852ba66124c4f1fc3bb1a507f667193c0466731339d8c1e66a19aa6bc5"
+  },
+  {
+    "path": "vendor/QRCode/QRMath.js",
+    "change": "added",
+    "sha256": "481fe65cd1a049a3cdd659ff20c45eb4e0cb2db285fa63a42478727e1b051667"
+  },
+  {
+    "path": "vendor/QRCode/QRBitBuffer.js",
+    "change": "added",
+    "sha256": "0b5de11b341f5dd92caf3e3a26469f86fa3eb9b3795db6a489e4d53d91ecb67d"
+  },
+  {
+    "path": "vendor/QRCode/QRPolynomial.js",
+    "change": "added",
+    "sha256": "76eb786a451ceee003cb4279b7bc559e8a77321dad19ce11825a4d98d470b422"
+  },
+  {
+    "path": "vendor/QRCode/QRMaskPattern.js",
+    "change": "added",
+    "sha256": "b1f5a99876a31fccbfba89b973e11a4eb295f47b4b00e923814215309c0a725e"
+  },
+  {
+    "path": "vendor/QRCode/QRErrorCorrectLevel.js",
+    "change": "added",
+    "sha256": "d11a145632cea07057084190e86243b3054f30fc77256dc5ea0dc0e0cae54608"
+  },
+  {
+    "path": "vendor/QRCode/LICENSE.txt",
+    "change": "added",
+    "sha256": "b3c7a2fadb2515b8106eae58439a4b9c0581a4eaa88d6a265701f8d4dd7dadb8"
+  },
+  {
+    "path": "vendor/QRCode/QRRSBlock.js",
+    "change": "added",
+    "sha256": "78281d6a39b575a1078f1f70e7311e4a3c8b67e15e5468c25521b64d6ff6b931"
+  },
+  {
+    "path": "vendor/QRCode/QR8bitByte.js",
+    "change": "added",
+    "sha256": "a67f0b2239db81b1fc1dfd8e169a879d7075dd79d0ae00dc155e9c3bac595891"
+  },
+  {
+    "path": "vendor/QRCode/index.js",
+    "change": "added",
+    "sha256": "7377be90fc61a40268acf7f30d5bd89c2fca99c57ef5391623de8c151b8da7df"
+  },
+  {
+    "path": "vendor/QRCode/QRMode.js",
+    "change": "added",
+    "sha256": "6b8ec04257a2d23b01e8189815292dca3651b38ea0a8f9c975b3c1d18dfb1b01"
+  },
+  {
+    "path": "vendor/QRCode/PROVENANCE.txt",
+    "change": "added",
+    "sha256": "12880ae1aa14193dc676be7abe197ba1905afa9e1d573208cd2f87fd439aa085"
+  }
+]

@@ -1,0 +1,16 @@
+test_ack_loss_then_reopen_recovers_without_duplicate (__main__.IntegrationTests.test_ack_loss_then_reopen_recovers_without_duplicate) ... ok
+test_revoked_token_blocks_not_infinite_retries (__main__.IntegrationTests.test_revoked_token_blocks_not_infinite_retries) ... ok
+test_three_distinct_photos_all_accounted_for (__main__.IntegrationTests.test_three_distinct_photos_all_accounted_for) ... ok
+test_10000_pending_jobs_survive_reopen (__main__.QueueTests.test_10000_pending_jobs_survive_reopen) ... ok
+test_duplicate_observations_do_not_duplicate_queue (__main__.QueueTests.test_duplicate_observations_do_not_duplicate_queue) ... ok
+test_partial_file_not_queued_and_source_never_removed (__main__.QueueTests.test_partial_file_not_queued_and_source_never_removed) ... ok
+test_remote_http_and_embedded_credentials_rejected (__main__.QueueTests.test_remote_http_and_embedded_credentials_rejected) ... ok
+test_scope_cannot_be_rebound (__main__.QueueTests.test_scope_cannot_be_rebound) ... ok
+test_staging_hash_and_source_preservation (__main__.QueueTests.test_staging_hash_and_source_preservation) ... ok
+test_staging_limit_applies_backpressure_without_deleting_jobs (__main__.QueueTests.test_staging_limit_applies_backpressure_without_deleting_jobs) ... ok
+test_uploading_state_recovers_without_deletion (__main__.QueueTests.test_uploading_state_recovers_without_deletion) ... ok
+
+----------------------------------------------------------------------
+Ran 11 tests in 2.280s
+
+OK

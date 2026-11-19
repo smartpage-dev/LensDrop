@@ -1,0 +1,88 @@
+
+> lensdrop-reliability-core@0.2.0-alpha.1 test
+> node --test --test-concurrency=1 tests/*.test.cjs
+
+TAP version 13
+# (node:1239) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: review-first, exact private original, hidden access denial and idempotent finalization
+ok 1 - review-first, exact private original, hidden access denial and idempotent finalization
+  ---
+  duration_ms: 440.771777
+  type: 'test'
+  ...
+# Subtest: committed chunk replay, checksum rejection, future offset and process restart recovery
+ok 2 - committed chunk replay, checksum rejection, future offset and process restart recovery
+  ---
+  duration_ms: 523.478458
+  type: 'test'
+  ...
+# Subtest: same filename from different devices is safe; reimport by one device is deduplicated
+ok 3 - same filename from different devices is safe; reimport by one device is deduplicated
+  ---
+  duration_ms: 97.834381
+  type: 'test'
+  ...
+# Subtest: event/device authorization, revocation and client ID misuse
+ok 4 - event/device authorization, revocation and client ID misuse
+  ---
+  duration_ms: 54.381115
+  type: 'test'
+  ...
+# Subtest: 1,000 pending upload sessions retained without a 400-item eviction cap
+ok 5 - 1,000 pending upload sessions retained without a 400-item eviction cap
+  ---
+  duration_ms: 3605.802923
+  type: 'test'
+  ...
+# Subtest: invalid JPEG, wrong file checksum and incomplete completion never publish
+ok 6 - invalid JPEG, wrong file checksum and incomplete completion never publish
+  ---
+  duration_ms: 49.565082
+  type: 'test'
+  ...
+# Subtest: one process per data directory enforced
+ok 7 - one process per data directory enforced
+  ---
+  duration_ms: 10.24909
+  type: 'test'
+  ...
+# Subtest: SIGKILL at chunk_renamed: restart reconciles without lost or duplicate photo
+ok 8 - SIGKILL at chunk_renamed: restart reconciles without lost or duplicate photo
+  ---
+  duration_ms: 440.813765
+  type: 'test'
+  ...
+# Subtest: SIGKILL at originals_renamed: restart reconciles without lost or duplicate photo
+ok 9 - SIGKILL at originals_renamed: restart reconciles without lost or duplicate photo
+  ---
+  duration_ms: 463.405858
+  type: 'test'
+  ...
+# Subtest: SIGKILL at photo_committed: restart reconciles without lost or duplicate photo
+ok 10 - SIGKILL at photo_committed: restart reconciles without lost or duplicate photo
+  ---
+  duration_ms: 323.986104
+  type: 'test'
+  ...
+# Subtest: legacy prototype patch never evicts pending or failed imports
+ok 11 - legacy prototype patch never evicts pending or failed imports
+  ---
+  duration_ms: 25.474675
+  type: 'test'
+  ...
+# Subtest: legacy edited returns respect review-first policy and preserve hidden status
+ok 12 - legacy edited returns respect review-first policy and preserve hidden status
+  ---
+  duration_ms: 3.597594
+  type: 'test'
+  ...
+1..12
+# tests 12
+# suites 0
+# pass 12
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 6496.555527

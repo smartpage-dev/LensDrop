@@ -1,0 +1,8 @@
+LensDrop Guide r1 validation | 11 November 2026
+Environment: Linux, Node 22.16.0, Python 3.13.5, preinstalled sharp 0.34.1
+Fresh npm dependency installation timed out; not certified.
+
+PASS: local server /health returns expected alpha version.
+FAIL: Error('Page.goto: net::ERR_BLOCKED_BY_ADMINISTRATOR at http://127.0.0.1:45371/admin\nCall log:\n  - navigating to "http://127.0.0.1:45371/admin", waiting until "networkidle"\n')
+
+Not tested: Windows/macOS execution, HTTPS deployment, Android build, real camera/phone, multi-hour load.

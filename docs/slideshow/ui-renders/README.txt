@@ -1,0 +1,1 @@
+Actual H3 UI rendered by an instrumented browser with fetch/image requests bridged to the real local Node backend. Synthetic labelled test photographs and a test event logo were used. This is not a physical projector, real event or native HTTPS browser-network validation. QR codes shown are ephemeral local test links, not usable event links.

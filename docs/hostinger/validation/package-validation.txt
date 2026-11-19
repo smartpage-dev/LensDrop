@@ -1,0 +1,11 @@
+All executable .js/.cjs sources: syntax PASS
+Offline setup helper: script syntax PASS; no network or persistent browser storage calls
+Admin button IDs and handlers: static consistency PASS (not browser E2E)
+Retained client package: 38 original files byte-identical
+Original full guides: PDF/DOCX/HTML/Markdown byte-identical
+Hostinger supplement: 10 pages; all rendered pages visually inspected; text extents inside page
+Node: v22.16.0; native dependency available locally: sharp 0.34.1
+Cloud/prototype/hosting tests: 22 PASS, 0 fail, 0 skipped
+Desktop tests against updated core: 11 PASS
+Fresh dependency resolution: NOT PASSED (npm registry DNS EAI_AGAIN)
+Live Hostinger, browser E2E, Android compilation, camera/phone and event soak: NOT EXECUTED
