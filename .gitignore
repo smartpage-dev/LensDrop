@@ -1,0 +1,53 @@
+# Source repository only. These rules are NOT a substitute for checking commits.
+.DS_Store
+.AppleDouble
+__MACOSX/
+Thumbs.db
+Desktop.ini
+.env
+.env.*
+local.properties
+*.jks
+*.keystore
+*.p12
+*.pfx
+*.pem
+*.key
+*.base64.txt
+private-signing/
+LensDrop-private-signing/
+credentials.json
+secrets.json
+node_modules/
+.gradle/
+**/build/
+__pycache__/
+*.py[cod]
+*.apk
+*.aab
+*.apks
+*.sqlite
+*.sqlite-*
+*.db
+*.db-*
+.lensdrop-storage.json
+server.lock
+lensdrop-data/
+LensDrop-Test-Photos/
+LensDrop-Test-Queue/
+ci-output/
+local-backups/
+# Historical documentation, test evidence and the supplied deploy/*.zip are intentional.
+# Never add live runtime folders, customer photos or real environment configuration.
+# H5 station private runtime and generated native builds
+**/native/bin/
+**/native/obj/
+station-data/
+LensDropPrintStation/
+ui-session.txt
+worker.lock
+settings.json
+station.log*
+native-job-*.json
+
+.h5-ui-tests/
