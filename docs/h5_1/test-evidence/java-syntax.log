@@ -1,0 +1,24 @@
+PARSED /mnt/data/lensdrop_h5_buildfix_work/LensDrop_H5/clients/android/app/src/main/java/app/lensdrop/transfer/CloudApi.java
+PARSED /mnt/data/lensdrop_h5_buildfix_work/LensDrop_H5/clients/android/app/src/main/java/app/lensdrop/transfer/Config.java
+PARSED /mnt/data/lensdrop_h5_buildfix_work/LensDrop_H5/clients/android/app/src/main/java/app/lensdrop/transfer/DeliveryActivity.java
+PARSED /mnt/data/lensdrop_h5_buildfix_work/LensDrop_H5/clients/android/app/src/main/java/app/lensdrop/transfer/DeliveryCoordinator.java
+PARSED /mnt/data/lensdrop_h5_buildfix_work/LensDrop_H5/clients/android/app/src/main/java/app/lensdrop/transfer/DirectorySync.java
+PARSED /mnt/data/lensdrop_h5_buildfix_work/LensDrop_H5/clients/android/app/src/main/java/app/lensdrop/transfer/EventService.java
+PARSED /mnt/data/lensdrop_h5_buildfix_work/LensDrop_H5/clients/android/app/src/main/java/app/lensdrop/transfer/LanPrintApi.java
+PARSED /mnt/data/lensdrop_h5_buildfix_work/LensDrop_H5/clients/android/app/src/main/java/app/lensdrop/transfer/MainActivity.java
+PARSED /mnt/data/lensdrop_h5_buildfix_work/LensDrop_H5/clients/android/app/src/main/java/app/lensdrop/transfer/MediaScanner.java
+PARSED /mnt/data/lensdrop_h5_buildfix_work/LensDrop_H5/clients/android/app/src/main/java/app/lensdrop/transfer/PrintActivity.java
+PARSED /mnt/data/lensdrop_h5_buildfix_work/LensDrop_H5/clients/android/app/src/main/java/app/lensdrop/transfer/PrintEngine.java
+PARSED /mnt/data/lensdrop_h5_buildfix_work/LensDrop_H5/clients/android/app/src/main/java/app/lensdrop/transfer/PrintQueue.java
+PARSED /mnt/data/lensdrop_h5_buildfix_work/LensDrop_H5/clients/android/app/src/main/java/app/lensdrop/transfer/PrintRules.java
+PARSED /mnt/data/lensdrop_h5_buildfix_work/LensDrop_H5/clients/android/app/src/main/java/app/lensdrop/transfer/PrintService.java
+PARSED /mnt/data/lensdrop_h5_buildfix_work/LensDrop_H5/clients/android/app/src/main/java/app/lensdrop/transfer/QueueDb.java
+PARSED /mnt/data/lensdrop_h5_buildfix_work/LensDrop_H5/clients/android/app/src/main/java/app/lensdrop/transfer/RecoveryJob.java
+PARSED /mnt/data/lensdrop_h5_buildfix_work/LensDrop_H5/clients/android/app/src/main/java/app/lensdrop/transfer/SessionRules.java
+PARSED /mnt/data/lensdrop_h5_buildfix_work/LensDrop_H5/clients/android/app/src/main/java/app/lensdrop/transfer/StaffSetupActivity.java
+PARSED /mnt/data/lensdrop_h5_buildfix_work/LensDrop_H5/clients/android/app/src/main/java/app/lensdrop/transfer/TransferLane.java
+PARSED /mnt/data/lensdrop_h5_buildfix_work/LensDrop_H5/clients/android/app/src/main/java/app/lensdrop/transfer/UploadEngine.java
+PARSED /mnt/data/lensdrop_h5_buildfix_work/LensDrop_H5/clients/android/app/src/main/java/app/lensdrop/transfer/WatchLedger.java
+PARSED /mnt/data/lensdrop_h5_buildfix_work/LensDrop_H5/clients/android/app/src/main/java/app/lensdrop/transfer/WatchRules.java
+warning: [options] system modules path not set in conjunction with -source 17
+Java syntax parse passed only. Android types, resources, manifest and packaging NOT compiled.

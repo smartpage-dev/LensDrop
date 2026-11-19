@@ -1,0 +1,20 @@
+test_01_directory_success_keeps_sync_order (__main__.BuildFixTests.test_01_directory_success_keeps_sync_order) ... ok
+test_02_open_failure_propagates_without_close (__main__.BuildFixTests.test_02_open_failure_propagates_without_close) ... ok
+test_03_stat_failure_closes_descriptor (__main__.BuildFixTests.test_03_stat_failure_closes_descriptor) ... ok
+test_04_regular_file_is_rejected (__main__.BuildFixTests.test_04_regular_file_is_rejected) ... ok
+test_05_fsync_failure_is_not_ignored (__main__.BuildFixTests.test_05_fsync_failure_is_not_ignored) ... ok
+test_06_close_failure_is_not_ignored (__main__.BuildFixTests.test_06_close_failure_is_not_ignored) ... ok
+test_07_hidden_constant_negative_control (__main__.BuildFixTests.test_07_hidden_constant_negative_control) ... ok
+test_08_new_pairing_callback_compiles_against_activity (__main__.BuildFixTests.test_08_new_pairing_callback_compiles_against_activity) ... ok
+test_09_original_finish_collision_negative_control (__main__.BuildFixTests.test_09_original_finish_collision_negative_control) ... ok
+test_10_button_invokes_pairing_not_activity_finish (__main__.BuildFixTests.test_10_button_invokes_pairing_not_activity_finish) ... ok
+test_11_pairing_still_waits_for_admin_approval (__main__.BuildFixTests.test_11_pairing_still_waits_for_admin_approval) ... ok
+test_12_upload_records_only_after_directory_sync (__main__.BuildFixTests.test_12_upload_records_only_after_directory_sync) ... ok
+test_13_no_hidden_android_flags_in_production (__main__.BuildFixTests.test_13_no_hidden_android_flags_in_production) ... ok
+test_14_version_and_app_identity (__main__.BuildFixTests.test_14_version_and_app_identity) ... ok
+test_15_sync_errors_reach_existing_upload_retry (__main__.BuildFixTests.test_15_sync_errors_reach_existing_upload_retry) ... ok
+
+----------------------------------------------------------------------
+Ran 15 tests in 3.649s
+
+OK

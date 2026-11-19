@@ -8,11 +8,8 @@ import android.net.Uri;
 import android.os.BatteryManager;
 import android.os.PowerManager;
 import android.os.StatFs;
-import android.system.Os;
-import android.system.OsConstants;
 import org.json.JSONObject;
 import java.io.File;
-import java.io.FileDescriptor;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.InputStream;
@@ -119,7 +116,7 @@ final class UploadEngine implements AutoCloseable {
                 check.seek(size-2);if(check.readUnsignedShort()!=0xffd9)throw new CloudApi.Failure("jpeg_not_ready",true,5000);
             }
             Files.move(temp.toPath(),target.toPath(),StandardCopyOption.REPLACE_EXISTING,StandardCopyOption.ATOMIC_MOVE);
-            FileDescriptor fd=Os.open(dir.getAbsolutePath(),OsConstants.O_RDONLY|OsConstants.O_DIRECTORY,0);try{Os.fsync(fd);}finally{Os.close(fd);}
+            DirectorySync.sync(dir);
             String sha=CloudApi.hex(digest.digest());ContentValues v=new ContentValues();v.put("spool",target.getAbsolutePath());v.put("sha",sha);queue.update(j.id,v);return new Staged(target,sha);
         }finally{if(temp.exists())temp.delete();}
     }

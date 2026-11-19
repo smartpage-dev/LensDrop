@@ -1,0 +1,90 @@
+TAP version 13
+# (node:1219) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: hosting: rejects relative paths, release paths, and overlapping app storage
+ok 1 - hosting: rejects relative paths, release paths, and overlapping app storage
+  ---
+  duration_ms: 2.021969
+  type: 'test'
+  ...
+# Subtest: hosting: symlink aliases cannot disguise deployment-directory storage
+ok 2 - hosting: symlink aliases cannot disguise deployment-directory storage
+  ---
+  duration_ms: 1.732809
+  type: 'test'
+  ...
+# Subtest: hosting: placeholder administrator keys and invalid identities are rejected
+ok 3 - hosting: placeholder administrator keys and invalid identities are rejected
+  ---
+  duration_ms: 0.946741
+  type: 'test'
+  ...
+# Subtest: hosting: missing storage fails closed without creating a new directory
+ok 4 - hosting: missing storage fails closed without creating a new directory
+  ---
+  duration_ms: 0.74357
+  type: 'test'
+  ...
+# Subtest: hosting: existing unmarked data is never automatically adopted or erased
+ok 5 - hosting: existing unmarked data is never automatically adopted or erased
+  ---
+  duration_ms: 1.17991
+  type: 'test'
+  ...
+# Subtest: hosting: first initialization and subsequent safe boot preserve identity and database
+ok 6 - hosting: first initialization and subsequent safe boot preserve identity and database
+  ---
+  duration_ms: 45.024185
+  type: 'test'
+  ...
+# Subtest: hosting: wrong storage identity fails without rewriting the marker
+ok 7 - hosting: wrong storage identity fails without rewriting the marker
+  ---
+  duration_ms: 5.788111
+  type: 'test'
+  ...
+# Subtest: hosting: missing database cannot be mistaken for an empty healthy gallery
+ok 8 - hosting: missing database cannot be mistaken for an empty healthy gallery
+  ---
+  duration_ms: 6.942734
+  type: 'test'
+  ...
+# Subtest: hosting: invalid quotas and initialization flags fail before data creation
+ok 9 - hosting: invalid quotas and initialization flags fail before data creation
+  ---
+  duration_ms: 2.611265
+  type: 'test'
+  ...
+# Subtest: hosting: CommonJS host entry, private diagnostics and release replacement preserve an interrupted upload
+ok 10 - hosting: CommonJS host entry, private diagnostics and release replacement preserve an interrupted upload
+  ---
+  duration_ms: 942.827581
+  type: 'test'
+  ...
+# Subtest: release fixture provides the exact installed sharp dependency without NODE_PATH
+ok 11 - release fixture provides the exact installed sharp dependency without NODE_PATH
+  ---
+  duration_ms: 114.460588
+  type: 'test'
+  ...
+# Subtest: negative control: a copied release without its dependency link cannot load sharp
+ok 12 - negative control: a copied release without its dependency link cannot load sharp
+  ---
+  duration_ms: 39.547646
+  type: 'test'
+  ...
+# Subtest: release fixture refuses an uninstalled source instead of silently using global dependencies
+ok 13 - release fixture refuses an uninstalled source instead of silently using global dependencies
+  ---
+  duration_ms: 1.592852
+  type: 'test'
+  ...
+1..13
+# tests 13
+# suites 0
+# pass 13
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1339.958318

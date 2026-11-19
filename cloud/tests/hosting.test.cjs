@@ -10,6 +10,7 @@ const sharp = require('sharp');
 const { prepareHosting, validatePath, MARKER } = require('../src/hosting.cjs');
 const { createApp, CHUNK } = require('../src/server.cjs');
 const root = path.resolve(__dirname, '..');
+const { prepareReleaseFixture } = require('./helpers/release-fixture.cjs');
 function fixture() {
   const temp = fs.mkdtempSync(path.join(os.tmpdir(), 'lensdrop-hosting-'));
   const env = { LENSDROP_ADMIN_KEY: crypto.randomBytes(32).toString('hex'),
@@ -85,7 +86,7 @@ test('hosting: invalid quotas and initialization flags fail before data creation
 });
 async function start(entryDir, env) {
   const child = spawn(process.execPath, ['-e', 'require(process.argv[1])', path.join(entryDir, 'server.js')], {
-    env: { ...process.env, ...env, PORT: '0', HOST: '127.0.0.1' }, stdio: ['ignore', 'pipe', 'pipe'] });
+    env: { ...process.env, ...env, NODE_PATH: '', PORT: '0', HOST: '127.0.0.1' }, stdio: ['ignore', 'pipe', 'pipe'] });
   let output = '', error = '';
   child.stderr.on('data', b => { error += b.toString(); });
   const port = await new Promise((resolve, reject) => {
@@ -134,8 +135,7 @@ test('hosting: CommonJS host entry, private diagnostics and release replacement 
     }
     assert.equal((await chunk(0)).offset, CHUNK);
     await active.stop(); active = null;
-    const replacement = path.join(f.temp, 'new-release'); fs.mkdirSync(replacement);
-    for (const name of ['server.js', 'package.json', 'src', 'shared', 'public']) fs.cpSync(path.join(root, name), path.join(replacement, name), { recursive: true });
+    const replacement = prepareReleaseFixture(root, path.join(f.temp, 'new-release'));
     active = await start(replacement, { ...f.env, LENSDROP_INITIALIZE_STORAGE: '0' });
     const after = (await req('/v1/admin/deployment', f.env.LENSDROP_ADMIN_KEY)).body;
     assert.equal(after.deployment.storage_id, before.deployment.storage_id);

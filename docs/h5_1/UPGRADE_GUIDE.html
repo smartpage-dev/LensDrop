@@ -1,0 +1,90 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>LensDrop H5.1 - GitHub Build Repair</title><style>*{box-sizing:border-box}body{margin:0;color:#183246;background:#f0f5f7;font:16px/1.68 system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}header{padding:26px max(20px,calc((100vw - 980px)/2));background:#16384b;color:#fff}header small{letter-spacing:.13em;color:#bce6d8}main{max-width:980px;margin:25px auto 48px;padding:32px 40px;background:white;border:1px solid #dbe5e9;border-radius:14px}h1{font-size:32px;line-height:1.2}h2{font-size:23px;margin-top:34px;line-height:1.3}h3{font-size:18px}a{color:#146655;overflow-wrap:anywhere}code{background:#eaf1f3;padding:2px 4px;border-radius:3px;font-size:.88em;overflow-wrap:anywhere}pre{background:#112c40;color:#eaf4fa;padding:17px;border-radius:8px;white-space:pre-wrap;overflow-wrap:anywhere}pre code{background:none;padding:0}table{border-collapse:collapse;width:100%;font-size:14px}th{background:#e8f1f4;text-align:left}td,th{padding:12px;border:1px solid #d2e0e5;vertical-align:top}td{overflow-wrap:anywhere}.table-wrap{overflow:auto}strong{font-weight:750}footer{text-align:center;color:#566c78;padding:15px;font-size:13px}@media(max-width:650px){main{margin:12px 8px;padding:20px 16px}h1{font-size:25px}h2{font-size:21px}td,th{padding:9px}table{font-size:13px}}@media print{body{background:white}header{display:none}main{border:0;margin:0;padding:0}h2{break-after:avoid}tr,pre{break-inside:avoid}}</style></head><body><header><small>LUCE STUDIO / LENSDROP H5.1</small><div>Android + Windows build repair</div></header><main><h1>LensDrop H5.1: fix both GitHub build failures</h1>
+<p><strong>19 November 2026 | Main LensDrop project, NOT Printer Lab 58</strong></p>
+<p>Your Android log contains two Java compiler errors. Your Windows workflow stopped in a cloud regression test before the Windows build started. This repair changes the relevant Android code and the cloud test fixture. It does not change your live website or printer configuration.</p>
+<p><strong>No APK or Windows executable is included. The next new GitHub runs must compile them.</strong></p>
+<h2>1. Choose one package</h2>
+<p><strong>Already uploaded LensDrop H5 or H5 GitHub r1? Use <code>LensDrop_H5_1_BuildFix_Patch_From_H5.zip</code>.</strong> It contains only new/changed files. Merge its contents into the existing LensDrop repository root. Keep every other file.</p>
+<p>For a fresh repository or complete archive, use <code>LensDrop_H5_1_BuildFix_GitHub_Ready.zip</code>. Open its inner <code>LensDrop_H5</code> folder and upload the contents, including <code>.github</code>. Do not put another <code>LensDrop_H5</code> folder inside your repository.</p>
+<p>Do not upload either package to <code>Luce-Printer-Lab-58</code>. These are different programs. Do not upload this complete source ZIP to Hostinger.</p>
+<h2>2. Update the existing LensDrop repository</h2>
+<h3>GitHub Desktop</h3>
+<p>Extract the patch. Open the inner <code>LensDrop_H5_1_PATCH</code> folder. Copy its <strong>contents</strong> into the local LensDrop repository. Merge folders and replace matching files; do not delete the existing <code>clients</code> or <code>cloud</code> folder, and do not touch <code>.git</code>.</p>
+<p>Review the changes, commit and <strong>Push origin</strong>. Suggested commit message:</p>
+<pre><code class="language-text">Fix LensDrop H5 Android compile errors and release-test dependencies
+</code></pre>
+<h3>GitHub website only</h3>
+<p>Open your LensDrop repository on its default branch (usually <code>main</code>). Choose <strong>Add file &gt; Upload files</strong>. Drag the files and folders inside <code>LensDrop_H5_1_PATCH</code> into the repository root, retaining their relative paths. Commit the changes. Do not upload only the ZIP or the enclosing patch folder.</p>
+<p>The patch has no changes to <code>.github</code>, signing secrets or toolchain choices. Include every supplied file, particularly the new Java helper and cloud test helper.</p>
+<p>After updating, verify these paths exist:</p>
+<pre><code class="language-text">clients/android/app/src/main/java/app/lensdrop/transfer/DirectorySync.java
+clients/android/app/src/main/java/app/lensdrop/transfer/StaffSetupActivity.java
+cloud/tests/helpers/release-fixture.cjs
+cloud/tests/release-fixture.test.cjs
+</code></pre>
+<p>In <code>clients/android/app/build.gradle</code>, verify:</p>
+<pre><code class="language-gradle">versionCode 6
+versionName '0.2.0-alpha.6-h5.1'
+</code></pre>
+<h2>3. Start NEW runs for both workflows</h2>
+<p>Go to <strong>Actions &gt; LensDrop Android APK &gt; Run workflow</strong>. Select the updated branch, accept the SDK licences and keep your chosen signing mode.</p>
+<p>Then run <strong>Actions &gt; LensDrop Windows Print Station &gt; Run workflow</strong> on the same updated commit.</p>
+<p><strong>Do not use Re-run jobs on the old failures.</strong> GitHub reruns use the old run's original commit; they do not automatically pick up your new patch [1]. Confirm the new run's commit differs from the failed <code>377bea07...</code>.</p>
+<h2>4. Download outputs only after full success</h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+  <th>Workflow</th>
+  <th>Artifact / contents</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>LensDrop Android APK</td>
+  <td><code>LensDrop-H5-APK-&lt;run&gt;-&lt;signing-mode&gt;</code>; contains <code>LensDrop-H5-debug.apk</code>, BUILD_INFO.json and checksums</td>
+</tr>
+<tr>
+  <td>LensDrop Windows Print Station</td>
+  <td><code>LensDrop-H5-Windows-x64-&lt;run&gt;</code>; contains <code>LensDrop-PrintStation-H5-win-x64.zip</code></td>
+</tr>
+</tbody>
+</table></div>
+<p>Android BUILD_INFO.json should show <code>0.2.0-alpha.6-h5.1</code>, code <code>6</code>, and the new commit. Artifact names deliberately retain H5.</p>
+<p>Extract the Windows inner ZIP completely before launching <code>LensDropStation.exe</code>. Keep the included runtime and other files together. Start paused in simulation; a successful build is not a physical printer test.</p>
+<h2>5. Preserve signing and existing data</h2>
+<p>The LensDrop secret remains <strong>LENSDROP_TEST_KEYSTORE_BASE64</strong>. Do not substitute Printer Lab's secret or generate another LensDrop key when you already have one.</p>
+<p>Temporary signing is only for disposable trials. For ongoing phone testing use the same persistent key. A different key can block an in-place update; never uninstall an app holding important queue data just to bypass that error.</p>
+<p>Android application ID and queue schemas are unchanged. H5 cloud runtime, station runtime, private data path, storage identity, admin key and initialisation setting are unchanged. <strong>You do not need to redeploy Hostinger for these build fixes.</strong></p>
+<h2>6. What the repair actually does</h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+  <th>Failure in your upload</th>
+  <th>Correction</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td><code>finish()</code> conflicts with Activity.finish</td>
+  <td>Rename the staff approval-completion method and its callback to completePairing</td>
+</tr>
+<tr>
+  <td><code>OsConstants.O_DIRECTORY</code> cannot be found</td>
+  <td>Use public OS APIs, verify the opened descriptor is a directory, retain fsync and propagate errors</td>
+</tr>
+<tr>
+  <td>Temporary new-release cannot load sharp</td>
+  <td>Supply the test release with its existing installed dependency tree; keep all resume/persistence assertions</td>
+</tr>
+</tbody>
+</table></div>
+<p>The Windows error is a test-fixture omission, not evidence that your Windows printer or Hostinger website has lost a library. Installing sharp in the original checkout already succeeded in the uploaded log.</p>
+<h2>7. Local verification and remaining gates</h2>
+<p>Local checks passed: <strong>117 cloud tests, 24 station-protocol tests, 23 desktop-client tests, 24 exact-ledger JVM/SQLite cases, 10 session-policy and 15 print-policy assertions, and 15 new build-contract tests</strong>. Twenty-two Java files were syntax-parsed only.</p>
+<p>Both original Android compiler mistakes have expected-failure contract tests. The original cloud dependency failure was reproduced and then passed with the corrected fixture. Details and local logs are under <code>docs/h5_1/</code>.</p>
+<p><strong>Full Android SDK build/lint, Windows native compilation, new GitHub runs, and real phone/printer operation were not performed here.</strong> Local SDK/Gradle/.NET are absent; download requests failed DNS resolution. Test dependencies used preinstalled sharp 0.34.1; no fresh npm installation is claimed. The Android workflow still does not run lint or instrumentation.</p>
+<p>If a new run fails, download its new logs. The first substantive compiler/test error is more useful than the final exit-code line. Never disable the failing test or clear event data just to get a green checkmark.</p>
+<h2>8. Historical documents and manifests</h2>
+<p><code>docs/h5_1/BUILD_FIX_REPORT.md</code> and <code>H5_1_MANIFEST_SHA256.txt</code> describe this repaired snapshot. Older H4/H5/r1 reports and manifests are retained as historical evidence; their original counts and versions are not assertions about this repaired package. The original H5 deployment ZIP remains byte-for-byte unchanged.</p>
+<h2>Reference</h2>
+<p>[1] GitHub: re-runs retain the original GITHUB_SHA and GITHUB_REF. https://docs.github.com/en/actions/how-tos/manage-workflow-runs/re-run-workflows-and-jobs</p>
+</main><footer>Source/build repair only. Keep Printer Lab and LensDrop in separate repositories.</footer></body></html>

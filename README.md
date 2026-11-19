@@ -1,3 +1,11 @@
+# LensDrop H5.1 - GitHub build repair
+
+Start with [START_GITHUB_H5.html](START_GITHUB_H5.html). This fixes the two Android compile errors and the cloud release-fixture failure in the uploaded runs. Android: `0.2.0-alpha.6-h5.1`, code 6. No compiled APK or EXE is included; new GitHub runs are required. No Hostinger redeployment is needed. Keep existing signing keys. Use `H5_1_MANIFEST_SHA256.txt` for this snapshot; older manifests/reports below are historical.
+
+[Repair report](docs/h5_1/BUILD_FIX_REPORT.md) | [Upgrade guide](docs/h5_1/UPGRADE_GUIDE.md)
+
+## Original H5 overview
+
 # LensDrop H5 - QR Pairing and Hybrid Print
 
 Engineering source release. Start with [START_HERE.html](START_HERE.html) and [the current guide](docs/h5/LensDrop_H5_Setup_Guide.md).

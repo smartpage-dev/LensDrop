@@ -1,0 +1,69 @@
+LensDrop H5 build failures: exact uploaded-log excerpts
+19 November 2026
+
+Both runs checked out commit 377bea07c862d51f524f69a7631f2182cd32470d.
+
+Android: logs_120363559515.zip
+2026-11-19T05:29:19.2409476Z 
+2026-11-19T05:29:19.2450173Z > Task :app:compileDebugJavaWithJavac
+2026-11-19T05:29:19.2451368Z /home/runner/work/LensDrop/LensDrop/clients/android/app/src/main/java/app/lensdrop/transfer/StaffSetupActivity.java:38: error: finish() in StaffSetupActivity cannot override finish() in Activity
+2026-11-19T05:29:19.2455126Z     private void finish()throws Exception{JSONObject p=new JSONObject(config.secret("pairing"));JSONObject result;try(CloudApi api=new CloudApi(this,p.getString("base"),p.getString("claim_secret"),config.cellular())){result=api.call("/v1/pairings/"+p.getString("id")+"/status",null);}if(!"approved".equals(result.getString("state"))){show("Still waiting for Admin approval. Code: "+result.optString("code"));return;}if(!"phone".equals(result.getString("kind")))throw new IllegalStateException("Wrong device type");String base=p.getString("base"),scope=base+"|"+result.getJSONObject("event").getString("id")+"|"+result.getString("entity_id");
+2026-11-19T05:29:19.2457900Z                  ^
+2026-11-19T05:29:19.2458332Z   attempting to assign weaker access privileges; was public
+2026-11-19T05:29:19.3430703Z /home/runner/work/LensDrop/LensDrop/clients/android/app/src/main/java/app/lensdrop/transfer/UploadEngine.java:122: error: cannot find symbol
+2026-11-19T05:29:19.3459971Z             FileDescriptor fd=Os.open(dir.getAbsolutePath(),OsConstants.O_RDONLY|OsConstants.O_DIRECTORY,0);try{Os.fsync(fd);}finally{Os.close(fd);}
+2026-11-19T05:29:19.3509998Z                                                                                             ^
+2026-11-19T05:29:19.3539689Z   symbol:   variable O_DIRECTORY
+2026-11-19T05:29:19.3779651Z   location: class OsConstants
+2026-11-19T05:29:19.4393937Z Note: Some input files use or override a deprecated API.
+2026-11-19T05:29:19.4403802Z Note: Recompile with -Xlint:deprecation for details.
+2026-11-19T05:29:19.4404980Z 2 errors
+2026-11-19T05:29:19.4427988Z 
+2026-11-19T05:29:19.4429725Z > Task :app:compileDebugJavaWithJavac FAILED
+2026-11-19T05:29:19.4483425Z gradle/actions: Writing build results to /home/runner/work/_temp/.gradle-actions/build-results/__run_5-1795066136537.json
+
+Windows workflow prerequisite: logs_120363595614.zip
+2026-11-19T05:28:41.5702407Z   ...
+2026-11-19T05:28:41.8834479Z # Subtest: hosting: CommonJS host entry, private diagnostics and release replacement preserve an interrupted upload
+2026-11-19T05:28:41.8837951Z not ok 80 - hosting: CommonJS host entry, private diagnostics and release replacement preserve an interrupted upload
+2026-11-19T05:28:41.8838956Z   ---
+2026-11-19T05:28:41.8839576Z   duration_ms: 322.795633
+2026-11-19T05:28:41.8840181Z   type: 'test'
+2026-11-19T05:28:41.8840949Z   location: '/home/runner/work/LensDrop/LensDrop/cloud/tests/hosting.test.cjs:109:1'
+2026-11-19T05:28:41.8841610Z   failureType: 'testCodeFailure'
+2026-11-19T05:28:41.8842337Z   error: |-
+2026-11-19T05:28:41.8843856Z     startup exited: 1 {"type":"startup_rejected","code":"MODULE_NOT_FOUND","message":"Cannot find module 'sharp'\nRequire stack:\n- /tmp/lensdrop-hosting-DblQxk/new-release/src/server.cjs\n- /tmp/lensdrop-hosting-DblQxk/new-release/server.js\n- /home/runner/work/LensDrop/LensDrop/cloud/[eval]"}
+2026-11-19T05:28:41.8845895Z     /tmp/lensdrop-hosting-DblQxk/new-release/server.js:49
+2026-11-19T05:28:41.8846643Z       if (require.main !== module) throw error;
+2026-11-19T05:28:41.8847158Z                                    ^
+2026-11-19T05:28:41.8847665Z     
+2026-11-19T05:28:41.8848461Z     Error: Cannot find module 'sharp'
+2026-11-19T05:28:41.8849061Z     Require stack:
+2026-11-19T05:28:41.8849633Z     - /tmp/lensdrop-hosting-DblQxk/new-release/src/server.cjs
+2026-11-19T05:28:41.8851014Z     - /tmp/lensdrop-hosting-DblQxk/new-release/server.js
+2026-11-19T05:28:41.8851736Z     - /home/runner/work/LensDrop/LensDrop/cloud/[eval]
+2026-11-19T05:28:41.8852350Z         at Function._resolveFilename (node:internal/modules/cjs/loader:1430:15)
+2026-11-19T05:28:41.8853024Z         at defaultResolveImpl (node:internal/modules/cjs/loader:1040:19)
+2026-11-19T05:28:41.8853601Z         at resolveForCJSWithHooks (node:internal/modules/cjs/loader:1045:22)
+2026-11-19T05:28:41.8854322Z         at Function._load (node:internal/modules/cjs/loader:1216:25)
+2026-11-19T05:28:41.8854949Z         at wrapModuleLoad (node:internal/modules/cjs/loader:254:19)
+2026-11-19T05:28:41.8855636Z         at Module.require (node:internal/modules/cjs/loader:1527:12)
+2026-11-19T05:28:41.8856241Z         at require (node:internal/modules/helpers:147:16)
+2026-11-19T05:28:41.8856951Z         at Object.<anonymous> (/tmp/lensdrop-hosting-DblQxk/new-release/src/server.cjs:11:15)
+2026-11-19T05:28:41.8857733Z         at Module._compile (node:internal/modules/cjs/loader:1781:14)
+2026-11-19T05:28:41.8858355Z         at Object..js (node:internal/modules/cjs/loader:1913:10) {
+2026-11-19T05:28:41.8858941Z       code: 'MODULE_NOT_FOUND',
+2026-11-19T05:28:41.8859567Z       requireStack: [
+2026-11-19T05:28:41.8860336Z         '/tmp/lensdrop-hosting-DblQxk/new-release/src/server.cjs',
+2026-11-19T05:28:41.8861017Z         '/tmp/lensdrop-hosting-DblQxk/new-release/server.js',
+2026-11-19T05:28:41.8861645Z         '/home/runner/work/LensDrop/LensDrop/cloud/[eval]'
+2026-11-19T05:28:41.8862154Z       ]
+2026-11-19T05:28:41.8862544Z     }
+2026-11-19T05:28:41.8862876Z     
+2026-11-19T05:28:41.8863297Z     Node.js v22.23.5
+2026-11-19T05:28:41.8863736Z     
+2026-11-19T05:28:41.8864126Z   code: 'ERR_TEST_FAILURE'
+2026-11-19T05:28:41.8864516Z   stack: |-
+
+Cloud test result from uploaded run: 114 total; 113 pass; 1 fail; zero skipped.
+The station tests and Windows native build had not run because this prerequisite failed.

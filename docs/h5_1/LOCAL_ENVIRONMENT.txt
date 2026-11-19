@@ -1,0 +1,8 @@
+Local validation environment
+Node: 22.16.0 (uploaded CI log: 22.23.5)
+Java runtime/compiler: OpenJDK 21.0.12.1; new contract tests explicitly compile with --release 17.
+Android SDK, Gradle executable, .NET SDK: absent.
+Official SDK and npm registry request attempts: DNS resolution failed.
+Cloud test dependency: preinstalled sharp 0.34.1 exposed via a local cloud/node_modules link for tests only. No dependencies are shipped in this source archive.
+Cloud/station regression tests run with NODE_PATH unset. Relocated fixture subprocess also clears NODE_PATH. Dependency probe uses --no-global-search-paths.
+No fresh npm install, full Android SDK build, Android lint, Windows native build, GitHub run, Hostinger deployment or hardware tests were performed here.
