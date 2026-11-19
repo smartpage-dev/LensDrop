@@ -1,0 +1,13 @@
+{
+  "note": "Reference settings, not a Hostinger import manifest. Set these in hPanel.",
+  "framework": "Other",
+  "node_version": "22.x (at least 22.13); 24.x available but not tested in this environment",
+  "root_directory": ".",
+  "output_directory": ".",
+  "entry_file": "server.js",
+  "build_command": "npm run build",
+  "start_command": "npm start",
+  "package_manager": "npm",
+  "instances": 1,
+  "storage_required": "private persistent local disk outside public_html, hbuilds and the app tree; provider confirmation and live redeploy test required"
+}
