@@ -117,9 +117,9 @@ final class WatchLedger {
     String undo(String scope){
         SQLiteDatabase d=db();d.beginTransaction();try{
             String old=value(scope,"previous_group"),current=active(scope);if(old==null||current==null)throw new IllegalStateException("No Next Group action to undo. Use History to resume a previous group.");
-            long n=assigned(scope,current);if(WatchRules.cancelOnUndo(n))d.execSQL("UPDATE guest_groups SET state='cancel_pending' WHERE id=?",new Object[]{current});
+            long n=assigned(scope,current);boolean ticketIssued;try(Cursor c=d.rawQuery("SELECT 1 FROM qr_tickets WHERE scope=? AND delivery_id=? LIMIT 1",new String[]{scope,current})){ticketIssued=c.moveToFirst();}if(WatchRules.cancelOnUndo(n)&&!ticketIssued)d.execSQL("UPDATE guest_groups SET state='cancel_pending' WHERE id=?",new Object[]{current});
             d.execSQL("UPDATE watch_sessions SET active_group=?,shown_group=?,previous_group=NULL,auto_assign=0 WHERE scope=?",new Object[]{old,old,scope});d.setTransactionSuccessful();
-            return n==0?"Previous group restored. Empty accidental QR is retired and will be cancelled online.":"Previous group restored. Existing assigned photos remain in the other group; nothing was moved.";
+            return n==0&&!ticketIssued?"Previous group restored. Empty accidental QR is retired and will be cancelled online.":"Previous group restored. Ticket-issued QR and assigned photos remain in the other group; nothing was moved.";
         }finally{d.endTransaction();}
     }
     JSONArray candidates(String scope,int offset)throws Exception{

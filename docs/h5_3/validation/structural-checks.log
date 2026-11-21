@@ -1,0 +1,37 @@
+PASS Android31+ CONNECT permission explicit
+PASS Android31+ SCAN scoped neverForLocation
+PASS Legacy BLUETOOTH ends at API30
+PASS Legacy BLUETOOTH_ADMIN ends at API30
+PASS App backup still disabled
+PASS Ticket activity not exported
+PASS Bluetooth not required for install
+PASS Secure SPP only
+PASS No scanner start
+PASS Exact advertised SPP UUID
+PASS Cancellation cannot reset per operation
+PASS Partial writes marked before stream call
+PASS Connection and send deadlines bounded
+PASS Foreground exit cancels ticket only
+PASS No automatic ticket sender service
+PASS One process-wide send guard
+PASS Recovery serialized against sends
+PASS Setup and printer identity rechecked at dispatch
+PASS Ticket snapshot stored before connect
+PASS Unknown writes never auto-requeued
+PASS Ticket fields protected by SQLite trigger
+PASS Additive queue migration 3->4
+PASS Foreground print requires explicit confirmation
+PASS Packet privacy export omissions
+PASS Workflow includes ticket tests
+PASS Same application identity
+PASS Version code8 and H5.3
+PASS Byte-identical cloud
+PASS Byte-identical deploy
+PASS Byte-identical clients/print-station
+PASS Byte-identical clients/desktop
+PASS Byte-identical tools/github
+PASS Unchanged windows-print-station.yml
+PASS Unchanged PrintEngine.java
+PASS Unchanged UploadEngine.java
+PASS Unchanged Config.java
+PASS 36 structural checks

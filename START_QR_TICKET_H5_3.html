@@ -1,0 +1,134 @@
+<!doctype html><html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>LensDrop H5.3 - QR ticket pilot</title><style>*{box-sizing:border-box}body{margin:0;background:#f1f5f6;color:#173342;font:17px/1.65 system-ui,-apple-system,Segoe UI,sans-serif}main{max-width:1050px;margin:32px auto;background:#fff;padding:38px 42px;border-radius:16px}h1{font-size:34px;line-height:1.2;margin:12px 0 22px}h2{margin-top:44px;color:#0d645a;font-size:24px}h3{font-size:20px}p,li{max-width:85ch}a{color:#1260a5;overflow-wrap:anywhere}blockquote{margin:24px 0;padding:18px 22px;border-left:5px solid #d89a25;background:#fff4dd}pre{background:#132b3a;color:#f2f6fa;padding:18px;border-radius:8px;overflow:auto;white-space:pre-wrap;overflow-wrap:anywhere}code{font:14px/1.5 ui-monospace,monospace;overflow-wrap:anywhere}table{width:100%;border-collapse:collapse;margin:20px 0}th{background:#eaf3f3;text-align:left}td,th{border-bottom:1px solid #dce5e7;padding:13px;vertical-align:top;overflow-wrap:anywhere}td:first-child{width:28%;font-weight:600}.tag{font-size:13px;text-transform:uppercase;letter-spacing:2px;color:#337a73}button{border:0;background:#15675d;color:#fff;border-radius:6px;padding:8px 14px;cursor:pointer}@media(max-width:600px){main{margin:0;border-radius:0;padding:22px 18px}h1{font-size:28px}h2{font-size:22px}td,th{padding:9px;font-size:14px}}@media print{body{background:white}main{margin:0;padding:0;max-width:none}h2{break-after:avoid}tr{break-inside:avoid}button{display:none}}</style><main><div class="tag">LUCE STUDIO / ANDROID PILOT / 21 NOVEMBER 2026</div><h1>LensDrop H5.3 - QR ticket pilot</h1>
+<p><strong>Android-only source update. Manual Bluetooth printing of an existing guest QR. No new APK is included.</strong></p>
+<blockquote>
+<p>今次先做手動試行：選打印機 → 預覽目前顯示嘅 QR → 印一張 → 用另一部手機掃碼核對。不會自動重印，不會改動 Hostinger 或 CP9550DW 相片打印。</p>
+</blockquote>
+<h2>01 / Evidence and limits</h2>
+<p>Your supplied paper and matching Lab IDs demonstrate ASCII output and an externally requested native QR symbol over secure SPP on the tested Samsung/58B3 pair. The QR test used only a 32-byte HTTPS URL. Its report still says not_checked; exact scan contents and longer guest links are not verified. Digital decoding of the uploaded photo was inconclusive, not proof that the paper is unreadable.</p>
+<p>This pilot keeps native Model 2 / ECC M / 4-dot modules with 128-byte writes and a 20ms interval. It does not add raster, Chinese/logo output, cutter commands, BLE, automatic tickets or a permanent background Bluetooth service.</p>
+<h2>02 / Update the correct GitHub repository</h2>
+<p>Use your existing <strong>LensDrop</strong> repository, NOT Luce-Printer-Lab-58. Apply the contents of the H5.3 patch at its root and merge folders, or use the full project snapshot. Do not upload only the ZIP or add an enclosing patch folder. Preserve <code>.git</code> and your existing <code>LENSDROP_TEST_KEYSTORE_BASE64</code> signing secret.</p>
+<p>Required new files include TicketActivity.java, TicketTransport.java, TicketProtocol.java and TicketLedger.java under <code>clients/android/app/src/main/java/app/lensdrop/transfer/</code>. Include the updated manifest, QueueDb, WatchLedger, tests and <code>.github/workflows/android-debug.yml</code> as well.</p>
+<p>After committing/pushing, start a <strong>new</strong> Actions -&gt; LensDrop Android APK -&gt; Run workflow on the updated branch. Do not rerun an older commit. Existing signing mode/identity must be preserved. No Windows build is needed for this increment.</p>
+<p>After success, download the APK artifact, not the log artifact. Extract <code>LensDrop-H5-debug.apk</code> and check BUILD_INFO:</p>
+<pre><code class="language-text">application_id: app.lensdrop.transfer
+version_name: 0.2.0-alpha.6-h5.3
+version_code: 8
+</code></pre>
+<p>This source has not been compiled with the Android SDK here. A green native build and installation are still required. The current workflow runs logic tests and assembleDebug, not Android lint/instrumentation.</p>
+<h2>03 / Preserve existing data</h2>
+<p>Finish or safely pause current work. Preserve your existing signer and source originals. The update migrates the local queue from schema 3 to schema 4 by adding ticket tables; it preserves jobs, baselines, guest groups and source bindings.</p>
+<p>Do not uninstall, clear storage, reset the watch baseline or downgrade to an older APK to fix a signing/schema problem. The old app is not a supported reader of the new queue. There is no automatic downgrade/restore tool in this release; use a disposable event/device for initial rehearsal and retain originals.</p>
+<p>The cloud stays H5/schema5 and Windows stays H5.2. Leave Hostinger credentials, storage identity, initialization=0 and deployment unchanged. The separate Printer Lab app remains untouched.</p>
+<h2>04 / Pair your dedicated QR printer</h2>
+<p>Close Printer Lab and other printer apps first. In Android Settings, pair your own 58B3 (the tested unit advertises T58_F82E; use the PIN printed on its self-test when asked).</p>
+<p>In LensDrop open <strong>Bluetooth QR ticket / 58B3 pilot</strong>. Press <strong>Grant nearby-device permissions</strong>, then <strong>Choose / confirm MY paired QR printer</strong>. Check both the name and displayed hardware address against your own device. The app does not guess a printer by name, start a discovery loop or auto-switch to a neighbour's device.</p>
+<p>Press <strong>Test secure SPP connection (NO PRINT)</strong>. Success here confirms a socket connection only. The test closes its connection afterward and prints nothing.</p>
+<h2>05 / Prepare an ordinary guest QR</h2>
+<p>Use the existing Staff Setup and event pairing. In <strong>Guest QR / Groups / Select one photo</strong>, prepare links online and start a Group, or choose and confirm one candidate in Single Photo mode.</p>
+<p>A Group QR can exist before photos finish uploading. A Single Photo link must already be bound to its selected image. No link is fabricated from a group label, local IP or short sequence number.</p>
+<p>Show the desired QR. History can show an earlier group without changing the receiver. The ticket screen shows both <strong>Showing QR</strong> and <strong>Receiving</strong> so you can confirm the intended guest.</p>
+<h2>06 / Print exactly one ticket</h2>
+<p>Open <strong>Print SHOWN guest QR ticket (Bluetooth)</strong> from the QR screen, or the ticket page from main setup. Press <strong>Preview / print the SHOWN guest QR</strong>.</p>
+<p>The confirmation shows the saved printer, exact guest URL and group label. It is a content confirmation, not a driver-accurate paper preview. Check them, then press <strong>Print ONE ticket</strong>. Keep this screen in the foreground until the send result appears.</p>
+<p>The ticket is ASCII-only: collection heading, Group/Photo label, reference, attempt ID, native QR and a waiting/entitlement notice. It does not print the photograph. There is no event Logo or Chinese text in this pilot.</p>
+<p>The data snapshot is saved before transmission. Changing the shown group afterward cannot alter it. The app sends only through the selected Bluetooth device; no Hostinger/Windows ticket-print route is introduced. The existing photo-upload service may continue, but this concurrent behavior still needs real-phone testing.</p>
+<h2>07 / Scan the actual LensDrop link</h2>
+<p>Use another phone to scan the paper. Compare the <strong>complete</strong> decoded URL to the preview/screen QR; then confirm it opens the intended group or waiting page. Do not post private live QR links publicly. A waiting/review page is not a printer error.</p>
+<p>In <strong>Ticket history / observations / explicit reprint</strong>, select the matching ticket ID, then <strong>Record physical observation</strong>. Choose &quot;QR scanned AND complete URL matches preview&quot; only after doing that comparison.</p>
+<p>Send status remains <code>sent_unconfirmed</code> even after a separately recorded operator observation. The printer has not provided authenticated physical-completion telemetry. First validate several full-length guest links before giving paper to guests. The maximum accepted guest URL is 160 ASCII bytes; overlong or unprepared links are blocked instead of silently shortened. No third-party URL shortener is used.</p>
+<h2>08 / Reprint, history and Undo</h2>
+<p>Reprint in Ticket history uses the original guest URL and creates a new linked attempt. You explicitly confirm the currently selected printer; it does not silently redirect old work. It does not create another guest group, change existing photo assignment, grant print entitlement or resend a Windows photo job.</p>
+<p>Undo Next Group now preserves an empty group if it has any saved ticket snapshot. Even a cancelled-before-send or failed attempt keeps that protection, conservatively, because paper may already have left the device. Unissued empty groups retain the existing cancellation behavior. Use cloud Admin intentionally to revoke links when needed; offline ticket printing cannot verify a recent cloud revocation.</p>
+<h2>09 / Interruptions and privacy</h2>
+<table>
+<thead>
+<tr>
+  <th>Result</th>
+  <th>Meaning / action</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>sent_unconfirmed</td>
+  <td>Bytes were written; inspect paper and record the actual scan result.</td>
+</tr>
+<tr>
+  <td>failed_before_send</td>
+  <td>Connection/permission/pre-send failure. No automatic resend; inspect history then make a new explicit attempt.</td>
+</tr>
+<tr>
+  <td>outcome_unknown</td>
+  <td>At least one write was attempted, or a sending attempt was interrupted. Some/all data may already be in the printer. Inspect paper before reprinting.</td>
+</tr>
+<tr>
+  <td>cancelled_before_send</td>
+  <td>Saved but undispatched attempt recovered on reopening. No automatic send.</td>
+</tr>
+</tbody>
+</table>
+<p>Leaving the ticket screen while sending cancels its connection only. It does not stop the photo upload/Windows print services. STOP cannot retract bytes already received by the printer. There is no automatic retry, no guaranteed no-paper detection, and no sleep/wake certification.</p>
+<p>History stores guest bearer URLs in app-private SQLite so an exact reprint is possible. It is not separately encrypted. Automatic app backup remains disabled. Redacted export contains aggregate states/observations, not URLs, tokens, printer addresses/names or photographs.</p>
+<p>A printed QR is photo access, not unlimited photo-print authorization. Station scan-to-select/collection and kiosk redemption remain separate future work.</p>
+<h2>10 / Pilot acceptance checklist</h2>
+<table>
+<thead>
+<tr>
+  <th>Case</th>
+  <th>Required observation</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>Full guest URL</td>
+  <td>Printed QR scans to the exact same full-length Group/Photo URL.</td>
+</tr>
+<tr>
+  <td>Group switching</td>
+  <td>Print A, start B, show/reprint A: paper still opens A; incoming B photos stay in B.</td>
+</tr>
+<tr>
+  <td>Empty-group Undo</td>
+  <td>Ticket-issued group remains available rather than being cancelled.</td>
+</tr>
+<tr>
+  <td>Single Photo</td>
+  <td>Printed QR stays bound to one selected image; later arrivals cannot replace it.</td>
+</tr>
+<tr>
+  <td>Repeat tap</td>
+  <td>One confirmed attempt is claimed once; explicit Reprint is visibly separate.</td>
+</tr>
+<tr>
+  <td>Printer off / no paper</td>
+  <td>Photo queue remains usable; no automatic duplicate ticket after recovery.</td>
+</tr>
+<tr>
+  <td>App exit / restart</td>
+  <td>Saved uncertain attempt is not silently replayed.</td>
+</tr>
+<tr>
+  <td>Longer payload</td>
+  <td>Several actual guest links scan; test beyond the original 32-byte Lab URL.</td>
+</tr>
+<tr>
+  <td>Camera + cloud upload</td>
+  <td>Both continue while a small ticket is sent; measure device temperature/memory and latency.</td>
+</tr>
+<tr>
+  <td>CP9550DW</td>
+  <td>Existing Local/Cloud/Hybrid photo jobs and 4x6/strip settings are unchanged.</td>
+</tr>
+</tbody>
+</table>
+<p>Start with one disposable group and one ticket. Record exact-link scan success, then repeat/history/Undo before testing concurrency. No mass event use or automatic ticketing is authorized by these source tests alone.</p>
+<h2>Supporting records</h2>
+<ul>
+<li><a href="docs/h5_3/Release_Report.md">Release and evidence review</a></li>
+<li><a href="docs/h5_3/Evidence_Review.json">Sanitized evidence summary</a></li>
+<li><a href="docs/h5_3/validation/ticket-tests.log">27 ticket protocol + 28 ledger checks</a></li>
+<li><a href="docs/h5_3/validation/watch-ledger-tests.log">24 existing watch-ledger checks</a></li>
+<li><a href="docs/h5_3/validation/structural-checks.json">Structural and unchanged-component checks</a></li>
+</ul>
+<p>Primary API references: <a href="https://developer.android.com/develop/connectivity/bluetooth/connect-bluetooth-devices">Android Bluetooth connection</a>, <a href="https://developer.android.com/reference/android/bluetooth/BluetoothSocket">BluetoothSocket cancellation</a>, <a href="https://download4.epson.biz/sec_pubs/pos/reference_en/escpos/gs_lparen_lk.html">Epson native QR reference</a>. These are API references, not 58B3 certification.</p>
+</main></html>

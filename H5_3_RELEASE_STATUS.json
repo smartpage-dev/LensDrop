@@ -1,0 +1,14 @@
+{
+  "version": "0.2.0-alpha.6-h5.3",
+  "versionCode": 8,
+  "status": "manual-Bluetooth-ticket-pilot-source",
+  "queue_schema": 4,
+  "cloud_schema": 5,
+  "cloud_unchanged": true,
+  "windows_unchanged": true,
+  "android_native_build_executed": false,
+  "new_hardware_tests_executed": false,
+  "physical_evidence": "Lab ASCII + native QR symbol only; exact scan payload not verified",
+  "guide": "START_QR_TICKET_H5_3.html",
+  "historical_manifests": "H5/H5.1/H5.2 manifests apply to their original snapshots; H5_3_MANIFEST_SHA256.txt is current"
+}

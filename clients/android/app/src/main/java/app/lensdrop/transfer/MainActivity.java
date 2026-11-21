@@ -53,10 +53,11 @@ public final class MainActivity extends Activity {
     @Override public void onCreate(Bundle state){
         super.onCreate(state);config=new Config(this);
         ScrollView scroll=new ScrollView(this);LinearLayout content=new LinearLayout(this);content.setOrientation(LinearLayout.VERTICAL);int pad=24;content.setPadding(pad,pad,pad,pad);scroll.addView(content);setContentView(scroll);content.setOnApplyWindowInsetsListener((view,insets)->{view.setPadding(pad,pad+insets.getSystemWindowInsetTop(),pad,pad+insets.getSystemWindowInsetBottom());return insets;});
-        label(content,"LensDrop Transfer / H5 ALPHA",25);
+        label(content,"LensDrop Transfer / H5.3 ALPHA",25);
         status=label(content,"Not paired",16);
         button(content,"Staff Setup / Scan pairing QR",v->startActivity(new Intent(this,StaffSetupActivity.class)));
         button(content,"Print Station / Preview / Print",v->startActivity(new Intent(this,PrintActivity.class)));
+        button(content,"Bluetooth QR ticket / 58B3 pilot",v->startActivity(new Intent(this,TicketActivity.class)));
         label(content,"JPEG watch-folder source. Hardware and background behaviour are not yet field-certified. Keep the official camera app connected; LensDrop uploads shared photos only.",15);
         base=field(content,"HTTPS server origin",config.get("base"));
         token=field(content,"Device token (not administrator key)","");token.setInputType(InputType.TYPE_CLASS_TEXT|InputType.TYPE_TEXT_VARIATION_PASSWORD);

@@ -9,7 +9,7 @@ import org.json.JSONObject;
 import java.util.UUID;
 
 final class QueueDb extends SQLiteOpenHelper {
-    QueueDb(Context context) { super(context,"lensdrop-queue.sqlite",null,3);setWriteAheadLoggingEnabled(true); }
+    QueueDb(Context context) { super(context,"lensdrop-queue.sqlite",null,4);setWriteAheadLoggingEnabled(true); }
     @Override public void onConfigure(SQLiteDatabase db) { db.execSQL("PRAGMA synchronous=FULL"); }
     @Override public void onCreate(SQLiteDatabase db) {
         db.execSQL("CREATE TABLE observed(scope TEXT,uri TEXT,size INTEGER,modified INTEGER,stable INTEGER,PRIMARY KEY(scope,uri))");
@@ -17,15 +17,23 @@ final class QueueDb extends SQLiteOpenHelper {
         db.execSQL("CREATE TABLE sources(folder TEXT PRIMARY KEY,scope TEXT UNIQUE NOT NULL)");
         db.execSQL("CREATE INDEX due ON jobs(scope,state,next_try,created)");
         createH4(db);
+        createH53(db);
     }
     @Override public void onUpgrade(SQLiteDatabase db,int oldVersion,int newVersion) {
-        if(oldVersion<1||newVersion!=3)throw new IllegalStateException("Unsupported queue version. Preserve app data.");
+        if(oldVersion<1||newVersion!=4)throw new IllegalStateException("Unsupported queue version. Preserve app data.");
         if(oldVersion<2){
             db.execSQL("ALTER TABLE jobs ADD COLUMN is_test INTEGER NOT NULL DEFAULT 0");
             db.execSQL("ALTER TABLE jobs ADD COLUMN last_progress INTEGER NOT NULL DEFAULT 0");
             db.execSQL("CREATE TABLE sources(folder TEXT PRIMARY KEY,scope TEXT UNIQUE NOT NULL)");
         }
         if(oldVersion<3)createH4(db);
+        if(oldVersion<4)createH53(db);
+    }
+    private static void createH53(SQLiteDatabase db){
+        db.execSQL("CREATE TABLE qr_tickets(id TEXT PRIMARY KEY,scope TEXT NOT NULL,delivery_id TEXT NOT NULL,label TEXT NOT NULL,guest_url TEXT NOT NULL,printer TEXT NOT NULL,parent_id TEXT,created INTEGER NOT NULL,state TEXT NOT NULL DEFAULT 'prepared',observation TEXT NOT NULL DEFAULT 'not_checked',error TEXT,last_change INTEGER NOT NULL)");
+        db.execSQL("CREATE INDEX qr_ticket_scope ON qr_tickets(scope,created,id)");
+        db.execSQL("CREATE INDEX qr_ticket_delivery ON qr_tickets(scope,delivery_id)");
+        db.execSQL("CREATE TRIGGER qr_ticket_immutable BEFORE UPDATE OF id,scope,delivery_id,label,guest_url,printer,parent_id,created ON qr_tickets BEGIN SELECT RAISE(ABORT,'immutable_ticket_snapshot'); END");
     }
     private static void createH4(SQLiteDatabase db){
         db.execSQL("ALTER TABLE jobs ADD COLUMN delivery_id TEXT");

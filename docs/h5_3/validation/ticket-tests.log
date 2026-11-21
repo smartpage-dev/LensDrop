@@ -1,0 +1,57 @@
+PASS Prepared HTTPS URL is preserved byte-for-byte
+PASS Model2/M/4 commands identical to independently retained Lab protocol
+PASS 32-byte fixture command equality (does not claim physical scan)
+PASS Long host guest-link command equality
+PASS Max URL boundary accepted
+PASS Overlong guest URL blocked, never silently shortened
+PASS HTTP origin blocked
+PASS User credentials blocked
+PASS Origin path blocked
+PASS Origin trailing slash blocked rather than normalized after signing
+PASS Query token origin blocked
+PASS Fragment origin blocked
+PASS Staff QR cannot become guest ticket
+PASS Guest query/fragment additions blocked
+PASS Cross-origin guest URL blocked
+PASS Missing or malformed session rejected
+PASS Control-character URL blocked
+PASS Unicode labels not sent to unknown printer font
+PASS Command injection labels blocked
+PASS Normal Group and single Photo labels accepted
+PASS Only explicit address-shaped device target accepted
+PASS Malformed snapshot UUID rejected
+PASS Ticket contains exact URL and bounded ASCII framing
+PASS No cutter/status/nonvolatile commands in generated framing
+PASS Native QR limit applies independently
+PASS Outcome allowlist separates write result from observation
+PASS Exact lab chunking constants preserved
+Ticket protocol checks passed: 27. No Android transport or hardware tested.
+PASS New queue schema4 and empty ticket journal
+PASS Snapshot binds shown link without changing receiver
+PASS Repeated preview-confirm identity inserts only once
+PASS Same ticket ID with different printer is rejected
+PASS Cannot print a group from another scope
+PASS Cannot print a retired empty group
+PASS Open single-photo QR can produce a ticket
+PASS First claim only; duplicate send claim rejected
+PASS Sent is explicitly unconfirmed until operator observation
+PASS Reconnect/reopen cannot re-claim sent ticket
+PASS Crash during sending becomes outcome_unknown, never queued
+PASS Prepared but undispatched attempt is cancelled on reopen
+PASS Explicit reprint gets new ID but same guest URL
+PASS Cannot reprint a sending attempt
+PASS Cannot use different group as reprint parent
+PASS Issuing even empty group protects guest QR from Undo
+PASS Old empty-group Undo behavior retained when no ticket exists
+PASS Group changes do not mutate saved QR or printer
+PASS Database rejects direct snapshot mutation
+PASS Other event cannot see or claim ticket
+PASS Operator scan observation does not rewrite send state
+PASS Observations do not mark pending jobs done
+PASS Unsafe states and raw error strings rejected
+PASS Diagnostics omit guest URL and printer identity
+PASS History pages keep all attempts; no pending eviction
+PASS V3 to V4 additive migration preserves original jobs and settings
+PASS A missing prepared guest path cannot create a ticket
+PASS Claim for unknown ID is harmless
+Ticket ledger checks passed: 28 against actual SQLite via JVM bridge. Not Android instrumentation.

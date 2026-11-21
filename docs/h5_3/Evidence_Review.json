@@ -1,0 +1,49 @@
+{
+  "schema": "lensdrop.h53.evidence/1",
+  "reviewed_at": "2026-11-21",
+  "source_files": [
+    "PrinterLab58-report-1795271740435.json",
+    "PrinterLab58-report-1795271975380.json",
+    "PrinterLab58-report-1795272093826.json"
+  ],
+  "export_count": 3,
+  "unique_attempt_count": 2,
+  "phone": "Samsung SM-G7810 / Android SDK33",
+  "printer": "User-identified Yokoscan 58B3 / T58_F82E",
+  "firmware": "H20_2023_V1.0-8009",
+  "attempts": [
+    {
+      "id": "T-66C9EA9980",
+      "method": "A - Plain ASCII (no ESC commands)",
+      "bytes": 78,
+      "state": "sent_unconfirmed",
+      "observation": "not_checked",
+      "paper_visible": true
+    },
+    {
+      "id": "T-4363A312EC",
+      "method": "J - Native QR / custom test HTTPS URL",
+      "bytes": 115,
+      "url_bytes": 32,
+      "state": "sent_unconfirmed",
+      "observation": "not_checked",
+      "paper_qr_visible": true
+    }
+  ],
+  "transport_evidence": "Secure RFCOMM connection and standard SPP service 00001101-0000-1000-8000-00805f9b34fb recorded for same locally-salted printer tag",
+  "parameters": "4-dot native modules / M correction / 128-byte chunks / 20ms interval",
+  "photo_decode": {
+    "decoder": "OpenCV QRCodeDetector",
+    "image_sha256": "64c1d565dd502ccedbc20625755d4e09b2eea48da1b3c732b99dde2094c4472b",
+    "detected": true,
+    "decoded": false,
+    "independent_decoder": "pyzbar/libzbar",
+    "independent_count": 0,
+    "independent_results": [],
+    "perspective_zbar_results": [],
+    "additional_crops": [],
+    "physical_scan_status": "not verified; digital decode not obtained from supplied photograph"
+  },
+  "conclusion": "Sufficient for opt-in manual integration pilot; not physical QR-payload verification or event reliability certification.",
+  "privacy": "No decoded QR payload, raw report data, printer address, device tag or guest photograph included in release."
+}

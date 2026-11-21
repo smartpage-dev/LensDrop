@@ -1,0 +1,150 @@
+{
+  "passed": 36,
+  "scope": "static structure and byte-identity only, not Android lint/device tests",
+  "checks": [
+    {
+      "name": "Android31+ CONNECT permission explicit",
+      "passed": true
+    },
+    {
+      "name": "Android31+ SCAN scoped neverForLocation",
+      "passed": true
+    },
+    {
+      "name": "Legacy BLUETOOTH ends at API30",
+      "passed": true
+    },
+    {
+      "name": "Legacy BLUETOOTH_ADMIN ends at API30",
+      "passed": true
+    },
+    {
+      "name": "App backup still disabled",
+      "passed": true
+    },
+    {
+      "name": "Ticket activity not exported",
+      "passed": true
+    },
+    {
+      "name": "Bluetooth not required for install",
+      "passed": true
+    },
+    {
+      "name": "Secure SPP only",
+      "passed": true
+    },
+    {
+      "name": "No scanner start",
+      "passed": true
+    },
+    {
+      "name": "Exact advertised SPP UUID",
+      "passed": true
+    },
+    {
+      "name": "Cancellation cannot reset per operation",
+      "passed": true
+    },
+    {
+      "name": "Partial writes marked before stream call",
+      "passed": true
+    },
+    {
+      "name": "Connection and send deadlines bounded",
+      "passed": true
+    },
+    {
+      "name": "Foreground exit cancels ticket only",
+      "passed": true
+    },
+    {
+      "name": "No automatic ticket sender service",
+      "passed": true
+    },
+    {
+      "name": "One process-wide send guard",
+      "passed": true
+    },
+    {
+      "name": "Recovery serialized against sends",
+      "passed": true
+    },
+    {
+      "name": "Setup and printer identity rechecked at dispatch",
+      "passed": true
+    },
+    {
+      "name": "Ticket snapshot stored before connect",
+      "passed": true
+    },
+    {
+      "name": "Unknown writes never auto-requeued",
+      "passed": true
+    },
+    {
+      "name": "Ticket fields protected by SQLite trigger",
+      "passed": true
+    },
+    {
+      "name": "Additive queue migration 3->4",
+      "passed": true
+    },
+    {
+      "name": "Foreground print requires explicit confirmation",
+      "passed": true
+    },
+    {
+      "name": "Packet privacy export omissions",
+      "passed": true
+    },
+    {
+      "name": "Workflow includes ticket tests",
+      "passed": true
+    },
+    {
+      "name": "Same application identity",
+      "passed": true
+    },
+    {
+      "name": "Version code8 and H5.3",
+      "passed": true
+    },
+    {
+      "name": "Byte-identical cloud",
+      "passed": true
+    },
+    {
+      "name": "Byte-identical deploy",
+      "passed": true
+    },
+    {
+      "name": "Byte-identical clients/print-station",
+      "passed": true
+    },
+    {
+      "name": "Byte-identical clients/desktop",
+      "passed": true
+    },
+    {
+      "name": "Byte-identical tools/github",
+      "passed": true
+    },
+    {
+      "name": "Unchanged windows-print-station.yml",
+      "passed": true
+    },
+    {
+      "name": "Unchanged PrintEngine.java",
+      "passed": true
+    },
+    {
+      "name": "Unchanged UploadEngine.java",
+      "passed": true
+    },
+    {
+      "name": "Unchanged Config.java",
+      "passed": true
+    }
+  ]
+}
