@@ -1,0 +1,71 @@
+LensDrop H5.6.1 - uploaded build evidence
+
+Input: logs_122260118809.zip
+Input SHA-256: 0866281ee0a8ec8bf51ed6e32a19d243eac8577da1175a688481c685a1cfccc2
+Checkout: f55156174f287fffd67efd54997115d505a9c7cb
+Run shown in Gradle output: run 5; signing_mode=temporary-test.
+Compiler log: build/9_Compile and package the debug APK.txt
+Selected exact diagnostic lines below (timestamps retained; long source lines omitted).
+
+L3: 2026-11-23T13:06:36.9769350Z gradle --no-daemon --console=plain --stacktrace :app:assembleDebug 2>&1 | tee ../../ci-output/android-build.log
+L59: 2026-11-23T13:07:07.9572259Z /home/runner/work/LensDrop/LensDrop/clients/android/app/src/main/java/app/lensdrop/transfer/DeliveryActivity.java:49: error: cannot find symbol
+L62: 2026-11-23T13:07:07.9574513Z   symbol:   class Intent
+L63: 2026-11-23T13:07:07.9574893Z   location: class DeliveryActivity
+L64: 2026-11-23T13:07:07.9576049Z /home/runner/work/LensDrop/LensDrop/clients/android/app/src/main/java/app/lensdrop/transfer/DeliveryActivity.java:50: error: cannot find symbol
+L67: 2026-11-23T13:07:07.9578315Z   symbol:   class Intent
+L68: 2026-11-23T13:07:07.9578693Z   location: class DeliveryActivity
+L69: 2026-11-23T13:07:07.9579562Z /home/runner/work/LensDrop/LensDrop/clients/android/app/src/main/java/app/lensdrop/transfer/DeliveryActivity.java:59: error: cannot find symbol
+L72: 2026-11-23T13:07:07.9581910Z   symbol:   class Intent
+L73: 2026-11-23T13:07:07.9582274Z   location: class DeliveryActivity
+L74: 2026-11-23T13:07:07.9583090Z /home/runner/work/LensDrop/LensDrop/clients/android/app/src/main/java/app/lensdrop/transfer/DeliveryActivity.java:59: error: cannot find symbol
+L77: 2026-11-23T13:07:07.9585701Z   symbol:   class RecoveryActivity
+L78: 2026-11-23T13:07:07.9586144Z   location: class DeliveryActivity
+L79: 2026-11-23T13:07:08.0554582Z /home/runner/work/LensDrop/LensDrop/clients/android/app/src/main/java/app/lensdrop/transfer/DeliveryActivity.java:113: error: cannot find symbol
+L82: 2026-11-23T13:07:08.0656611Z   symbol:   method thumbnail(String)
+L83: 2026-11-23T13:07:08.0666056Z   location: variable api of type CloudApi
+L84: 2026-11-23T13:07:08.0666972Z /home/runner/work/LensDrop/LensDrop/clients/android/app/src/main/java/app/lensdrop/transfer/PrintActivity.java:9: error: cannot find symbol
+L87: 2026-11-23T13:07:08.0717011Z   symbol: variable PrintProfilePolicy
+L88: 2026-11-23T13:07:08.1577023Z /home/runner/work/LensDrop/LensDrop/clients/android/app/src/main/java/app/lensdrop/transfer/PrintActivity.java:44: error: cannot find symbol
+L91: 2026-11-23T13:07:08.1620339Z   symbol:   variable PrintProfilePolicy
+L92: 2026-11-23T13:07:08.1620741Z   location: class PrintActivity
+L93: 2026-11-23T13:07:08.1621501Z /home/runner/work/LensDrop/LensDrop/clients/android/app/src/main/java/app/lensdrop/transfer/PrintActivity.java:45: error: cannot find symbol
+L96: 2026-11-23T13:07:08.1623200Z   symbol:   variable PrintProfilePolicy
+L97: 2026-11-23T13:07:08.1623605Z   location: class PrintActivity
+L98: 2026-11-23T13:07:08.1624369Z /home/runner/work/LensDrop/LensDrop/clients/android/app/src/main/java/app/lensdrop/transfer/PrintActivity.java:49: error: cannot find symbol
+L101: 2026-11-23T13:07:08.1626509Z   symbol:   variable PrintProfilePolicy
+L102: 2026-11-23T13:07:08.1626914Z   location: class PrintActivity
+L103: 2026-11-23T13:07:08.1627643Z /home/runner/work/LensDrop/LensDrop/clients/android/app/src/main/java/app/lensdrop/transfer/PrintActivity.java:57: error: cannot find symbol
+L106: 2026-11-23T13:07:08.1629812Z   symbol:   variable JpegStructure
+L107: 2026-11-23T13:07:08.1630208Z   location: class PrintActivity
+L108: 2026-11-23T13:07:08.1630995Z /home/runner/work/LensDrop/LensDrop/clients/android/app/src/main/java/app/lensdrop/transfer/PrintActivity.java:62: error: cannot find symbol
+L111: 2026-11-23T13:07:08.1661634Z   symbol:   variable PrintProfilePolicy
+L112: 2026-11-23T13:07:08.1662136Z   location: class PrintActivity
+L113: 2026-11-23T13:07:08.1662863Z /home/runner/work/LensDrop/LensDrop/clients/android/app/src/main/java/app/lensdrop/transfer/PrintActivity.java:62: error: cannot find symbol
+L116: 2026-11-23T13:07:08.1675504Z   symbol:   variable PrintProfilePolicy
+L117: 2026-11-23T13:07:08.1676157Z   location: class PrintActivity
+L118: 2026-11-23T13:07:08.1676913Z /home/runner/work/LensDrop/LensDrop/clients/android/app/src/main/java/app/lensdrop/transfer/PrintActivity.java:65: error: cannot find symbol
+L121: 2026-11-23T13:07:08.1693849Z   symbol:   variable ArchiveStaging
+L122: 2026-11-23T13:07:08.1694260Z   location: class PrintActivity
+L123: 2026-11-23T13:07:08.1695310Z /home/runner/work/LensDrop/LensDrop/clients/android/app/src/main/java/app/lensdrop/transfer/PrintActivity.java:65: error: method add in class PrintQueue cannot be applied to given types;
+L126: 2026-11-23T13:07:08.1720686Z   required: String,JSONObject,String,String
+L127: 2026-11-23T13:07:08.1721216Z   found:    String,JSONObject,String,String,String
+L128: 2026-11-23T13:07:08.1721726Z   reason: actual and formal argument lists differ in length
+L129: 2026-11-23T13:07:08.3557097Z /home/runner/work/LensDrop/LensDrop/clients/android/app/src/main/java/app/lensdrop/transfer/MainActivity.java:91: error: cannot find symbol
+L132: 2026-11-23T13:07:08.3610588Z   symbol:   class RecoveryActivity
+L133: 2026-11-23T13:07:08.3611207Z   location: class MainActivity
+L134: 2026-11-23T13:07:08.3614910Z /home/runner/work/LensDrop/LensDrop/clients/android/app/src/main/java/app/lensdrop/transfer/MainActivity.java:93: error: cannot find symbol
+L137: 2026-11-23T13:07:08.3649363Z   symbol:   method retryAssignments(String)
+L138: 2026-11-23T13:07:08.3662007Z   location: variable q of type QueueDb
+L139: 2026-11-23T13:07:08.3662935Z /home/runner/work/LensDrop/LensDrop/clients/android/app/src/main/java/app/lensdrop/transfer/MainActivity.java:152: error: cannot find symbol
+L142: 2026-11-23T13:07:08.3667854Z   symbol:   method archivePolicy(String,boolean)
+L143: 2026-11-23T13:07:08.3669595Z   location: variable q of type QueueDb
+L146: 2026-11-23T13:07:08.3720807Z 17 errors
+L148: 2026-11-23T13:07:08.3763306Z > Task :app:compileDebugJavaWithJavac FAILED
+
+The uploaded logic-test step invokes only:
+RUN_POLICY_TESTS.sh
+RUN_PRINT_POLICY_TESTS.sh
+RUN_LEDGER_TESTS.sh
+
+The exact H5.6 source workflow instead invokes eight runners and assembleDebug + lintDebug.
+No lint result, APK verification, installation or scanner runtime result is established by this failed build.

@@ -1,0 +1,3 @@
+LensDrop H5.6.1 - complete Android repair overlay
+
+Open START_BUILD_REPAIR_H5_6_1.html. Merge ALL contents of this folder at the existing LensDrop repository root, including hidden .github, clients, tools and the root source manifest. This is not a delta-only patch. Back up custom source first; keep .git, signing secrets and runtime data. Do not use Printer Lab. No APK, cloud or Windows application is included here. Start a NEW Android workflow after committing.

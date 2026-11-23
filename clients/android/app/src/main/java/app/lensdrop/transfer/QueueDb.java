@@ -9,7 +9,7 @@ import org.json.JSONObject;
 import java.util.UUID;
 
 final class QueueDb extends SQLiteOpenHelper {
-    QueueDb(Context context) { super(context,"lensdrop-queue.sqlite",null,4);setWriteAheadLoggingEnabled(true); }
+    QueueDb(Context context) { super(context,"lensdrop-queue.sqlite",null,6);setWriteAheadLoggingEnabled(true); }
     @Override public void onConfigure(SQLiteDatabase db) { db.execSQL("PRAGMA synchronous=FULL"); }
     @Override public void onCreate(SQLiteDatabase db) {
         db.execSQL("CREATE TABLE observed(scope TEXT,uri TEXT,size INTEGER,modified INTEGER,stable INTEGER,PRIMARY KEY(scope,uri))");
@@ -18,9 +18,11 @@ final class QueueDb extends SQLiteOpenHelper {
         db.execSQL("CREATE INDEX due ON jobs(scope,state,next_try,created)");
         createH4(db);
         createH53(db);
+        createH54(db);
+        createH55(db);
     }
     @Override public void onUpgrade(SQLiteDatabase db,int oldVersion,int newVersion) {
-        if(oldVersion<1||newVersion!=4)throw new IllegalStateException("Unsupported queue version. Preserve app data.");
+        if(oldVersion<1||newVersion!=6)throw new IllegalStateException("Unsupported queue version. Preserve app data.");
         if(oldVersion<2){
             db.execSQL("ALTER TABLE jobs ADD COLUMN is_test INTEGER NOT NULL DEFAULT 0");
             db.execSQL("ALTER TABLE jobs ADD COLUMN last_progress INTEGER NOT NULL DEFAULT 0");
@@ -28,6 +30,41 @@ final class QueueDb extends SQLiteOpenHelper {
         }
         if(oldVersion<3)createH4(db);
         if(oldVersion<4)createH53(db);
+        if(oldVersion<5)createH54(db);
+        if(oldVersion<6)createH55(db);
+    }
+    private static void createH55(SQLiteDatabase db){
+        db.execSQL("ALTER TABLE watch_sessions ADD COLUMN archive_all INTEGER NOT NULL DEFAULT 0");
+        db.execSQL("ALTER TABLE jobs ADD COLUMN archive_private INTEGER NOT NULL DEFAULT 0");
+        db.execSQL("ALTER TABLE jobs ADD COLUMN selection_hidden INTEGER NOT NULL DEFAULT 0");
+        db.execSQL("ALTER TABLE jobs ADD COLUMN photo_id TEXT");
+        db.execSQL("ALTER TABLE jobs ADD COLUMN delivery_synced INTEGER NOT NULL DEFAULT 0");
+        db.execSQL("ALTER TABLE jobs ADD COLUMN delivery_error TEXT");
+        db.execSQL("ALTER TABLE jobs ADD COLUMN delivery_next INTEGER NOT NULL DEFAULT 0");
+        db.execSQL("ALTER TABLE jobs ADD COLUMN delivery_attempts INTEGER NOT NULL DEFAULT 0");
+        db.execSQL("CREATE INDEX assignment_due ON jobs(scope,archive_private,state,delivery_synced,delivery_next)");
+    }
+    boolean archiveAll(String scope){try(Cursor c=getReadableDatabase().rawQuery("SELECT archive_all FROM watch_sessions WHERE scope=?",new String[]{scope})){return c.moveToFirst()&&c.getInt(0)==1;}}
+    void archivePolicy(String scope,boolean all){
+        SQLiteDatabase d=getWritableDatabase();d.beginTransaction();try{
+            d.execSQL("UPDATE watch_sessions SET archive_all=? WHERE scope=?",new Object[]{all?1:0,scope});
+            // Explicitly enabling archive-all promotes known, unselected NEW arrivals, not excluded/skipped files.
+            if(all)d.execSQL("UPDATE jobs SET state='queued',archive_private=1 WHERE scope=? AND state='candidate' AND is_test=0 AND delivery_id IS NULL",new Object[]{scope});
+            d.setTransactionSuccessful();
+        }finally{d.endTransaction();}
+    }
+    boolean assignmentRetryPending(String scope){try(Cursor c=getReadableDatabase().rawQuery("SELECT 1 FROM jobs WHERE scope=? AND archive_private=1 AND state='uploaded' AND delivery_id IS NOT NULL AND photo_id IS NOT NULL AND delivery_synced=0 AND delivery_next<? LIMIT 1",new String[]{scope,Long.toString(Long.MAX_VALUE)})){return c.moveToFirst();}}
+    void retryAssignments(String scope){getWritableDatabase().execSQL("UPDATE jobs SET delivery_error=NULL,delivery_next=0,delivery_attempts=0 WHERE scope=? AND archive_private=1 AND state='uploaded' AND delivery_synced=0",new Object[]{scope});}
+    private static void createH54(SQLiteDatabase db){
+        // Preserve every old ID/receipt/assignment while permitting explicitly selected revisions.
+        db.execSQL("ALTER TABLE jobs RENAME TO jobs_h53");
+        db.execSQL("CREATE TABLE jobs(id TEXT PRIMARY KEY,scope TEXT NOT NULL,uri TEXT NOT NULL,name TEXT NOT NULL,size INTEGER NOT NULL,modified INTEGER NOT NULL,state TEXT NOT NULL DEFAULT 'queued',spool TEXT,sha TEXT,upload TEXT,offset INTEGER NOT NULL DEFAULT 0,attempts INTEGER NOT NULL DEFAULT 0,next_try INTEGER NOT NULL DEFAULT 0,error TEXT,receipt TEXT,created INTEGER NOT NULL,is_test INTEGER NOT NULL DEFAULT 0,last_progress INTEGER NOT NULL DEFAULT 0,delivery_id TEXT,source_revision INTEGER NOT NULL DEFAULT 0,file_failures INTEGER NOT NULL DEFAULT 0,UNIQUE(scope,uri,size,modified,source_revision))");
+        db.execSQL("INSERT INTO jobs(id,scope,uri,name,size,modified,state,spool,sha,upload,offset,attempts,next_try,error,receipt,created,is_test,last_progress,delivery_id) SELECT id,scope,uri,name,size,modified,state,spool,sha,upload,offset,attempts,next_try,error,receipt,created,is_test,last_progress,delivery_id FROM jobs_h53");
+        db.execSQL("DROP TABLE jobs_h53");
+        db.execSQL("CREATE INDEX due ON jobs(scope,state,next_try,created)");
+        db.execSQL("CREATE INDEX job_delivery ON jobs(delivery_id)");
+        db.execSQL("ALTER TABLE watch_sessions ADD COLUMN undo_until INTEGER NOT NULL DEFAULT 0");
+        db.execSQL("CREATE TABLE recovery_audit(id TEXT PRIMARY KEY,scope TEXT NOT NULL,job_id TEXT NOT NULL,action TEXT NOT NULL,previous_state TEXT NOT NULL,at INTEGER NOT NULL,detail TEXT NOT NULL)");
     }
     private static void createH53(SQLiteDatabase db){
         db.execSQL("CREATE TABLE qr_tickets(id TEXT PRIMARY KEY,scope TEXT NOT NULL,delivery_id TEXT NOT NULL,label TEXT NOT NULL,guest_url TEXT NOT NULL,printer TEXT NOT NULL,parent_id TEXT,created INTEGER NOT NULL,state TEXT NOT NULL DEFAULT 'prepared',observation TEXT NOT NULL DEFAULT 'not_checked',error TEXT,last_change INTEGER NOT NULL)");
@@ -44,9 +81,9 @@ final class QueueDb extends SQLiteOpenHelper {
         db.execSQL("CREATE INDEX job_delivery ON jobs(delivery_id)");
     }
     void recover() { getWritableDatabase().execSQL("UPDATE jobs SET state='retry',next_try=0 WHERE state='uploading'"); }
-    void retryBlocked(String scope) { getWritableDatabase().execSQL("UPDATE jobs SET state='retry',next_try=0 WHERE state='blocked' AND scope=?",new Object[]{scope}); }
+    void retryBlocked(String scope) { getWritableDatabase().execSQL("UPDATE jobs SET state='retry',next_try=0,file_failures=0 WHERE state='blocked' AND scope=?",new Object[]{scope}); }
     boolean hasOtherPending(String scope) {
-        try(Cursor c=getReadableDatabase().rawQuery("SELECT 1 FROM jobs WHERE scope<>? AND state NOT IN ('uploaded','skipped') LIMIT 1",new String[]{scope})) {return c.moveToFirst();}
+        try(Cursor c=getReadableDatabase().rawQuery("SELECT 1 FROM jobs WHERE scope<>? AND (state NOT IN ('uploaded','skipped','retired_local') OR (state='uploaded' AND archive_private=1 AND delivery_id IS NOT NULL AND delivery_synced=0)) LIMIT 1",new String[]{scope})) {return c.moveToFirst();}
     }
     boolean observe(String scope,String uri,long size,long modified,long now) {
         SQLiteDatabase db=getWritableDatabase();
@@ -59,14 +96,14 @@ final class QueueDb extends SQLiteOpenHelper {
     void add(String scope,String uri,String name,long size,long modified) {
         ContentValues v=new ContentValues();v.put("id",UUID.randomUUID().toString());v.put("scope",scope);v.put("uri",uri);v.put("name",name);v.put("size",size);v.put("modified",modified);v.put("created",System.currentTimeMillis());
         getWritableDatabase().insertWithOnConflict("jobs",null,v,SQLiteDatabase.CONFLICT_IGNORE);
-        getWritableDatabase().execSQL("UPDATE jobs SET state='queued',next_try=0,error=NULL WHERE scope=? AND uri=? AND size=? AND modified=? AND error='source_missing'",new Object[]{scope,uri,size,modified});
+        getWritableDatabase().execSQL("UPDATE jobs SET state='queued',next_try=0,error=NULL WHERE scope=? AND uri=? AND size=? AND modified=? AND state='blocked' AND error='source_missing'",new Object[]{scope,uri,size,modified});
     }
     Job due(String scope) {
         try(Cursor c=getReadableDatabase().rawQuery("SELECT * FROM jobs WHERE scope=? AND state IN ('queued','retry') AND next_try<=? ORDER BY (spool IS NULL),next_try,created,id LIMIT 1",new String[]{scope,Long.toString(System.currentTimeMillis())})) {
             return c.moveToFirst()?new Job(c):null;
         }
     }
-    void update(String id,ContentValues values) { getWritableDatabase().update("jobs",values,"id=?",new String[]{id}); }
+    void update(String id,ContentValues values) { getWritableDatabase().update("jobs",values,"id=? AND state<>'retired_local'",new String[]{id}); }
     void state(String id,String state,String error,int attempts,long next) {
         ContentValues v=new ContentValues();v.put("state",state);v.put("error",error);v.put("attempts",attempts);v.put("next_try",next);update(id,v);
     }
@@ -104,13 +141,15 @@ final class QueueDb extends SQLiteOpenHelper {
         try(Cursor c=getReadableDatabase().rawQuery("SELECT state FROM jobs WHERE scope=? AND id=?",new String[]{scope,id})){return c.moveToFirst()?c.getString(0):"missing";}
     }
     JSONObject snapshot(String scope)throws Exception{
-        JSONObject result=new JSONObject();result.put("version","0.2.0-alpha.5-h4");result.put("generated_at",System.currentTimeMillis());result.put("scope","files-observed-by-this-client-only");result.put("camera_card_complete",false);result.put("source_originals_may_be_deleted",false);
+        JSONObject result=new JSONObject();result.put("version","0.2.0-alpha.6-h5.5");result.put("generated_at",System.currentTimeMillis());result.put("scope","files-observed-by-this-client-only");result.put("camera_card_complete",false);result.put("source_originals_may_be_deleted",false);
         for(int flag=0;flag<=1;flag++){
-            JSONObject group=new JSONObject();long received=0,uploaded=0,queued=0,blocked=0,candidates=0,skipped=0;
+            JSONObject group=new JSONObject();long received=0,uploaded=0,queued=0,blocked=0,candidates=0,skipped=0,retired=0;
             try(Cursor c=getReadableDatabase().rawQuery("SELECT state,count(*) FROM jobs WHERE scope=? AND is_test=? GROUP BY state",new String[]{scope,Integer.toString(flag)})){
-                while(c.moveToNext()){long n=c.getLong(1);received+=n;String state=c.getString(0);if(state.equals("uploaded"))uploaded+=n;else if(state.equals("blocked"))blocked+=n;else if(state.equals("candidate"))candidates+=n;else if(state.equals("skipped"))skipped+=n;else queued+=n;}
+                while(c.moveToNext()){long n=c.getLong(1);received+=n;String state=c.getString(0);if(state.equals("uploaded"))uploaded+=n;else if(state.equals("blocked"))blocked+=n;else if(state.equals("candidate"))candidates+=n;else if(state.equals("skipped"))skipped+=n;else if(state.equals("retired_local"))retired+=n;else queued+=n;}
             }
-            group.put("received",received);group.put("uploaded",uploaded);group.put("queued",queued);group.put("blocked",blocked);group.put("candidates",candidates);group.put("skipped",skipped);
+            try(Cursor c=getReadableDatabase().rawQuery("SELECT count(*) FROM jobs WHERE scope=? AND is_test=? AND archive_private=1 AND delivery_id IS NULL AND selection_hidden=0 AND state NOT IN ('skipped','retired_local')",new String[]{scope,Integer.toString(flag)})){c.moveToFirst();group.put("unassigned_archives",c.getLong(0));}
+            try(Cursor c=getReadableDatabase().rawQuery("SELECT count(*) FROM jobs WHERE scope=? AND is_test=? AND archive_private=1 AND delivery_id IS NOT NULL AND delivery_synced=0 AND state<>'retired_local'",new String[]{scope,Integer.toString(flag)})){c.moveToFirst();group.put("pending_assignments",c.getLong(0));}
+            group.put("received",received);group.put("uploaded",uploaded);group.put("queued",queued);group.put("blocked",blocked);group.put("candidates",candidates);group.put("skipped",skipped);group.put("retired",retired);
             try(Cursor c=getReadableDatabase().rawQuery("SELECT coalesce(max(created),0),coalesce(max(last_progress),0),coalesce(sum(CASE WHEN state IN ('queued','retry','uploading','blocked') THEN size-offset ELSE 0 END),0) FROM jobs WHERE scope=? AND is_test=?",new String[]{scope,Integer.toString(flag)})){
                 if(c.moveToFirst()){group.put("last_received",c.getLong(0));group.put("last_progress",c.getLong(1));group.put("queue_bytes",c.getLong(2));}
             }
@@ -126,11 +165,11 @@ final class QueueDb extends SQLiteOpenHelper {
         result.put("error_counts",errors);result.put("omitted","tokens, server URLs, event names, source URIs, filenames, photos, raw errors");return result;
     }
     static final class Job {
-        final String id,scope,uri,name,spool,sha,upload,delivery;final long size,modified;final int attempts;final boolean isTest;
+        final String id,scope,uri,name,spool,sha,upload,delivery;final long size,modified;final int attempts,fileFailures;final boolean isTest,archivePrivate;
         Job(Cursor c) {
-            isTest=c.getInt(c.getColumnIndexOrThrow("is_test"))==1;
+            isTest=c.getInt(c.getColumnIndexOrThrow("is_test"))==1;archivePrivate=c.getInt(c.getColumnIndexOrThrow("archive_private"))==1;
             delivery=s(c,"delivery_id");id=s(c,"id");scope=s(c,"scope");uri=s(c,"uri");name=s(c,"name");spool=s(c,"spool");sha=s(c,"sha");upload=s(c,"upload");
-            size=c.getLong(c.getColumnIndexOrThrow("size"));modified=c.getLong(c.getColumnIndexOrThrow("modified"));attempts=c.getInt(c.getColumnIndexOrThrow("attempts"));
+            size=c.getLong(c.getColumnIndexOrThrow("size"));modified=c.getLong(c.getColumnIndexOrThrow("modified"));attempts=c.getInt(c.getColumnIndexOrThrow("attempts"));fileFailures=c.getInt(c.getColumnIndexOrThrow("file_failures"));
         }
         private static String s(Cursor c,String key) { return c.getString(c.getColumnIndexOrThrow(key)); }
     }

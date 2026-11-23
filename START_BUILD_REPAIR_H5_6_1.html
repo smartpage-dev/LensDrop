@@ -1,0 +1,60 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>LensDrop H5.6.1 Android build repair</title><style>*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:#eef3f5;color:#18333e;font:17px/1.7 system-ui,-apple-system,Segoe UI,sans-serif}header{background:#153f48;color:#fff;padding:25px max(20px,calc((100% - 1000px)/2));font-size:14px;letter-spacing:1px}main{max-width:1000px;margin:30px auto;padding:35px 48px;background:#fff;border:1px solid #d9e3e5;border-radius:16px;overflow-wrap:anywhere}h1{font-size:36px;line-height:1.22;margin:0 0 24px}h2{font-size:25px;margin-top:37px;color:#105d63;scroll-margin-top:20px}h3{font-size:20px}p{margin:14px 0}pre{white-space:pre-wrap;overflow-wrap:anywhere;background:#173640;color:#f1fafb;padding:18px;border-radius:8px;font-size:13px}code{font-family:ui-monospace,Consolas,monospace}p code,li code{background:#eef5f5;padding:2px 5px}table{border-collapse:collapse;width:100%;margin:22px 0;font-size:15px}td,th{border:1px solid #d6e4e6;vertical-align:top;text-align:left;padding:10px}th{background:#edf5f5}a{color:#096879}strong{font-weight:700}.notice{background:#fff1d5;border-left:5px solid #bd7b00;padding:14px 18px;border-radius:7px;margin:20px 0}.links{display:flex;gap:12px;flex-wrap:wrap;margin:20px 0}.links a{border:1px solid #99bfc2;border-radius:8px;padding:8px 12px;text-decoration:none}li{margin:8px 0}@media(max-width:650px){main{margin:0;padding:24px 18px;border:0;border-radius:0}header{padding:18px}h1{font-size:28px}h2{font-size:23px}table{font-size:13px}td,th{padding:8px}pre{font-size:12px}}@media print{body{background:#fff}header{display:none}main{border:0;margin:0;padding:0}h2{break-after:avoid}tr,pre{break-inside:avoid}}</style></head><body><header>LUCE STUDIO / LENSDROP / ANDROID BUILD REPAIR</header><main><div class="notice"><strong>Source update only.</strong> No native APK or camera test is claimed. Preserve your signing key and app data.</div><h1>LensDrop H5.6.1 - repair the complete Android checkout</h1>
+<p><strong>This is for LensDrop, not Printer Lab. No APK is included.</strong></p>
+<p>Your uploaded run has a real missing Intent import and a mixed/incomplete Android support tree. It also ran an older workflow. Do not keep applying small deltas to an uncertain baseline. The repair bundle supplies the full Android build inputs and hidden workflow together.</p>
+<h2>1. Choose ONE package</h2>
+<p><strong>Android repair bundle (recommended for this build failure):</strong> merge ALL contents of <code>LensDrop_H5_6_1_ANDROID_REPAIR</code> into the root of your existing LensDrop repository. It is a full Android replacement overlay, not a patch that assumes H5.5 support files are already present. It does not include or change the cloud/Windows application.</p>
+<p><strong>Full GitHub project:</strong> merge the contents of <code>LensDrop_H5_6_1</code> at repository root after reviewing/backing up custom changes. Cloud/Windows/deploy files are the unchanged H5.5 versions. Merely uploading this source does not deploy Hostinger.</p>
+<p>In both cases preserve <code>.git</code>, all signing secrets and runtime data. Do not delete the entire repository, create a second nested LensDrop folder or upload just the ZIP. Never add live databases, photos or keys. Prefer GitHub Desktop to preserve all nested/hidden files. On macOS, Command + Shift + . shows hidden items.</p>
+<h2>2. Check the repository layout</h2>
+<pre><code class="language-text">LensDrop/
+  .github/workflows/android-debug.yml
+  ANDROID_SOURCE_SNAPSHOT_H5_6_1.json
+  clients/android/app/build.gradle
+  clients/android/app/src/main/java/app/lensdrop/transfer/
+    DeliveryActivity.java
+    RecoveryActivity.java
+    PrintProfilePolicy.java
+    JpegStructure.java
+    ArchiveStaging.java
+    QueueDb.java
+    PrintQueue.java
+    CloudApi.java
+    ... the remaining production files ...
+  tools/github/verify_android_snapshot.py
+  tools/github/android_ci.py
+</code></pre>
+<p><code>clients/android/app/build.gradle</code> must show:</p>
+<pre><code class="language-gradle">versionCode 12
+versionName '0.2.0-alpha.6-h5.6.1'
+</code></pre>
+<p><code>DeliveryActivity.java</code> must import <code>android.content.Intent</code>. Do not remove the archive or recovery buttons to silence compiler errors. All 36 production Java files belong in this source version.</p>
+<h2>3. Commit and start a NEW Android run</h2>
+<p>Commit/push, then Actions &gt; LensDrop Android APK &gt; Run workflow, on the updated branch (normally main). Accept SDK licenses and retain your established signing choice.</p>
+<p>Do NOT choose Re-run jobs on the old failure. That repeats the old SHA. The old uploaded commit starts <code>f5515617</code>; the new run must use your new commit.</p>
+<p>The workflow now shows:</p>
+<ol>
+<li>Prepare output and validate choices.</li>
+<li>Verify complete Android source snapshot (no mixed versions).</li>
+<li>SDK/signing preparation.</li>
+<li>All policy, profile, queue, ticket, recovery, archive, UI and new integrity tests.</li>
+<li>Compile APK and run Android lint (required).</li>
+<li>Verify APK signature and prepare download.</li>
+</ol>
+<p>If the snapshot step names a missing or stale file, restore that exact file from this bundle. Do not disable the check, regenerate its manifest merely to accept an incomplete upload, or change SDK/signing values as a workaround. Intentional custom source needs a reviewed new snapshot.</p>
+<h2>4. Download the program artifact</h2>
+<p>Only after the whole run succeeds, download <code>LensDrop-H5-APK-&lt;new run&gt;-&lt;signing mode&gt;</code>. Extract <code>LensDrop-H5-debug.apk</code>. The filename alone does not indicate the version.</p>
+<p>Check BUILD_INFO.json:</p>
+<pre><code class="language-text">version_name: 0.2.0-alpha.6-h5.6.1
+version_code: 12
+application_id: app.lensdrop.transfer
+source_snapshot: lensdrop-android-h5.6.1-code12
+git_commit: YOUR NEW COMMIT
+</code></pre>
+<p>The artifact also includes <code>android-source-integrity.json</code> and signature/checksum information. A log artifact is not an application installer.</p>
+<h2>5. Preserve the installed app and event data</h2>
+<p>The failed run used <code>temporary-test</code>. That does not establish a compatible key for an existing app. Keep the original signing identity when updating in place. A different permanent key does not magically match an earlier temporary APK. Do not uninstall or clear queues to bypass a signature error.</p>
+<p>No cloud redeploy or Windows rebuild is required solely for this Android correction when both already run H5.5. Keep cloud credentials, data directory and initialization=0 unchanged. This repair keeps Android database schemas6/3 unchanged.</p>
+<p>After installing code12, verify Event / Setup / Support and retry the staff QR flow with a disposable invitation. Permission denial, Cancel and a wrong QR should be visible outcomes. Success must still be followed by the intended device's code approval in web Admin. The scanner hardware behavior remains unverified here.</p>
+<h2>Evidence and scope</h2>
+<p>See <code>BUILD_REPAIR_REPORT.md</code>, <code>ERROR_EXCERPT.txt</code> and <code>ANDROID_SOURCE_SNAPSHOT_H5_6_1.json</code> in the repair overlay; full-project copies are also under <code>docs/h5.6.1/</code>. This delivery changes a missing import and build-coherence checks, not cloud/print algorithms. Local checks are not an Android SDK build, lint result or phone test.</p>
+<div class="links"><a href="BUILD_REPAIR_REPORT.md">Technical report</a><a href="ERROR_EXCERPT.txt">Uploaded error evidence</a><a href="CURRENT_RELEASE.json">Current versions and limits</a></div></main></body></html>

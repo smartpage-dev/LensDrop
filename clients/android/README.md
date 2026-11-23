@@ -1,3 +1,9 @@
+# H5.2 Android update
+
+Version 0.2.0-alpha.6-h5.2 / code7, application ID app.lensdrop.transfer. New authorized-profile picker, strip source validation, two-up nominal preview and explicit sheet/strip copy counts. Read ../../docs/h5_2/CP9550DW_SETUP.html. Compile through the existing manual LensDrop Android APK workflow with the SAME signing identity. No APK supplied; no runtime or printer test of H5.2 has been completed here. The older instructions below are historical. Existing H5 cloud remains compatible.
+
+## Historical H5/H4 component notes
+
 # H5 update - read the current guide first
 
 This component is part of H5. Read the root docs/h5/LensDrop_H5_Setup_Guide.html and RELEASE_STATUS.json before the retained earlier instructions below. Cloud schema5; Android native compilation and Windows native compilation remain unverified. H5 supersedes earlier statements that no print source or staff-QR source exists. No compiled APK/EXE is bundled.

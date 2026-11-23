@@ -63,7 +63,7 @@ final class WatchLedger {
                 if(!name.toLowerCase(java.util.Locale.ROOT).matches(".*\\.jpe?g$")||name.contains("/")||name.contains("\\")){
                     d.execSQL("UPDATE watch_items SET disposition='invalid' WHERE scope=? AND uri=?",new Object[]{scope,uri});d.setTransactionSuccessful();return;
                 }
-                job=UUID.randomUUID().toString();ContentValues v=new ContentValues();v.put("id",job);v.put("scope",scope);v.put("uri",uri);v.put("name",name);v.put("size",size);v.put("modified",modified);v.put("created",now);v.put("delivery_id",delivery);v.put("state",delivery==null?"candidate":"queued");
+                job=UUID.randomUUID().toString();ContentValues v=new ContentValues();v.put("id",job);v.put("scope",scope);v.put("uri",uri);v.put("name",name);v.put("size",size);v.put("modified",modified);v.put("created",now);v.put("delivery_id",delivery);v.put("state",queue.archiveAll(scope)||delivery!=null?"queued":"candidate");v.put("archive_private",queue.archiveAll(scope)?1:0);
                 long inserted=d.insertWithOnConflict("jobs",null,v,SQLiteDatabase.CONFLICT_IGNORE);
                 if(inserted<0){try(Cursor c=d.rawQuery("SELECT id FROM jobs WHERE scope=? AND uri=? AND size=? AND modified=?",new String[]{scope,uri,Long.toString(size),Long.toString(modified)})){if(c.moveToFirst())job=c.getString(0);}}
                 d.execSQL("UPDATE watch_items SET disposition='ready',job_id=? WHERE scope=? AND uri=?",new Object[]{job,scope,uri});
@@ -78,6 +78,7 @@ final class WatchLedger {
         JSONObject o=new JSONObject();o.put("ready",ready(scope));o.put("mode",mode(scope));o.put("active",active(scope));o.put("shown",shown(scope));o.put("auto_assign",automatic(scope));
         o.put("excluded",Long.parseLong(value(scope,"baseline_count")==null?"0":value(scope,"baseline_count")));
         try(Cursor c=db().rawQuery("SELECT state,count(*) FROM jobs WHERE scope=? GROUP BY state",new String[]{scope})){while(c.moveToNext())o.put(c.getString(0),c.getLong(1));}
+        try(Cursor c=db().rawQuery("SELECT count(*) FROM jobs WHERE scope=? AND archive_private=1 AND selection_hidden=0 AND delivery_id IS NULL AND state NOT IN ('skipped','retired_local')",new String[]{scope})){if(c.moveToFirst())o.put("unassigned_archives",c.getLong(0));}
         try(Cursor c=db().rawQuery("SELECT count(*) FROM watch_items WHERE scope=? AND disposition='changed'",new String[]{scope})){if(c.moveToFirst())o.put("changed_sources",c.getLong(0));}return o;
     }
     JSONObject group(String scope,String id)throws Exception{
@@ -97,7 +98,7 @@ final class WatchLedger {
     }
     void resume(String scope,String id)throws Exception{
         JSONObject g=group(scope,id);if(g==null||!g.getString("state").equals("open")||!g.getString("kind").equals("group"))throw new IllegalStateException("Only an open group can receive additional photographs");
-        db().execSQL("UPDATE watch_sessions SET active_group=?,shown_group=?,previous_group=NULL,mode='group',auto_assign=0 WHERE scope=?",new Object[]{id,id,scope});
+        db().execSQL("UPDATE watch_sessions SET active_group=?,shown_group=?,previous_group=NULL,undo_until=0,mode='group',auto_assign=0 WHERE scope=?",new Object[]{id,id,scope});
     }
     private String takeReserved(String scope,String kind){
         try(Cursor c=db().rawQuery("SELECT id FROM guest_groups WHERE scope=? AND kind=? AND state='reserved' AND guest_path IS NOT NULL ORDER BY created,id LIMIT 1",new String[]{scope,kind})){
@@ -108,7 +109,7 @@ final class WatchLedger {
     String nextGroup(String scope){
         SQLiteDatabase d=db();d.beginTransaction();try{
             String previous=active(scope),id=takeReserved(scope,"group");
-            d.execSQL("UPDATE watch_sessions SET previous_group=?,active_group=?,shown_group=?,mode='group',auto_assign=0 WHERE scope=?",new Object[]{previous,id,id,scope});d.setTransactionSuccessful();return id;
+            d.execSQL("UPDATE watch_sessions SET previous_group=?,active_group=?,shown_group=?,mode='group',auto_assign=0,undo_until=? WHERE scope=?",new Object[]{previous,id,id,System.currentTimeMillis()+120000,scope});d.setTransactionSuccessful();return id;
         }finally{d.endTransaction();}
     }
     long assigned(String scope,String id){
@@ -117,30 +118,34 @@ final class WatchLedger {
     String undo(String scope){
         SQLiteDatabase d=db();d.beginTransaction();try{
             String old=value(scope,"previous_group"),current=active(scope);if(old==null||current==null)throw new IllegalStateException("No Next Group action to undo. Use History to resume a previous group.");
-            long n=assigned(scope,current);boolean ticketIssued;try(Cursor c=d.rawQuery("SELECT 1 FROM qr_tickets WHERE scope=? AND delivery_id=? LIMIT 1",new String[]{scope,current})){ticketIssued=c.moveToFirst();}if(WatchRules.cancelOnUndo(n)&&!ticketIssued)d.execSQL("UPDATE guest_groups SET state='cancel_pending' WHERE id=?",new Object[]{current});
-            d.execSQL("UPDATE watch_sessions SET active_group=?,shown_group=?,previous_group=NULL,auto_assign=0 WHERE scope=?",new Object[]{old,old,scope});d.setTransactionSuccessful();
+            long deadline=Long.parseLong(value(scope,"undo_until"));if(System.currentTimeMillis()>deadline)throw new IllegalStateException("Quick Undo expired. Use History then Resume to intentionally change the receiver.");
+            long n=assigned(scope,current);boolean ticketIssued;try(Cursor c=d.rawQuery("SELECT 1 FROM qr_tickets WHERE scope=? AND delivery_id=? LIMIT 1",new String[]{scope,current})){ticketIssued=c.moveToFirst();}if(n>0||ticketIssued)throw new IllegalStateException("This group has assigned work or a ticket. Use History then Resume; nothing was moved.");if(WatchRules.cancelOnUndo(n)&&!ticketIssued)d.execSQL("UPDATE guest_groups SET state='cancel_pending' WHERE id=?",new Object[]{current});
+            d.execSQL("UPDATE watch_sessions SET active_group=?,shown_group=?,previous_group=NULL,undo_until=0,auto_assign=0 WHERE scope=?",new Object[]{old,old,scope});d.setTransactionSuccessful();
             return n==0&&!ticketIssued?"Previous group restored. Empty accidental QR is retired and will be cancelled online.":"Previous group restored. Ticket-issued QR and assigned photos remain in the other group; nothing was moved.";
         }finally{d.endTransaction();}
     }
     JSONArray candidates(String scope,int offset)throws Exception{
-        JSONArray a=new JSONArray();try(Cursor c=db().rawQuery("SELECT id,uri,name,size,modified FROM jobs WHERE scope=? AND state='candidate' AND delivery_id IS NULL ORDER BY created DESC,id LIMIT 50 OFFSET ?",new String[]{scope,Integer.toString(offset)})){
-            while(c.moveToNext()){JSONObject o=new JSONObject();o.put("id",c.getString(0));o.put("uri",c.getString(1));o.put("name",c.getString(2));o.put("size",c.getLong(3));o.put("modified",c.getLong(4));a.put(o);}
+        JSONArray a=new JSONArray();try(Cursor c=db().rawQuery("SELECT id,uri,name,size,modified,spool,sha,state,photo_id FROM jobs WHERE scope=? AND (state='candidate' OR (archive_private=1 AND selection_hidden=0 AND state NOT IN ('skipped','retired_local'))) AND delivery_id IS NULL ORDER BY created DESC,id LIMIT 50 OFFSET ?",new String[]{scope,Integer.toString(offset)})){
+            while(c.moveToNext()){JSONObject o=new JSONObject();o.put("id",c.getString(0));o.put("uri",c.getString(1));o.put("name",c.getString(2));o.put("size",c.getLong(3));o.put("modified",c.getLong(4));o.put("spool",c.getString(5));o.put("sha",c.getString(6));o.put("state",c.getString(7));o.put("photo_id",c.getString(8));a.put(o);}
         }return a;
     }
     void skip(String scope,String job){
-        if(job==null)db().execSQL("UPDATE jobs SET state='skipped' WHERE scope=? AND state='candidate' AND delivery_id IS NULL",new Object[]{scope});
-        else db().execSQL("UPDATE jobs SET state='skipped' WHERE scope=? AND id=? AND state='candidate' AND delivery_id IS NULL",new Object[]{scope,job});
+        // Hiding from guest selection never cancels an archive upload.
+        if(job==null)db().execSQL("UPDATE jobs SET selection_hidden=1 WHERE scope=? AND archive_private=1 AND delivery_id IS NULL",new Object[]{scope});
+        else db().execSQL("UPDATE jobs SET selection_hidden=1 WHERE scope=? AND id=? AND archive_private=1 AND delivery_id IS NULL",new Object[]{scope,job});
+        if(job==null)db().execSQL("UPDATE jobs SET state='skipped' WHERE scope=? AND state='candidate' AND archive_private=0 AND delivery_id IS NULL",new Object[]{scope});
+        else db().execSQL("UPDATE jobs SET state='skipped' WHERE scope=? AND id=? AND state='candidate' AND archive_private=0 AND delivery_id IS NULL",new Object[]{scope,job});
     }
     String select(String scope,String job)throws Exception{
         SQLiteDatabase d=db();d.beginTransaction();try{
-            String state,already;try(Cursor c=d.rawQuery("SELECT state,delivery_id FROM jobs WHERE scope=? AND id=? AND is_test=0",new String[]{scope,job})){if(!c.moveToFirst())throw new IllegalStateException("Candidate no longer available");state=c.getString(0);already=c.getString(1);}
-            if(!WatchRules.canAssign(state,already))throw new IllegalStateException("Photo already selected; its QR destination cannot be overwritten");
+            String state,already;boolean archived;try(Cursor c=d.rawQuery("SELECT state,delivery_id,archive_private,selection_hidden FROM jobs WHERE scope=? AND id=? AND is_test=0",new String[]{scope,job})){if(!c.moveToFirst())throw new IllegalStateException("Candidate no longer available");state=c.getString(0);already=c.getString(1);archived=c.getInt(2)==1;if(c.getInt(3)==1)throw new IllegalStateException("Candidate was hidden from selection");}
+            if(!(archived&&already==null&&!state.equals("retired_local")&&!state.equals("skipped"))&&!WatchRules.canAssign(state,already))throw new IllegalStateException("Photo already selected; its QR destination cannot be overwritten");
             String id=mode(scope).equals("single")?takeReserved(scope,"single"):active(scope);
             if(id==null)throw new IllegalStateException("Start or resume a group first");
             JSONObject g=group(scope,id);if(g==null||!g.getString("state").equals("open"))throw new IllegalStateException("Group is unavailable");
-            d.execSQL("UPDATE jobs SET state='queued',delivery_id=? WHERE scope=? AND id=?",new Object[]{id,scope,job});
+            d.execSQL("UPDATE jobs SET state=CASE WHEN archive_private=1 THEN state ELSE 'queued' END,delivery_id=? WHERE scope=? AND id=?",new Object[]{id,scope,job});
             d.execSQL("UPDATE watch_items SET delivery_id=? WHERE scope=? AND job_id=?",new Object[]{id,scope,job});
-            d.execSQL("UPDATE watch_sessions SET shown_group=? WHERE scope=?",new Object[]{id,scope});d.setTransactionSuccessful();return id;
+            if(mode(scope).equals("single")||shown(scope)==null)d.execSQL("UPDATE watch_sessions SET shown_group=? WHERE scope=?",new Object[]{id,scope});d.setTransactionSuccessful();return id;
         }finally{d.endTransaction();}
     }
     void reserve(String scope,String kind){

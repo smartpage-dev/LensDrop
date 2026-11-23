@@ -11,6 +11,7 @@ final class SessionRules {
     static String safeError(String value){
         if(value==null)return "unknown";
         switch(value){
+            case "private_archive_requires_h55": case "private_archive_not_acknowledged": case "delivery_owner_mismatch": case "photo_not_available": case "delivery_not_found": case "assignment_connection_or_receipt_error": case "assignment_receipt_mismatch":
             case "personal_delivery_requires_h4": case "delivery_identity_mismatch": case "delivery_cancelled":
             case "single_delivery_already_bound": case "photo_already_bound_elsewhere":
             case "source_missing": case "source_missing_or_changed": case "source_changed":
@@ -20,7 +21,7 @@ final class SessionRules {
             case "server_identity_mismatch": case "queue_scope_mismatch": case "preflight_requires_h2_server":
             case "test_production_content_conflict": case "waiting_for_validated_internet":
             case "waiting_for_vpn_internet": case "mobile_data_not_allowed": case "resource_or_user_pause":
-            case "invalid_or_unsupported_jpeg": case "file_checksum_mismatch": return value;
+            case "jpeg_incomplete": case "jpeg_invalid_structure": case "jpeg_unsupported_frame": case "jpeg_unsupported_precision": case "jpeg_pixel_limit": case "jpeg_structure_limit": case "jpeg_too_large": case "source_read_retry": case "invalid_or_unsupported_jpeg": case "file_checksum_mismatch": return value;
             default:return "other_error";
         }
     }

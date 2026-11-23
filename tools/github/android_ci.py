@@ -112,6 +112,11 @@ def restore_signing() -> None:
 
 
 def collect() -> None:
+    # Recheck after the tests/build, before packaging an APK. This guards an
+    # accidental partial upload; it is not a signature or hardware certification.
+    subprocess.run([sys.executable, str(ROOT / 'tools/github/verify_android_snapshot.py'),
+                    '--report', str(OUT / 'android-source-integrity.json')],
+                   check=True, timeout=30)
     selected = mode()
     source = ANDROID / 'app' / 'build' / 'outputs' / 'apk' / 'debug' / 'app-debug.apk'
     if not source.is_file() or source.stat().st_size == 0:
@@ -135,6 +140,9 @@ def collect() -> None:
         'application_id': 'app.lensdrop.transfer', 'minimum_android_api': 29,
         'jdk_major': 17, 'gradle': '8.11.1', 'agp': '8.9.1', 'compile_sdk': 35,
         'sdk_build_tools': '35.0.0', 'signing_mode': selected,
+        'source_snapshot': 'lensdrop-android-h5.6.1-code12',
+        'source_snapshot_manifest_sha256': hashlib.sha256((ROOT / 'ANDROID_SOURCE_SNAPSHOT_H5_6_1.json').read_bytes()).hexdigest(),
+        'source_snapshot_verified': True,
         'git_commit': os.environ.get('GITHUB_SHA', 'local'),
         'github_run_id': os.environ.get('GITHUB_RUN_ID'),
         'github_run_attempt': os.environ.get('GITHUB_RUN_ATTEMPT'),
@@ -147,7 +155,7 @@ def collect() -> None:
     (OUT / 'README_INSTALL.txt').write_text(
         'LensDrop H5 DEBUG APK - controlled testing only.\n'
         'This file was compiled and signature-verified, not field validated.\n'
-        'Use Android 10+ and the compatible cloud H5 personal-delivery API.\n'
+        'Use Android 10+ and the H5.5 cloud (schema 7) / H5.5 station for this workflow.\n'
         'Do not use an administrator key as the phone device token.\n'
         'Signing mode: ' + selected + '\n'
         'Temporary signing may change each run. Do NOT uninstall/clear app data to resolve a\n'

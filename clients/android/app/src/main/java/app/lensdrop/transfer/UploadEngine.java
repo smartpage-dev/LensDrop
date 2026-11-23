@@ -44,11 +44,12 @@ final class UploadEngine implements AutoCloseable {
                     }
                 }
             }
-            if(!config.prefs.getBoolean("drain",false)&&config.get("test_only").isEmpty()&&((dirty&&System.currentTimeMillis()-lastScan>=5000)||System.currentTimeMillis()-lastScan>30000)){scanner.scan(config,queue);lastScan=System.currentTimeMillis();dirty=false;}
-            if(config.get("test_only").isEmpty())scanner.settle(config,queue);
+            if(!config.get("folder").isEmpty()&&!config.prefs.getBoolean("drain",false)&&config.get("test_only").isEmpty()&&((dirty&&System.currentTimeMillis()-lastScan>=5000)||System.currentTimeMillis()-lastScan>30000)){scanner.scan(config,queue);lastScan=System.currentTimeMillis();dirty=false;}
+            if(!config.get("folder").isEmpty()&&config.get("test_only").isEmpty())scanner.settle(config,queue);
             if(System.currentTimeMillis()<config.prefs.getLong("cooldown",0)){config.status("Waiting before a shared network/server retry; queue retained.");return;}
             String gate=gate();if(gate!=null){config.status(gate);return;}
             if(System.currentTimeMillis()-lastDeliverySync>30000){lastDeliverySync=System.currentTimeMillis();try{DeliveryCoordinator.sync(queue,boundScope,api);}catch(Exception ignored){}}
+            if(config.get("test_only").isEmpty())DeliveryCoordinator.syncAssignments(queue,boundScope,api);
             String testId=config.get("test_only");
             QueueDb.Job job=testId.isEmpty()?queue.due(boundScope):queue.testDue(boundScope,testId);
             if(!testId.isEmpty()&&queue.jobState(boundScope,testId).equals("uploaded")){
@@ -58,7 +59,7 @@ final class UploadEngine implements AutoCloseable {
             if(!testId.isEmpty()&&queue.jobState(boundScope,testId).equals("blocked")){reportHeartbeat(true);config.active(false);config.status("Preflight needs attention. Export diagnostics; the test and queue are retained.");return;}
             if(config.prefs.getBoolean("drain",false)&&job==null){
                 JSONObject totals=queue.snapshot(boundScope).getJSONObject("production"),tests=queue.snapshot(boundScope).getJSONObject("preflight");
-                if(totals.optLong("queued")+tests.optLong("queued")==0){reportHeartbeat(true);config.active(false);config.status("Selected queue drained or blocked. Review candidates/skipped counts; keep originals.");return;}
+                if(totals.optLong("queued")+tests.optLong("queued")==0&&!queue.assignmentRetryPending(boundScope)){reportHeartbeat(true);config.active(false);config.status("Archive queue drained or blocked. Review guest-link status, unassigned selections and failures separately; keep originals.");return;}
             }
             if(job==null)config.status("Watching selected folder. No upload due.");else transfer(job);
             reportHeartbeat(!config.active());
@@ -111,27 +112,26 @@ final class UploadEngine implements AutoCloseable {
                 out.flush();out.getFD().sync();
             }
             if(size!=j.size||!scanner.unchanged(j))throw new CloudApi.Failure("source_changed",false,0);
-            try(RandomAccessFile check=new RandomAccessFile(temp,"r")){
-                if(size<4||check.readUnsignedShort()!=0xffd8)throw new CloudApi.Failure("jpeg_not_ready",true,5000);
-                check.seek(size-2);if(check.readUnsignedShort()!=0xffd9)throw new CloudApi.Failure("jpeg_not_ready",true,5000);
-            }
+            try{JpegStructure.validate(temp);}catch(JpegStructure.Invalid e){throw new CloudApi.Failure(e.code,e.incomplete,5000);}
             Files.move(temp.toPath(),target.toPath(),StandardCopyOption.REPLACE_EXISTING,StandardCopyOption.ATOMIC_MOVE);
             DirectorySync.sync(dir);
             String sha=CloudApi.hex(digest.digest());ContentValues v=new ContentValues();v.put("spool",target.getAbsolutePath());v.put("sha",sha);queue.update(j.id,v);return new Staged(target,sha);
-        }finally{if(temp.exists())temp.delete();}
+        }catch(java.io.IOException e){throw new CloudApi.Failure("source_read_retry",true,5000);}finally{if(temp.exists())temp.delete();}
     }
     private void transfer(QueueDb.Job j){
         try{
             if(!j.scope.equals(boundScope))throw new CloudApi.Failure("queue_scope_mismatch",false,0);
-            if(j.delivery!=null&&j.upload==null){JSONObject ident=api.call("/v1/device",null);if(ident.optJSONObject("capabilities")==null||!ident.getJSONObject("capabilities").optBoolean("personal_delivery_v1"))throw new CloudApi.Failure("personal_delivery_requires_h4",false,0);}
+            if(j.delivery!=null&&!j.archivePrivate&&j.upload==null){JSONObject ident=api.call("/v1/device",null);if(ident.optJSONObject("capabilities")==null||!ident.getJSONObject("capabilities").optBoolean("personal_delivery_v1"))throw new CloudApi.Failure("personal_delivery_requires_h4",false,0);}
             if(j.isTest&&j.upload==null){JSONObject identity=api.call("/v1/device",null);if(identity.optJSONObject("capabilities")==null||!identity.getJSONObject("capabilities").optBoolean("isolated_preflight"))throw new CloudApi.Failure("preflight_requires_h2_server",false,0);}
+            if(j.archivePrivate&&j.upload==null){JSONObject identity=api.call("/v1/device",null);if(identity.optJSONObject("capabilities")==null||!identity.getJSONObject("capabilities").optBoolean("archive_delivery_v1"))throw new CloudApi.Failure("private_archive_requires_h55",false,0);}
             config.status("Transferring one photograph; other files remain queued.");
             Staged staged=stage(j);File file=staged.file;String sha=staged.sha;
             queue.state(j.id,"uploading",null,j.attempts,0);
             JSONObject r;
-            if(j.upload==null){JSONObject body=new JSONObject();body.put("client_id",j.id);body.put("filename",j.name);body.put("size",j.size);body.put("sha256",sha);body.put("is_test",j.isTest);if(j.delivery!=null)body.put("delivery_id",j.delivery);r=api.call("/v1/uploads",body);}
+            if(j.upload==null){JSONObject body=new JSONObject();body.put("client_id",j.id);body.put("filename",j.name);body.put("size",j.size);body.put("sha256",sha);body.put("is_test",j.isTest);if(j.archivePrivate)body.put("archive_private",true);else if(j.delivery!=null)body.put("delivery_id",j.delivery);r=api.call("/v1/uploads",body);}
             else r=api.call("/v1/uploads/"+j.upload,null);
-            if(j.delivery!=null&&!j.delivery.equals(r.optString("delivery_id")))throw new CloudApi.Failure("delivery_identity_mismatch",false,0);
+            if(j.archivePrivate&&!r.optBoolean("archive_private"))throw new CloudApi.Failure("private_archive_not_acknowledged",false,0);
+            if(!j.archivePrivate&&j.delivery!=null&&!j.delivery.equals(r.optString("delivery_id")))throw new CloudApi.Failure("delivery_identity_mismatch",false,0);
             if(j.isTest&&!r.optBoolean("is_test"))throw new CloudApi.Failure("preflight_requires_h2_server",false,0);
             if(r.getLong("size")!=j.size||!r.getString("sha256").equals(sha))throw new CloudApi.Failure("server_identity_mismatch",false,0);
             String uid=r.getString("upload_id");ContentValues update=new ContentValues();update.put("upload",uid);update.put("offset",r.getLong("offset"));update.put("last_progress",System.currentTimeMillis());queue.update(j.id,update);
@@ -148,16 +148,18 @@ final class UploadEngine implements AutoCloseable {
             if(!r.getString("state").equals("complete"))r=api.call("/v1/uploads/"+uid+"/complete",new JSONObject());
             JSONObject receipt=r.getJSONObject("receipt");
             if(!receipt.getString("sha256").equals(sha)||receipt.getLong("bytes")!=j.size||receipt.optString("photo_id").isEmpty())throw new CloudApi.Failure("receipt_mismatch",false,0);
-            update.clear();update.put("state","uploaded");update.put("offset",j.size);update.putNull("error");update.put("receipt",receipt.toString());update.put("last_progress",System.currentTimeMillis());queue.update(j.id,update);
+            update.clear();update.put("state","uploaded");update.put("offset",j.size);update.putNull("error");update.put("receipt",receipt.toString());update.put("photo_id",receipt.getString("photo_id"));update.put("last_progress",System.currentTimeMillis());queue.update(j.id,update);
             // Remove only this app's duplicate spool after the durable cloud receipt.
             // The vendor-app/MediaStore original is NEVER deleted.
             if(file.delete()){ContentValues cleared=new ContentValues();cleared.putNull("spool");queue.update(j.id,cleared);}config.status("Cloud receipt verified. Original retained on phone.");
         }catch(CloudApi.Failure e){
             int attempts=j.attempts+1;long cap=Math.min(60000,1000L*(1L<<Math.min(attempts,6)));
             long delay=Math.max(e.retryAfter,ThreadLocalRandom.current().nextLong(1000,Math.max(1001,cap+1)));
-            if(e.retry)config.prefs.edit().putLong("cooldown",System.currentTimeMillis()+Math.min(60000,Math.max(2000,delay))).commit();
+            boolean retry=UploadRetryPolicy.retry(e.code,e.retry,j.fileFailures);
+            if(UploadRetryPolicy.fileLocal(e.code)){ContentValues local=new ContentValues();local.put("file_failures",j.fileFailures+1);queue.update(j.id,local);}
+            if(UploadRetryPolicy.sharedCooldown(e.code,retry))config.prefs.edit().putLong("cooldown",System.currentTimeMillis()+Math.min(60000,Math.max(2000,delay))).commit();
             if(e.code.equals("device_token_invalid_or_revoked")||e.code.equals("device_revoked"))config.active(false);
-            queue.state(j.id,e.retry?"retry":"blocked",e.code,attempts,System.currentTimeMillis()+delay);config.status(e.retry?"Retry queued: "+e.code:"Action needed: "+e.code);
+            queue.state(j.id,retry?"retry":"blocked",e.code,attempts,System.currentTimeMillis()+delay);config.status(retry?"Retry queued: "+e.code:"Action needed: "+e.code);
         }catch(SecurityException e){queue.state(j.id,"blocked","photo_permission_required",j.attempts,System.currentTimeMillis());}
         catch(Exception e){config.prefs.edit().putLong("cooldown",System.currentTimeMillis()+30000).commit();queue.state(j.id,"retry","network_or_io_error",j.attempts+1,System.currentTimeMillis()+30000);config.status("Connection or storage interrupted; queue retained.");}
     }

@@ -21,7 +21,7 @@ final class MediaScanner {
         String p=Build.VERSION.SDK_INT>=33?Manifest.permission.READ_MEDIA_IMAGES:Manifest.permission.READ_EXTERNAL_STORAGE;
         if(context.checkSelfPermission(p)!=PackageManager.PERMISSION_GRANTED)throw new SecurityException("Full photo access required");
     }
-    private String version(){return Build.VERSION.SDK_INT>=30?MediaStore.getVersion(context,"external_primary"):MediaStore.getVersion(context);}
+    String currentVersion(){return Build.VERSION.SDK_INT>=30?MediaStore.getVersion(context,"external_primary"):MediaStore.getVersion(context);}
     private Cursor page(String folder,long after){
         Bundle args=new Bundle();
         args.putString(ContentResolver.QUERY_ARG_SQL_SELECTION,"mime_type='image/jpeg' AND relative_path=? AND _id>?");
@@ -34,7 +34,7 @@ final class MediaScanner {
         permission();String scope=config.get("scope"),folder=config.get("folder");
         if(folder.isEmpty())throw new IllegalStateException("Choose a shared folder first");
         WatchLedger ledger=new WatchLedger(queue);if(ledger.ready(scope))return;
-        String v=version();long after=-1,count=0;
+        String v=currentVersion();long after=-1,count=0;
         android.database.sqlite.SQLiteDatabase db=queue.getWritableDatabase();db.beginTransaction();
         try{
             ledger.begin(scope,folder,v);
@@ -44,14 +44,14 @@ final class MediaScanner {
                     ledger.exclude(scope,ContentUris.withAppendedId(COLLECTION,row).toString(),c.getLong(2),c.getLong(3));count++;
                 }
             }if(n==0)break;}
-            if(!v.equals(version()))throw new IllegalStateException("Photo library changed during baseline; start again before shooting");
+            if(!v.equals(currentVersion()))throw new IllegalStateException("Photo library changed during baseline; start again before shooting");
             ledger.finishBaseline(scope,count);db.setTransactionSuccessful();recovered=false;
         }finally{db.endTransaction();}
     }
     void scan(Config config,QueueDb queue){
         permission();WatchLedger ledger=new WatchLedger(queue);String scope=config.get("scope");
         if(!ledger.ready(scope))throw new IllegalStateException("Start a new-photos-only watch session first");
-        if(!ledger.version(scope).equals(version()))throw new IllegalStateException("Photo library was rebuilt. Pause; preserve queue and review session identity.");
+        if(!ledger.version(scope).equals(currentVersion()))throw new IllegalStateException("Photo library was rebuilt. Pause; preserve queue and review session identity.");
         long after=-1;boolean gap=recovered||System.currentTimeMillis()-ledger.lastScan(scope)>90000;
         while(true){int n=0;try(Cursor c=page(config.get("folder"),after)){
             if(c==null)throw new IllegalStateException("Cannot reconcile folder");

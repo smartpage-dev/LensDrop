@@ -43,6 +43,7 @@ final class Config {
     }
     void clearSecret(String name){prefs.edit().remove("secure_"+name).remove("secure_iv_"+name).commit();}
     void save(String base,String token,String scope,String event,String folder,boolean cellular) throws Exception {
+        if(!get("scope").isEmpty()&&!get("scope").equals(scope))archiveCurrent();
         Cipher cipher=Cipher.getInstance("AES/GCM/NoPadding");cipher.init(Cipher.ENCRYPT_MODE,key());
         String encrypted=Base64.encodeToString(cipher.doFinal(token.getBytes(StandardCharsets.UTF_8)),Base64.NO_WRAP);
         String iv=Base64.encodeToString(cipher.getIV(),Base64.NO_WRAP);
@@ -50,6 +51,12 @@ final class Config {
         prefs.edit().putString("base",base).putString("secret",encrypted).putString("iv",iv)
             .putString("scope",scope).putString("event",event).putString("folder",folder)
             .putBoolean("cellular",cellular).putLong("started",boundary).commit();
+    }
+    void archiveCurrent()throws Exception{
+        if(get("scope").isEmpty())return;
+        org.json.JSONObject old=new org.json.JSONObject().put("scope",get("scope")).put("base",get("base")).put("event",get("event")).put("folder",get("folder")).put("token",token());
+        String setup=get("secure_print_setup");if(!setup.isEmpty())old.put("print_setup",secret("print_setup"));
+        putSecret("event_archive_"+CloudApi.sha(get("scope").getBytes(StandardCharsets.UTF_8)),old.toString());
     }
     String token() throws Exception {
         Cipher cipher=Cipher.getInstance("AES/GCM/NoPadding");
