@@ -23,7 +23,7 @@ public final class RecoveryActivity extends Activity {
     private Config config;private String scope;private TextView status;private final ExecutorService io=Executors.newSingleThreadExecutor();
     private interface Task {void run()throws Exception;}
     @Override public void onCreate(Bundle b){super.onCreate(b);config=new Config(this);scope=config.get("scope");
-        LinearLayout box=new LinearLayout(this);box.setOrientation(1);box.setPadding(24,32,24,32);ScrollView view=new ScrollView(this);view.addView(box);setContentView(view);
+        LinearLayout box=new LinearLayout(this);box.setOrientation(LinearLayout.VERTICAL);box.setPadding(24,32,24,32);ScrollView view=new ScrollView(this);view.addView(box);setContentView(view);
         TextView heading=new TextView(this);heading.setText("Recovery / previous events");heading.setTextSize(24);box.addView(heading);
         TextView note=new TextView(this);note.setText("Retirement stops LOCAL retries/polling only. It does not cancel a cloud upload or a print accepted by a station. Originals, staged bytes, job IDs and guest assignments remain. Inspect the station before resolving uncertain paper output.");box.addView(note);
         add(box,"Pause photo and print workers",()->{config.active(false);config.prefs.edit().putBoolean("print_active",false).commit();stopService(new Intent(this,EventService.class));stopService(new Intent(this,PrintService.class));RecoveryJob.cancel(this);say("Paused. Wait for the current checkpoint before taking a recovery action.");});

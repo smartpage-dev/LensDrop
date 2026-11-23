@@ -123,7 +123,7 @@
       "encoding": "utf8-lf"
     },
     "clients/android/app/src/main/java/app/lensdrop/transfer/PrintActivity.java": {
-      "sha256": "f8118ec75a7a5ddb34775505ee720cded3c8fef6333b4caa455d7ee5035d02da",
+      "sha256": "05501351acf8d1618f5cf399711dde7551fe178c806172eb3e114059ea1ddf35",
       "encoding": "utf8-lf"
     },
     "clients/android/app/src/main/java/app/lensdrop/transfer/PrintEngine.java": {
@@ -151,7 +151,7 @@
       "encoding": "utf8-lf"
     },
     "clients/android/app/src/main/java/app/lensdrop/transfer/RecoveryActivity.java": {
-      "sha256": "7d7d574be3fa6703b6646c0ea6135793136c411592992d43ffa8e738279a5f79",
+      "sha256": "5882c0f0ff6d1b14e038a396375a262588e4c47808e68c03e635e966947ec962",
       "encoding": "utf8-lf"
     },
     "clients/android/app/src/main/java/app/lensdrop/transfer/RecoveryJob.java": {
@@ -327,7 +327,7 @@
       "encoding": "utf8-lf"
     },
     "clients/android/ui-tests/check_ui_contracts.py": {
-      "sha256": "9851aa7f6fed637fa7ccd2dfc68c2fcc8a29e8d9fd917fa0d7f3cfdd06a08c18",
+      "sha256": "c5c577f70d8b61332fe7482d6f9ef2fad47661c92898a467e5d9994b49ea5ba1",
       "encoding": "utf8-lf"
     },
     "clients/android/ui-tests/parse_sources.py": {

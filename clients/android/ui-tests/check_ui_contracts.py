@@ -42,6 +42,8 @@ ck('Guest mode UI does not print automatically','Next Group' in d and 'Confirm' 
 ck('Phone photo archive before print preserved',p.index('ArchiveStaging.register')<p.index('q.add(scope,spec'))
 ck('Two-route request mapping unchanged','new String[]{"hybrid","cloud"}' in p)
 ck('Manual ticket snapshot and confirmation preserved','Print ONE ticket' in t and 'TicketProtocol.packet' in t)
+ck('Print preview uses typed vertical layout constant','panel.setOrientation(LinearLayout.VERTICAL)' in p and 'panel.setOrientation(1)' not in p)
+ck('Recovery screen uses typed vertical layout constant','box.setOrientation(LinearLayout.VERTICAL)' in read('RecoveryActivity.java') and 'box.setOrientation(1)' not in read('RecoveryActivity.java'))
 manifest=ET.parse(A/'app/src/main/AndroidManifest.xml').getroot();ns='{http://schemas.android.com/apk/res/android}'
 app=manifest.find('application');scan=[x for x in app.findall('activity') if x.get(ns+'name')=='.StaffQrScannerActivity'];ck('Scanner nonexported',len(scan)==1 and scan[0].get(ns+'exported')=='false')
 ck('No new public enrollment entry point',len([x for x in app.findall('activity') if x.get(ns+'exported')=='true'])==1)
