@@ -1,0 +1,18 @@
+"""Focused source/configuration checks; not Android SDK or hardware tests."""
+from pathlib import Path
+import json,re,os
+r=Path(os.environ.get('LENSDROP_SOURCE_ROOT',Path(__file__).resolve().parents[2]));j=r/'clients/android/app/src/main/java/app/lensdrop/transfer';checks=[]
+def read(p):return (r/p).read_text()
+def ck(name,ok):assert ok,name;checks.append(name);print('PASS',name)
+ck('Cloud H55 version',json.loads(read('cloud/package.json'))['version']=='0.2.0-alpha.8-hostinger.5.5')
+ck('Station H55 version',json.loads(read('clients/print-station/package.json'))['version']=='0.1.3-alpha.h5.5')
+b=read('clients/android/app/build.gradle');ck('Android version code11',bool(re.search(r'versionCode\s+11\b',b)));ck('Android version H56','0.2.0-alpha.6-h5.6' in b);ck('Android ID retained','app.lensdrop.transfer' in b)
+w=read('.github/workflows/android-debug.yml');ck('Workflow runs new actual ledger tests','RUN_WORKFLOW_TESTS.sh' in w);ck('Lint remains required',':app:lintDebug' in w and 'continue-on-error:' not in w);ck('Signing identity retained','LENSDROP_TEST_KEYSTORE_BASE64' in w)
+p=(j/'PrintActivity.java').read_text();ck('Only two new user routes','new String[]{"hybrid","cloud"}' in p);ck('Archive persists before print request',p.index('ArchiveStaging.register')<p.index('q.add(scope,spec'));ck('Print records archive correlation','archiveId' in p);ck('Print source structurally validated','JpegStructure.validate(target)' in p);ck('Transfer checkpoint gated','TransferLane.enter()' in p)
+a=(j/'ArchiveStaging.java').read_text();ck('Archive checksum verified','MessageDigest.getInstance("SHA-256")' in a and 'equals(sha)' in a);ck('Cloud staging is not print-stage','"spool"' in a);ck('No source deletion', 'printFile.delete' not in a);ck('Conflicting guest protected','different guest assignment' in a);ck('Single photo retains old image','Single Photo QR is already bound' in a)
+q=(j/'QueueDb.java').read_text();ck('Queue is version6',bool(re.search(r'super\([^\n]*,\s*6\)',q)));ck('Existing archive default remains disabled','archive_all INTEGER NOT NULL DEFAULT 0' in q);ck('Delivery sync retry recorded','delivery_next' in q and 'delivery_attempts' in q);ck('No retroactive skipped import',"state='candidate'" in q)
+ui=read('cloud/public/staff-desk.js');ck('Shared UI copies identical',ui==read('clients/print-station/public/staff-desk.js'));ck('Lookup has NO PRINT label','Lookup ticket (NO PRINT)' in ui);ck('Confirm disabled until image loaded',"send.disabled=true" in ui and "img.src)send.disabled=false" in ui);ck('Persistent pending request before send',ui.index('localStorage.setItem(pendingKey,JSON.stringify(request))')<ui.index('await submit(request)'));ck('Collection separate action','Confirm handover / collected (NO PRINT)' in ui);ck('No guest print UI route',not (r/'cloud/public/guest-print.js').exists())
+core=read('cloud/src/event-workflow.cjs');ck('Service actor hidden credential','is_service' in core and 'randomBytes(32)' in core);ck('Schema7 additive','PRAGMA user_version=7' in core);ck('Never enables hub','station_upload_hub:false' in core);ck('Original bound by checksum','archive_image_checksum_mismatch' in core);ck('Collection requires paper observation',"row.state==='operator_confirmed'" in core);ck('Ref collision rejected','ambiguous_reference_scan_full_qr' in core)
+ck('Print protocol version unchanged',read('cloud/shared/print-protocol.cjs')==read('clients/print-station/src/print-protocol.cjs'))
+ck('Staff permissions not public','staff_desk_not_enabled' in core);ck('Legacy skip language corrected','will not upload. Source photos remain' not in (j/'DeliveryActivity.java').read_text())
+print('PASSED',len(checks),'source contracts. Not SDK build/lint/network/hardware validation.')

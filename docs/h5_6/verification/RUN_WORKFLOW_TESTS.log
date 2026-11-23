@@ -1,0 +1,29 @@
+PASS Enable archive-all promotes existing NEW candidates without guest assignment
+PASS Old baseline files stay excluded when archive-all enabled
+PASS New completed arrival archives even with no active guest
+PASS Recovered arrival archives without guessing a guest
+PASS Archive selection during upload does not reset byte offset or upload state
+PASS Archived receipt remains uploaded when selected after completion
+PASS History QR stays visible while a different guest receives archived selection
+PASS Single-photo QR receives only selected archive while other photos still upload
+PASS Hide from selection does not skip or cancel archive
+PASS Hide all unassigned selections retains all upload jobs
+PASS Explicit earlier skips are NOT promoted by archive-all
+PASS Turning archive-all off changes future arrivals not existing queued work
+PASS Unassigned complete archives permit event turnover without deleting them
+PASS Guest link pending blocks event replacement until synced or explicitly retired
+PASS Guest-sync error retry is explicit and scoped
+PASS Assigned archive identity survives reboot and cannot rebind
+PASS Malformed source can block its archive while other new photos remain due
+PASS Staged edited revision has no guest but archives under archive-all
+PASS Receipt and unassigned/archive counts remain separate
+PASS Preflight job does not become private event archive
+PASS Print capture first commits an independent exact cloud archive
+PASS Identical confirmed JPEG reuses private archive instead of duplicate upload
+PASS Print snapshot checksum mismatch creates no archive or guest assignment
+PASS Print photo guest binding is explicit and preserves other assigned guest
+PASS Legacy exact-photo assignment also blocks a different guest on new print
+PASS PrintQueue saves archive correlation atomically with immutable print request
+PASS Exact H5.4 photo schema5 migrates to6 without auto-archiving existing candidates
+PASS Exact H5.4 print schema2 migration preserves pending route and no fake archive
+PASSED 28 archive / selection / print-correlation cases. JVM + SQLite bridge, not Android SDK, ContentResolver or device tests.

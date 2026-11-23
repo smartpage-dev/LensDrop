@@ -1,0 +1,206 @@
+{
+  "scope": "Browser interaction/layout reference only; NOT native Android render or camera test",
+  "checks": [
+    {
+      "width": 360,
+      "state": "home",
+      "overflow": false
+    },
+    {
+      "width": 360,
+      "state": "join",
+      "overflow": false
+    },
+    {
+      "width": 360,
+      "state": "join-pending",
+      "overflow": false
+    },
+    {
+      "width": 360,
+      "state": "joined",
+      "overflow": false
+    },
+    {
+      "width": 360,
+      "state": "scan",
+      "overflow": false
+    },
+    {
+      "width": 360,
+      "state": "scan-error",
+      "overflow": false
+    },
+    {
+      "width": 360,
+      "state": "guest",
+      "overflow": false
+    },
+    {
+      "width": 360,
+      "state": "print",
+      "overflow": false
+    },
+    {
+      "width": 360,
+      "state": "ticket",
+      "overflow": false
+    },
+    {
+      "width": 360,
+      "interaction": "join-scan-cancel",
+      "passed": true
+    },
+    {
+      "width": 390,
+      "state": "home",
+      "overflow": false
+    },
+    {
+      "width": 390,
+      "state": "join",
+      "overflow": false
+    },
+    {
+      "width": 390,
+      "state": "join-pending",
+      "overflow": false
+    },
+    {
+      "width": 390,
+      "state": "joined",
+      "overflow": false
+    },
+    {
+      "width": 390,
+      "state": "scan",
+      "overflow": false
+    },
+    {
+      "width": 390,
+      "state": "scan-error",
+      "overflow": false
+    },
+    {
+      "width": 390,
+      "state": "guest",
+      "overflow": false
+    },
+    {
+      "width": 390,
+      "state": "print",
+      "overflow": false
+    },
+    {
+      "width": 390,
+      "state": "ticket",
+      "overflow": false
+    },
+    {
+      "width": 390,
+      "interaction": "join-scan-cancel",
+      "passed": true
+    },
+    {
+      "width": 480,
+      "state": "home",
+      "overflow": false
+    },
+    {
+      "width": 480,
+      "state": "join",
+      "overflow": false
+    },
+    {
+      "width": 480,
+      "state": "join-pending",
+      "overflow": false
+    },
+    {
+      "width": 480,
+      "state": "joined",
+      "overflow": false
+    },
+    {
+      "width": 480,
+      "state": "scan",
+      "overflow": false
+    },
+    {
+      "width": 480,
+      "state": "scan-error",
+      "overflow": false
+    },
+    {
+      "width": 480,
+      "state": "guest",
+      "overflow": false
+    },
+    {
+      "width": 480,
+      "state": "print",
+      "overflow": false
+    },
+    {
+      "width": 480,
+      "state": "ticket",
+      "overflow": false
+    },
+    {
+      "width": 480,
+      "interaction": "join-scan-cancel",
+      "passed": true
+    },
+    {
+      "width": 1280,
+      "state": "home",
+      "overflow": false
+    },
+    {
+      "width": 1280,
+      "state": "join",
+      "overflow": false
+    },
+    {
+      "width": 1280,
+      "state": "join-pending",
+      "overflow": false
+    },
+    {
+      "width": 1280,
+      "state": "joined",
+      "overflow": false
+    },
+    {
+      "width": 1280,
+      "state": "scan",
+      "overflow": false
+    },
+    {
+      "width": 1280,
+      "state": "scan-error",
+      "overflow": false
+    },
+    {
+      "width": 1280,
+      "state": "guest",
+      "overflow": false
+    },
+    {
+      "width": 1280,
+      "state": "print",
+      "overflow": false
+    },
+    {
+      "width": 1280,
+      "state": "ticket",
+      "overflow": false
+    },
+    {
+      "width": 1280,
+      "interaction": "join-scan-cancel",
+      "passed": true
+    }
+  ],
+  "errors": []
+}

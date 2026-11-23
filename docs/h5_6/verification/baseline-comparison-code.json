@@ -1,0 +1,45 @@
+{
+  "baseline_sha256": "7962034c3baac42eebe11aaf68927ce3bd96eef171cae0312abf4c68a0226457",
+  "baseline_files": 545,
+  "unchanged": 535,
+  "changed": [
+    ".github/workflows/android-debug.yml",
+    "clients/android/app/build.gradle",
+    "clients/android/app/src/main/AndroidManifest.xml",
+    "clients/android/app/src/main/java/app/lensdrop/transfer/DeliveryActivity.java",
+    "clients/android/app/src/main/java/app/lensdrop/transfer/MainActivity.java",
+    "clients/android/app/src/main/java/app/lensdrop/transfer/PrintActivity.java",
+    "clients/android/app/src/main/java/app/lensdrop/transfer/StaffSetupActivity.java",
+    "clients/android/app/src/main/java/app/lensdrop/transfer/TicketActivity.java",
+    "clients/android/buildfix-tests/run_buildfix_tests.py",
+    "tools/testing/h55-contract-checks.py"
+  ],
+  "new": [
+    "clients/android/RUN_UI_SETUP_TESTS.sh",
+    "clients/android/app/src/main/java/app/lensdrop/transfer/LuceUi.java",
+    "clients/android/app/src/main/java/app/lensdrop/transfer/SetupFlow.java",
+    "clients/android/app/src/main/java/app/lensdrop/transfer/StaffInvitation.java",
+    "clients/android/app/src/main/java/app/lensdrop/transfer/StaffQrScannerActivity.java",
+    "clients/android/app/src/main/res/values/styles.xml",
+    "clients/android/ui-tests/SetupFlowTest.java",
+    "clients/android/ui-tests/check_ui_contracts.py",
+    "clients/android/ui-tests/parse_sources.py",
+    "clients/android/ui-tests/run_scanner_contracts.py",
+    "docs/h5_6/ANDROID_UI_PREVIEW.html"
+  ],
+  "deleted": [],
+  "protected_components_unchanged": [
+    "cloud/",
+    "clients/print-station/",
+    "clients/desktop/",
+    "deploy/",
+    "tools/github/",
+    ".github/workflows/windows-print-station.yml"
+  ],
+  "business_tails_preserved": [
+    "DeliveryActivity from private void say",
+    "TicketActivity from private void say",
+    "PrintActivity from private void prepare"
+  ],
+  "core_queues_and_engines_unchanged": true
+}

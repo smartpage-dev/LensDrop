@@ -1,0 +1,17 @@
+[
+  {
+    "url": "https://dl.google.com/android/repository/repository2-1.xml",
+    "error": "URLError: <urlopen error [Errno -3] Temporary failure in name resolution>",
+    "seconds": 0.01
+  },
+  {
+    "url": "https://repo.maven.apache.org/maven2/com/journeyapps/zxing-android-embedded/4.3.0/zxing-android-embedded-4.3.0.aar",
+    "error": "URLError: <urlopen error [Errno -3] Temporary failure in name resolution>",
+    "seconds": 0.0
+  },
+  {
+    "url": "https://raw.githubusercontent.com/journeyapps/zxing-android-embedded/v4.3.0/zxing-android-embedded/src/com/journeyapps/barcodescanner/BarcodeView.java",
+    "error": "URLError: <urlopen error [Errno -3] Temporary failure in name resolution>",
+    "seconds": 0.0
+  }
+]

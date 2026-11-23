@@ -1,0 +1,52 @@
+PASSED 58 production parser/readiness assertions; not a camera or SDK test.
+PASS Separate native Event Setup Support panes
+PASS Manual token under collapsed Advanced area
+PASS Version from installed package
+PASS Folder picker offered before manual entry
+PASS Real archive policy retained
+PASS No initial bulk permission prompt
+PASS No screenshot or scan data exported
+PASS One snapshot task at a time
+PASS Paused baseline cannot restart blindly
+PASS Scanner is explicit internal activity
+PASS No generic external/default scanner dispatch
+PASS No-result/cancellation always reported
+PASS Scanner launch failure recoverable
+PASS Paste retained and masked
+PASS Invitation is validated before review
+PASS Admin approval remains necessary
+PASS Pairing queues remain guarded
+PASS Pairing writes encrypted state before claim
+PASS Pairing operations serialized across rotations
+PASS Persistent pending claim not silently discarded
+PASS Scan only accepts QR format
+PASS Permission checked before camera resume
+PASS Explicit permission denial result
+PASS Camera error stays visible not finish
+PASS Lifecycle camera release
+PASS No automatic enrollment from scanner
+PASS Scan result guarded and one-shot
+PASS Result never includes camera photo
+PASS Scanner surface chosen before attach
+PASS Scanner construction is guarded by recoverable startup
+PASS No busy-wait camera release
+PASS Density-independent touch sizes
+PASS Private fields excluded from saved view/autofill state
+PASS System/IME insets handled
+PASS Guest mode UI does not print automatically
+PASS Phone photo archive before print preserved
+PASS Two-route request mapping unchanged
+PASS Manual ticket snapshot and confirmation preserved
+PASS Scanner nonexported
+PASS No new public enrollment entry point
+PASS Backup remains disabled
+PASS Cleartext remains disabled
+PASS Persisted recovery permission retained
+PASS Theme exists
+PASS Same Android identity and supported SDK
+PASS Decoder dependency not changed
+PASS Native lint still required
+PASS New tests run before native compile
+PASS Negative control compiles
+PASS Parser weakening is rejected by tests
+PASSED 50 source/resource contracts. Not Android SDK/lint or a device UI test.

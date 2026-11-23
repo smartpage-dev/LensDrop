@@ -15,12 +15,14 @@
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
     <uses-permission android:name="android.permission.CAMERA"/>
     <uses-feature android:name="android.hardware.camera" android:required="false"/>
-    <application android:label="LensDrop Transfer Alpha" android:theme="@android:style/Theme.Material.Light.NoActionBar" android:allowBackup="false" android:usesCleartextTraffic="false" android:supportsRtl="true">
+    <application android:label="LensDrop Transfer Alpha" android:theme="@style/LensDropTheme" android:hardwareAccelerated="true" android:allowBackup="false" android:usesCleartextTraffic="false" android:supportsRtl="true">
         <activity android:name=".MainActivity" android:exported="true"><intent-filter><action android:name="android.intent.action.MAIN"/><category android:name="android.intent.category.LAUNCHER"/></intent-filter></activity>
-        <activity android:name=".StaffSetupActivity" android:exported="false"/>
+        <activity android:name=".StaffSetupActivity" android:exported="false" android:windowSoftInputMode="adjustResize"/>
+        <activity android:name=".StaffQrScannerActivity" android:exported="false" android:windowSoftInputMode="adjustResize"/>
         <activity android:name=".PrintActivity" android:exported="false"/>
         <service android:name=".PrintService" android:exported="false" android:foregroundServiceType="dataSync"/>
         <activity android:name=".TicketActivity" android:exported="false"/>
+        <activity android:name=".RecoveryActivity" android:exported="false" />
         <activity android:name=".DeliveryActivity" android:exported="false"/>
         <service android:name=".EventService" android:exported="false" android:foregroundServiceType="dataSync"/>
         <service android:name=".RecoveryJob" android:exported="false" android:permission="android.permission.BIND_JOB_SERVICE"/>

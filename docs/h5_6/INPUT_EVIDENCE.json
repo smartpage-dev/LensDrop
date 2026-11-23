@@ -1,0 +1,35 @@
+{
+  "received_archive": "WhatsApp Unknown 2026-11-23 at 19.47.43.zip",
+  "sha256": "166ae50ecbd1f9be2a73fecef71448ab36f77425f4ea186deb2722ac6d9b26c1",
+  "contains": "Four JPEG screenshots; no logcat, stack trace, installed APK or native build metadata.",
+  "images": [
+    {
+      "filename": "WhatsApp Image 2026-11-23 at 19.45.25 (1).jpeg",
+      "sha256": "c94a27aeaf8103038893ae6bb6f2c7175176eb641b9c4dfa550bcc692e4f195a",
+      "raw_image_distributed": false
+    },
+    {
+      "filename": "WhatsApp Image 2026-11-23 at 19.45.25 (2).jpeg",
+      "sha256": "4bd2bc9f276575157efbd2889a8cf712abc01852c987540358974c18944d8eef",
+      "raw_image_distributed": false
+    },
+    {
+      "filename": "WhatsApp Image 2026-11-23 at 19.45.25.jpeg",
+      "sha256": "1417327a74b1aab581b6b82e9892e1d1c9d66431831b6b60533aa8f5e9090141",
+      "raw_image_distributed": false
+    },
+    {
+      "filename": "WhatsApp Image 2026-11-23 at 19.45.26.jpeg",
+      "sha256": "957c9e9a456c3225753e478000733910f3e59cefb61976913f6e6dd2e0718b8e",
+      "raw_image_distributed": false
+    }
+  ],
+  "observations": [
+    "Main screen says LensDrop Transfer / H5 ALPHA and presents older controls without the H5.5 private-archive setting.",
+    "Setup screen presents scan, paste, retry, approval and print controls with similar visual weight.",
+    "Pasted invitation reached a claim response displaying a code, event and device label. This is not proof that phone pairing was finished.",
+    "Approval wording in the screenshot says Compare this code with web Admin; delivered H5.4/H5.5 source uses blind code entry.",
+    "The exact installed versionCode and the reason for scanner closure cannot be established from these screenshots."
+  ],
+  "privacy": "One image contains invitation/code details. Raw user screenshots and decoded values are excluded. The older Printer Lab reports are not evidence of this LensDrop camera failure."
+}

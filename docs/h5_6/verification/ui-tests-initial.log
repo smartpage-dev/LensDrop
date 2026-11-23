@@ -1,0 +1,5 @@
+PASSED 58 production parser/readiness assertions; not a camera or SDK test.
+  File "/mnt/data/lensdrop_h56_work/source/clients/android/ui-tests/check_ui_contracts.py", line 35
+    ck('Scanner surface chosen before attach',c.index('setUseTextureView(false)')<c.index('frame.addView(camera')))
+                                                                                                                  ^
+SyntaxError: unmatched ')'

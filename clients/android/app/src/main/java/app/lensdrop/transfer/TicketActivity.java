@@ -38,27 +38,27 @@ public final class TicketActivity extends Activity {
     private volatile boolean foreground;
     private String exportScope;
     private interface Action{void run()throws Exception;}
-    @Override public void onCreate(Bundle state){
-        super.onCreate(state);config=new Config(this);
-        ScrollView scroll=new ScrollView(this);LinearLayout body=new LinearLayout(this);body.setOrientation(LinearLayout.VERTICAL);int p=(int)(16*getResources().getDisplayMetrics().density);body.setPadding(p,p,p,p);scroll.addView(body);setContentView(scroll);
-        body.setOnApplyWindowInsetsListener((v,i)->{v.setPadding(p,p+i.getSystemWindowInsetTop(),p,p+i.getSystemWindowInsetBottom());return i;});
-        text(body,"LensDrop / QR ticket pilot",24);
-        text(body,"58B3 secure Bluetooth SPP + native QR only. One dedicated paired printer per photographer. Manual foreground send; no automatic retry. Guest URL printing does not authorize or submit a photo print.",15);
-        details=text(body,"Loading saved ticket settings...",16);status=text(body,"",15);
-        button(body,"Grant nearby-device permissions",this::grant);
-        button(body,"Choose / confirm MY paired QR printer",this::choosePrinter);
-        button(body,"Forget saved QR printer (no deletion of tickets)",()->{if(TicketTransport.BUSY.get())throw new IllegalStateException("Wait for the current operation");config.prefs.edit().remove("ticket_printer").remove("ticket_printer_name").commit();refresh();});
-        button(body,"Test secure SPP connection (NO PRINT)",this::testConnection);
-        button(body,"Preview / print the SHOWN guest QR",()->preview(null));
-        button(body,"Ticket history / observations / explicit reprint",()->history(0));
-        button(body,"STOP this ticket connection",()->{TicketTransport op=operation;if(op!=null)op.cancel();say("Stop requested. Already transmitted bytes cannot be recalled. Check paper; no automatic resend.");});
-        button(body,"Export redacted ticket counts",this::export);
-        button(body,"Back to Guest QR / groups",()->{startActivity(new Intent(this,DeliveryActivity.class));finish();});
-        text(body,"First validate an ACTUAL full-length LensDrop guest link with another phone. The supplied evidence used a 32-byte test URL; it did not certify long links, sleep/reconnect or camera Wi-Fi coexistence. Keep ticket output private. No Chinese/logo/raster/cutter support in this pilot.",14);
+    @Override public void onCreate(Bundle state){super.onCreate(state);config=new Config(this);
+        LinearLayout page=LuceUi.screen(this,"QR ticket","One dedicated Bluetooth printer. Manual send; never automatic replay.",true);
+        details=LuceUi.label(this,page,"Loading saved ticket settings...",16,true);status=LuceUi.notice(this,page,"A ticket opens the guest collection. It does not submit a photo-print job.");
+        LinearLayout setup=LuceUi.disclosure(this,page,"1  My ticket printer");if(config.get("ticket_printer").isEmpty())setup.setVisibility(android.view.View.VISIBLE);
+        button(setup,"Allow nearby-device permission",this::grant);
+        button(setup,"Choose / confirm MY paired QR printer",this::choosePrinter);
+        button(setup,"Test connection (NO PRINT)",this::testConnection);
+        LinearLayout send=LuceUi.card(this,page,"2  Confirm the guest","Check the SHOWN guest and Receiving guest above. History may be showing a different guest.");
+        LuceUi.action(this,send,"Preview / print the SHOWN QR",true,()->{try{preview(null);}catch(Exception e){say(safeMessage(e));}});
+        button(send,"Ticket history / scan result / reprint",()->history(0));
+        button(send,"Choose / show guest QR",()->{startActivity(new Intent(this,DeliveryActivity.class));finish();});
+        button(send,"STOP ticket connection",()->{TicketTransport op=operation;if(op!=null)op.cancel();say("Stop requested. Already transmitted bytes cannot be recalled. Check paper; no automatic resend.");});
+        LuceUi.label(this,send,"Keep this screen visible while sending. Scan the physical ticket and verify its full URL before handing it to a guest.",14,false);
+        LinearLayout advanced=LuceUi.disclosure(this,page,"Advanced ticket tools");
+        button(advanced,"Forget printer (keep ticket history)",()->{if(TicketTransport.BUSY.get())throw new IllegalStateException("Wait for the current operation");config.prefs.edit().remove("ticket_printer").remove("ticket_printer_name").commit();refresh();});
+        button(advanced,"Export redacted ticket counts",this::export);
+        text(advanced,"58B3 secure SPP and native QR pilot. ASCII only; no logo, Chinese bitmap, cutter or BLE. Paper output, long URLs and sleep/reconnect still need physical testing.",14);
         work(()->{if(TicketTransport.BUSY.compareAndSet(false,true)){try(QueueDb q=new QueueDb(this)){new TicketLedger(q).recover();}finally{TicketTransport.BUSY.set(false);}}refreshNow();});
     }
-    private TextView text(LinearLayout parent,String value,int size){TextView t=new TextView(this);t.setText(value);t.setTextSize(size);t.setPadding(0,10,0,10);parent.addView(t);return t;}
-    private void button(LinearLayout parent,String value,Action action){Button b=new Button(this);b.setText(value);b.setOnClickListener(v->{try{action.run();}catch(Exception e){say(safeMessage(e));}});parent.addView(b);}
+    private TextView text(LinearLayout parent,String value,int size){return LuceUi.label(this,parent,value,size,size>=18);}
+    private void button(LinearLayout parent,String value,Action action){LuceUi.action(this,parent,value,false,()->{try{action.run();}catch(Exception e){say(safeMessage(e));}});}
     private void say(String value){runOnUiThread(()->{if(!isFinishing()&&!isDestroyed())status.setText(value);});}
     private static String safeMessage(Exception e){return e instanceof IllegalStateException||e instanceof IllegalArgumentException?e.getMessage():"Ticket action not completed. Queue retained; check Bluetooth, permission and paper. No automatic retry.";}
     private void work(Action action){if(io.isShutdown())return;io.execute(()->{try{action.run();}catch(Exception e){say(safeMessage(e));}});}
