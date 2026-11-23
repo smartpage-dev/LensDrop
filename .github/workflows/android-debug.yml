@@ -46,6 +46,11 @@ jobs:
           ACCEPT_ANDROID_SDK_LICENSES: ${{ inputs.accept_android_sdk_licenses }}
         run: python3 tools/github/android_ci.py prepare
 
+      - name: Verify complete Android source snapshot (no mixed versions)
+        run: |
+          set -o pipefail
+          python3 tools/github/verify_android_snapshot.py --report ci-output/android-source-integrity.json 2>&1 | tee ci-output/android-source-integrity.log
+
       - name: Install Java 17
         uses: actions/setup-java@v6
         with:
@@ -75,15 +80,21 @@ jobs:
       - name: Run H5 queue and policy logic tests (not Android instrumentation)
         run: |
           set -o pipefail
+          bash clients/android/RUN_BUILD_INTEGRITY_TESTS.sh 2>&1 | tee ci-output/source-regression-tests.log
           bash clients/android/RUN_POLICY_TESTS.sh 2>&1 | tee ci-output/policy-tests.log
           bash clients/android/RUN_PRINT_POLICY_TESTS.sh 2>&1 | tee ci-output/print-policy-tests.log
+          bash clients/android/RUN_PRINT_PROFILE_TESTS.sh 2>&1 | tee ci-output/print-profile-tests.log
           bash clients/android/RUN_LEDGER_TESTS.sh 2>&1 | tee ci-output/ledger-tests.log
+          bash clients/android/RUN_TICKET_TESTS.sh 2>&1 | tee ci-output/ticket-tests.log
+          bash clients/android/RUN_RELIABILITY_TESTS.sh 2>&1 | tee ci-output/reliability-tests.log
+          bash clients/android/RUN_WORKFLOW_TESTS.sh 2>&1 | tee ci-output/archive-workflow-tests.log
+          bash clients/android/RUN_UI_SETUP_TESTS.sh 2>&1 | tee ci-output/ui-setup-tests.log
 
-      - name: Compile and package the debug APK
+      - name: Compile APK and run Android lint (required)
         working-directory: clients/android
         run: |
           set -o pipefail
-          gradle --no-daemon --console=plain --stacktrace :app:assembleDebug 2>&1 | tee ../../ci-output/android-build.log
+          gradle --no-daemon --console=plain --stacktrace :app:assembleDebug :app:lintDebug 2>&1 | tee ../../ci-output/android-build.log
 
       - name: Verify APK signature and prepare download
         run: python3 tools/github/android_ci.py collect
@@ -98,6 +109,7 @@ jobs:
             ci-output/SHA256SUMS.txt
             ci-output/README_INSTALL.txt
             ci-output/apk-verification.txt
+            ci-output/android-source-integrity.json
           if-no-files-found: error
           retention-days: 14
 
@@ -106,7 +118,10 @@ jobs:
         uses: actions/upload-artifact@v7
         with:
           name: LensDrop-H5-logs-${{ github.run_number }}-${{ github.run_attempt }}
-          path: ci-output/*.log
+          path: |
+            ci-output/*.log
+            ci-output/android-source-integrity.json
+            clients/android/app/build/reports/lint-results-debug.*
           if-no-files-found: warn
           retention-days: 7
 
