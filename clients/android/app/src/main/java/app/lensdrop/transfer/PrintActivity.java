@@ -20,6 +20,18 @@ public final class PrintActivity extends Activity {
         jobs=LuceUi.label(this,queue,"Loading queue...",14,false);
         add(queue,"Resume queued printing",this::resume);
         add(queue,"Pause phone print transfers",()->{config.prefs.edit().putBoolean("print_active",false).commit();stopService(new Intent(this,PrintService.class));say("Phone transfers paused. Already accepted station jobs may still print; pause the Windows station to stop execution.");});
+        String fromGallery=getIntent().getStringExtra("gallery_job_id");
+        if(fromGallery!=null&&!fromGallery.isEmpty()){
+            io.execute(()->{
+                try(QueueDb q=new QueueDb(this);android.database.Cursor c=q.getReadableDatabase().rawQuery(
+                        "SELECT uri,state,is_test FROM jobs WHERE scope=? AND id=?",new String[]{config.get("scope"),fromGallery})){
+                    if(!c.moveToFirst()||c.getInt(2)!=0||"retired_local".equals(c.getString(1)))throw new IllegalStateException("Photo is no longer available for a new print request.");
+                    Uri photo=Uri.parse(c.getString(0));if(!"content".equals(photo.getScheme()))throw new IllegalStateException("Local photo URI unavailable; use cloud Staff Photo Desk.");
+                    try(java.io.InputStream stream=getContentResolver().openInputStream(photo)){if(stream==null)throw new java.io.IOException("No local source");}
+                    runOnUiThread(()->{if(!isFinishing()&&!isDestroyed())selectProfile(photo,route.getSelectedItemPosition());});
+                }catch(Exception e){say("Local original unavailable. Use the Cloud Staff Photo Desk to print this archived photo.");}
+            });
+        }
         LinearLayout help=LuceUi.disclosure(this,page,"Connection and paper help");
         LuceUi.label(this,help,"Method 1 uses reachable event LAN with eligible cloud fallback. Method 2 uses internet through Hostinger. A failed LAN check is not a Method 2 failure. Refresh authorized setup online before the event; local rights last at most 12 hours. Driver/cutter behavior still needs physical calibration.",14,false);
     }

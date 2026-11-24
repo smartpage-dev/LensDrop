@@ -63,6 +63,8 @@ public final class MainActivity extends Activity {
         primary=LuceUi.action(this,event,"Join your event",true,this::primaryAction);
         LinearLayout progress=LuceUi.card(this,panes[0],"Photo transfer", "Cloud storage, guest delivery and printing have separate statuses.");
         counts=LuceUi.label(this,progress,"Received  0     Verified  0\nWaiting  0     Need attention  0",19,true);
+        LinearLayout gallery=LuceUi.card(this,panes[0],"Photo gallery","Three-column, live local gallery. Tap a photo for details, star, guest QR and staff print actions.");
+        LuceUi.action(this,gallery,"Open photo gallery",true,()->open(GalleryActivity.class));
         LinearLayout guest=LuceUi.card(this,panes[0],"Guest delivery","Choose the intended guest before confirming a photo. A displayed history QR does not change the receiver.");
         LuceUi.action(this,guest,"Guest QR & photo selection",true,()->open(DeliveryActivity.class));
         LuceUi.action(this,guest,"Print a photo",false,()->open(PrintActivity.class));
@@ -93,6 +95,8 @@ public final class MainActivity extends Activity {
         LuceUi.action(this,diagnostics,"Pause photo uploads",false,this::pauseUploads);
         LuceUi.action(this,diagnostics,"Retry blocked uploads / links",false,()->{if(config.active()||UploadEngine.IN_FLIGHT.get()){say("Pause and wait for the current checkpoint first.");return;}try(QueueDb q=new QueueDb(this)){q.retryBlocked(config.get("scope"));q.retryAssignments(config.get("scope"));}say("Marked for retry. Fix the cause, then resume.");});
         LuceUi.action(this,diagnostics,"Export redacted diagnostics",false,()->export("diagnostics"));
+        LinearLayout slideshow=LuceUi.card(this,panes[2],"Event slideshow QR","Share the public projector link with clients. Different from a private guest photo ticket.");
+        LuceUi.action(this,slideshow,"Show / open / print event slideshow QR",true,()->open(SlideshowActivity.class));
         LinearLayout rehearsal=LuceUi.disclosure(this,panes[2],"Rehearsal & end of event");
         LuceUi.action(this,rehearsal,"Isolated pre-shoot test JPEG",false,this::chooseTest);
         LuceUi.action(this,rehearsal,"Finish received queue (stop discovering)",false,()->{config.prefs.edit().putBoolean("drain",true).putString("test_only","").commit();resume();});

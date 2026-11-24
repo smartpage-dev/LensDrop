@@ -9,7 +9,7 @@ import org.json.JSONObject;
 import java.util.UUID;
 
 final class QueueDb extends SQLiteOpenHelper {
-    QueueDb(Context context) { super(context,"lensdrop-queue.sqlite",null,6);setWriteAheadLoggingEnabled(true); }
+    QueueDb(Context context) { super(context,"lensdrop-queue.sqlite",null,8);setWriteAheadLoggingEnabled(true); }
     @Override public void onConfigure(SQLiteDatabase db) { db.execSQL("PRAGMA synchronous=FULL"); }
     @Override public void onCreate(SQLiteDatabase db) {
         db.execSQL("CREATE TABLE observed(scope TEXT,uri TEXT,size INTEGER,modified INTEGER,stable INTEGER,PRIMARY KEY(scope,uri))");
@@ -20,9 +20,11 @@ final class QueueDb extends SQLiteOpenHelper {
         createH53(db);
         createH54(db);
         createH55(db);
+        createH58(db);
+        createH59(db);
     }
     @Override public void onUpgrade(SQLiteDatabase db,int oldVersion,int newVersion) {
-        if(oldVersion<1||newVersion!=6)throw new IllegalStateException("Unsupported queue version. Preserve app data.");
+        if(oldVersion<1||newVersion!=8)throw new IllegalStateException("Unsupported queue version. Preserve app data.");
         if(oldVersion<2){
             db.execSQL("ALTER TABLE jobs ADD COLUMN is_test INTEGER NOT NULL DEFAULT 0");
             db.execSQL("ALTER TABLE jobs ADD COLUMN last_progress INTEGER NOT NULL DEFAULT 0");
@@ -32,6 +34,17 @@ final class QueueDb extends SQLiteOpenHelper {
         if(oldVersion<4)createH53(db);
         if(oldVersion<5)createH54(db);
         if(oldVersion<6)createH55(db);
+        if(oldVersion<7)createH58(db);
+        if(oldVersion<8)createH59(db);
+    }
+    private static void createH59(SQLiteDatabase db){
+        db.execSQL("CREATE TABLE IF NOT EXISTS slideshow_tickets(id TEXT PRIMARY KEY,scope TEXT NOT NULL,event_id TEXT NOT NULL,url TEXT NOT NULL,printer TEXT NOT NULL,created INTEGER NOT NULL,state TEXT NOT NULL,observation TEXT NOT NULL DEFAULT 'not_checked',error TEXT)");
+        db.execSQL("CREATE INDEX IF NOT EXISTS slideshow_tickets_scope ON slideshow_tickets(scope,created)");
+        db.execSQL("CREATE TRIGGER IF NOT EXISTS slideshow_ticket_immutable BEFORE UPDATE OF id,scope,event_id,url,printer,created ON slideshow_tickets BEGIN SELECT RAISE(ABORT,'immutable_slideshow_ticket'); END");
+    }
+    private static void createH58(SQLiteDatabase db){
+        // UI-only local metadata. Never delete cloud photos, print jobs, or guest assignments.
+        db.execSQL("CREATE TABLE IF NOT EXISTS gallery_marks(scope TEXT NOT NULL,job_id TEXT NOT NULL,starred INTEGER NOT NULL DEFAULT 0,hidden INTEGER NOT NULL DEFAULT 0,changed INTEGER NOT NULL,PRIMARY KEY(scope,job_id))");
     }
     private static void createH55(SQLiteDatabase db){
         db.execSQL("ALTER TABLE watch_sessions ADD COLUMN archive_all INTEGER NOT NULL DEFAULT 0");

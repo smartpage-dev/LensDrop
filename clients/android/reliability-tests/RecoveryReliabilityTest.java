@@ -35,7 +35,7 @@ public final class RecoveryReliabilityTest {
   check("Exact H5.3 schema4 source upgrades to schema6, preserves records, and allows reviewed revision",f->{
    Path dir=Files.createTempDirectory("lensdrop-h53-migration-");Context context=new Context(dir.toString());String id;
    try{try(FrozenH53QueueDb old=new FrozenH53QueueDb(context)){old.add(S,"content://old","OLD.JPG",120,20);try(Cursor c=old.getReadableDatabase().rawQuery("SELECT id FROM jobs",null)){c.moveToFirst();id=c.getString(0);}old.state(id,"blocked","source_changed",2,0);}
-    try(QueueDb current=new QueueDb(context)){eq(current.jobState(S,id),"blocked");RecoveryLedger.retireUpload(current,S,id);String next=UUID.randomUUID().toString();RecoveryLedger.replacement(current,S,id,"NEW.JPG",120,20,"b".repeat(64),staged(f),next);eq(current.jobState(S,next),"candidate");try(Cursor c=current.getReadableDatabase().rawQuery("PRAGMA user_version",null)){c.moveToFirst();eq(c.getInt(0),6);}}
+    try(QueueDb current=new QueueDb(context)){eq(current.jobState(S,id),"blocked");RecoveryLedger.retireUpload(current,S,id);String next=UUID.randomUUID().toString();RecoveryLedger.replacement(current,S,id,"NEW.JPG",120,20,"b".repeat(64),staged(f),next);eq(current.jobState(S,next),"candidate");try(Cursor c=current.getReadableDatabase().rawQuery("PRAGMA user_version",null)){c.moveToFirst();eq(c.getInt(0),8);}}
    }finally{try(var stream=Files.walk(dir)){for(Path x:stream.sorted(Comparator.reverseOrder()).toList())Files.delete(x);}}
   });
   System.out.println("PASSED "+count+" recovery/identity/ledger cases");

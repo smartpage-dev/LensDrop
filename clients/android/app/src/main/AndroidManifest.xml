@@ -22,8 +22,10 @@
         <activity android:name=".PrintActivity" android:exported="false"/>
         <service android:name=".PrintService" android:exported="false" android:foregroundServiceType="dataSync"/>
         <activity android:name=".TicketActivity" android:exported="false"/>
+        <activity android:name=".SlideshowActivity" android:exported="false"/>
         <activity android:name=".RecoveryActivity" android:exported="false" />
         <activity android:name=".DeliveryActivity" android:exported="false"/>
+        <activity android:name=".GalleryActivity" android:exported="false"/>
         <service android:name=".EventService" android:exported="false" android:foregroundServiceType="dataSync"/>
         <service android:name=".RecoveryJob" android:exported="false" android:permission="android.permission.BIND_JOB_SERVICE"/>
     </application>

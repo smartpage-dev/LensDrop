@@ -122,7 +122,7 @@ class BuildFixTests(unittest.TestCase):
         for p in SRC.glob('*.java'):self.assertNotIn('OsConstants.O_DIRECTORY',p.read_text(),str(p))
     def test_14_version_and_app_identity(self):
         t=(ANDROID/'app/build.gradle').read_text()
-        for expected in ["applicationId 'app.lensdrop.transfer'","versionName '0.2.0-alpha.6-h5.7.1'",'versionCode 13','minSdk 29','compileSdk 35','targetSdk 35']:
+        for expected in ["applicationId 'app.lensdrop.transfer'","versionName '0.2.0-alpha.6-h5.9'",'versionCode 15','minSdk 29','compileSdk 35','targetSdk 35']:
             self.assertIn(expected,t)
     def test_15_sync_errors_reach_existing_upload_retry(self):
         self.assertIn('catch(Exception e)',self.upload)

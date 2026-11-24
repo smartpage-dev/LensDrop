@@ -23,6 +23,7 @@ import java.util.concurrent.Executors;
 public final class DeliveryActivity extends Activity {
     private Config config;private TextView summary,message;private WebView qr;private String qrSignature=null;private CheckBox automatic;private Spinner modes;
     private boolean binding;
+    private ScrollView qrScroll;
     private final Handler handler=new Handler(Looper.getMainLooper());
     private final ExecutorService io=Executors.newSingleThreadExecutor();
     private final ExecutorService network=Executors.newSingleThreadExecutor();
@@ -30,26 +31,25 @@ public final class DeliveryActivity extends Activity {
     private final Runnable tick=new Runnable(){public void run(){refresh();handler.postDelayed(this,5000);}};
     private interface Task{void run(WatchLedger w)throws Exception;}
     @Override public void onCreate(Bundle saved){super.onCreate(saved);config=new Config(this);
-        LinearLayout page=LuceUi.screen(this,"Guest photos","Show a personal QR, choose photos, and keep each guest separate.",true);
+        LinearLayout[] dock=new LinearLayout[1];
+        LinearLayout page=LuceUi.dockedScreen(this,"Guest delivery","QR stays with the guest; receiving group stays independent.",dock);
+        qrScroll=(ScrollView)page.getParent();
         LinearLayout display=LuceUi.card(this,page,"Guest QR","Showing history does not change the receiving group.");
         summary=LuceUi.label(this,display,"Prepare a group or select one photo.",16,true);
         qr=new WebView(this);qr.getSettings().setJavaScriptEnabled(true);qr.getSettings().setAllowFileAccess(false);qr.getSettings().setAllowContentAccess(false);qr.getSettings().setBlockNetworkLoads(true);qr.setWebViewClient(new WebViewClient(){@Override public boolean shouldOverrideUrlLoading(WebView view,String url){return true;}});
-        display.addView(qr,new LinearLayout.LayoutParams(-1,LuceUi.dp(this,290)));
+        display.addView(qr,new LinearLayout.LayoutParams(-1,LuceUi.dp(this,220)));
         message=LuceUi.notice(this,page,"Guest approval is separate from private cloud archiving.");
         LinearLayout actions=LuceUi.card(this,page,"Choose the delivery","Group: several photos share one QR. Single: one selected photo has one fixed QR.");
         modes=new Spinner(this);modes.setAdapter(new ArrayAdapter<>(this,android.R.layout.simple_spinner_dropdown_item,new String[]{"Group QR / multiple photographs","Single selected photo QR"}));actions.addView(modes);
         try(QueueDb initial=new QueueDb(this)){modes.setSelection(new WatchLedger(initial).mode(config.get("scope")).equals("single")?1:0);}catch(Exception ignored){}
         modes.setOnItemSelectedListener(new android.widget.AdapterView.OnItemSelectedListener(){public void onNothingSelected(android.widget.AdapterView<?> p){} public void onItemSelected(android.widget.AdapterView<?> p,View v,int n,long id){if(binding)return;run(w->{w.mode(config.get("scope"),n==0?"group":"single");say("Mode changed for future selections only. Existing assignments are retained.");});}});
 
-        LuceUi.action(this,actions,"Choose photos for this guest",true,()->candidates(0));
-        button(actions,"Next Group",v->run(w->{w.nextGroup(config.get("scope"));say("New group ready. Automatic assignment is OFF; review new candidates.");}));
-        button(actions,"History / show previous QR",v->history(0));
-        button(actions,"Show current receiving group",v->run(w->{String id=w.active(config.get("scope"));if(id==null)throw new IllegalStateException("Start a group first");w.show(config.get("scope"),id);}));
+        LuceUi.label(this,actions,"Daily controls stay in the fixed toolbar below. Select Group or Single here; changing mode never moves existing photos.",13,false);
         LinearLayout links=LuceUi.card(this,page,"Prepare & deliver","Prepare links online before use. Printing a QR ticket does not create a photo-print request.");
         button(links,"Prepare guest links (3 group + 3 single)",v->prepare());
-        button(links,"Print the SHOWN QR ticket",v->startActivity(new Intent(this,TicketActivity.class)));
-        button(links,"Print a selected photo",v->startActivity(new Intent(this,PrintActivity.class)));
+        LuceUi.label(this,links,"First QR: use Next Group (Group mode) or Select Photo (Single mode). The app prepares links online if needed. Watching a folder does not assign a guest automatically.",13,false);
         LinearLayout advanced=LuceUi.disclosure(this,page,"Advanced group controls");
+        button(advanced,"History / choose any previous QR",v->history(0));
         button(advanced,"Undo unused Next Group",v->new AlertDialog.Builder(this).setTitle("Restore previous receiving group?").setMessage("Quick Undo is available for 120 seconds, only while the new group has no assigned work or ticket. Otherwise use History then Resume. Existing photos never move.").setPositiveButton("Restore",(d,n)->run(w->say(w.undo(config.get("scope"))))).setNegativeButton("Cancel",null).show());
         automatic=LuceUi.check(this,advanced,"Auto-assign new arrivals (TRUSTED ORDER ONLY)",false);
         automatic.setOnCheckedChangeListener((b,checked)->{if(binding)return;if(!checked){run(w->w.auto(config.get("scope"),false));return;}
@@ -59,8 +59,104 @@ public final class DeliveryActivity extends Activity {
         button(advanced,"Hide all unselected / skip legacy candidates",v->new AlertDialog.Builder(this).setMessage("Archive-all photos continue uploading privately and are only hidden from selection. Legacy selected-only candidates are skipped without upload. Source photos and guest assignments are kept.").setPositiveButton("Confirm hide / legacy skip",(d,n)->run(w->w.skip(config.get("scope"),null))).setNegativeButton("Cancel",null).show());
         button(advanced,"Recovery / changed sources / previous events",v->startActivity(new Intent(this,RecoveryActivity.class)));
         LuceUi.label(this,advanced,"Do not enable trusted order for delayed editor output or uncertain camera transfer. It resets on group or mode changes. Private guest release is controlled in Admin.",14,false);
+        LinearLayout row1=new LinearLayout(this);row1.setOrientation(LinearLayout.HORIZONTAL);dock[0].addView(row1);
+        dockButton(row1,"Prev QR",this::previousQr);
+        dockButton(row1,"Current QR",()->run(w->{String id=w.active(config.get("scope"));if(id==null)throw new IllegalStateException("Start a group first");w.show(config.get("scope"),id);showQrTop();}));
+        dockButton(row1,"Next Group",this::nextGroupGuided);
+        LinearLayout row2=new LinearLayout(this);row2.setOrientation(LinearLayout.HORIZONTAL);dock[0].addView(row2);
+        dockButton(row2,"Select Photo",this::chooseGuided);
+        dockButton(row2,"Print Photo",()->startActivity(new Intent(this,PrintActivity.class)));
+        dockButton(row2,"Print QR",()->startActivity(new Intent(this,TicketActivity.class)));
         if(config.get("scope").isEmpty()){say("Join an event in Setup first.");return;}
         run(w->w.ensure(config.get("scope"),config.get("folder")));
+        String showId=getIntent().getStringExtra("gallery_show_delivery");
+        String galleryId=getIntent().getStringExtra("gallery_job_id");
+        if(showId!=null&&!showId.isEmpty())run(w->{w.show(config.get("scope"),showId);showQrTop();say(getIntent().getBooleanExtra("gallery_ticket_hint",false)?"Check the shown guest QR, then tap Print QR below. No ticket has printed yet.":"Showing the selected guest QR. Receiving group was not changed.");});
+        else if(galleryId!=null&&!galleryId.isEmpty())uiGalleryCandidate(galleryId);
+    }
+    private void dockButton(LinearLayout row,String title,Runnable action){
+        LinearLayout slot=LuceUi.column(this);LinearLayout.LayoutParams lp=new LinearLayout.LayoutParams(0,-2,1);lp.setMargins(LuceUi.dp(this,2),0,LuceUi.dp(this,2),0);row.addView(slot,lp);
+        Button b=LuceUi.action(this,slot,title,false,action);b.setTextSize(13);b.setMinHeight(LuceUi.dp(this,46));b.setPadding(2,4,2,4);
+    }
+    private void showQrTop(){runOnUiThread(()->{if(qrScroll!=null)qrScroll.smoothScrollTo(0,0);});}
+    private void previousQr(){
+        run(w->{JSONArray rows=w.history(config.get("scope"),0);String current=w.shown(config.get("scope"));
+            int at=-1;for(int i=0;i<rows.length();i++)if(rows.getJSONObject(i).getString("id").equals(current)){at=i;break;}
+            int next=at+1;
+            if(next>=rows.length())throw new IllegalStateException("No earlier QR in recent history. Use Advanced History for older groups.");
+            JSONObject target=rows.getJSONObject(next);
+            w.show(config.get("scope"),target.getString("id"));
+            say("Showing "+target.getString("label")+". Receiving group is unchanged.");showQrTop();
+        });
+    }
+    private void nextGroupGuided(){
+        if(config.get("scope").isEmpty()){say("Pair an event first.");return;}
+        if(!preparing.compareAndSet(false,true)){say("QR preparation already running.");return;}
+        final String scope=config.get("scope");
+        network.execute(()->{
+            try(QueueDb q=new QueueDb(this)){
+                WatchLedger w=new WatchLedger(q);w.ensure(scope,config.get("folder"));
+                if(!"group".equals(w.mode(scope)))throw new IllegalStateException("Switch to Group mode before Next Group.");
+                try{w.nextGroup(scope);}catch(IllegalStateException missing){
+                    // No prepared QR: reserve and verify guest links ONLINE, then take one.
+                    try(CloudApi api=new CloudApi(this,config.get("base"),config.token(),config.cellular())){DeliveryCoordinator.prepare(q,scope,api);}
+                    if(!scope.equals(config.get("scope")))throw new IllegalStateException("Event changed while preparing QR");
+                    w.nextGroup(scope);
+                }
+                say("New group QR ready. Photos must still be assigned to this guest.");showQrTop();
+            }catch(Exception e){say(e instanceof IllegalStateException?e.getMessage():"Could not prepare a group QR. Check internet and staff pairing; previous groups are safe.");}
+            finally{preparing.set(false);refresh();}
+        });
+    }
+    private void chooseGuided(){
+        if(config.get("scope").isEmpty()){say("Pair an event first.");return;}
+        final String scope=config.get("scope");
+        // Reserve Single links if needed. For Group mode, existing active QR is reused.
+        if(!preparing.compareAndSet(false,true))return;
+        network.execute(()->{
+            try(QueueDb q=new QueueDb(this)){
+                WatchLedger w=new WatchLedger(q);
+                if("group".equals(w.mode(scope))&&w.active(scope)==null)throw new IllegalStateException("Tap Next Group first, then select photos for that guest.");
+                if("single".equals(w.mode(scope))){
+                    boolean ready;
+                    try(android.database.Cursor c=q.getReadableDatabase().rawQuery(
+                        "SELECT 1 FROM guest_groups WHERE scope=? AND kind='single' AND state='reserved' AND guest_path IS NOT NULL LIMIT 1",new String[]{scope})){
+                        ready=c.moveToFirst();
+                    }
+                    if(!ready)try(CloudApi api=new CloudApi(this,config.get("base"),config.token(),config.cellular())){DeliveryCoordinator.prepare(q,scope,api);}
+                }
+                if(scope.equals(config.get("scope")))runOnUiThread(()->candidates(0));
+            }catch(Exception e){say(e instanceof IllegalStateException?e.getMessage():"Could not prepare photo QR. Existing archive and queue are safe; check internet.");}
+            finally{preparing.set(false);refresh();}
+        });
+    }
+    private void uiGalleryCandidate(String id){
+        final String scope=config.get("scope");
+        run(w->{try(android.database.Cursor c=w.queue.getReadableDatabase().rawQuery(
+                "SELECT id,uri,name,size,modified,spool,sha,state,photo_id FROM jobs WHERE scope=? AND id=? AND is_test=0 AND delivery_id IS NULL AND selection_hidden=0",new String[]{scope,id})){
+            if(!c.moveToFirst()){say("This photo is already assigned or unavailable. Select it from Gallery to view its guest QR.");return;}
+            JSONObject p=new JSONObject();String[] fields={"id","uri","name","size","modified","spool","sha","state","photo_id"};
+            for(int n=0;n<fields.length;n++){if(n==3||n==4)p.put(fields[n],c.getLong(n));else p.put(fields[n],c.getString(n));}
+            if("group".equals(w.mode(scope))&&w.active(scope)==null){say("Tap Next Group to create a guest QR, then choose this photo again.");return;}
+            if("single".equals(w.mode(scope))){
+                boolean ready;
+                try(android.database.Cursor pool=w.queue.getReadableDatabase().rawQuery(
+                        "SELECT 1 FROM guest_groups WHERE scope=? AND kind='single' AND state='reserved' AND guest_path IS NOT NULL LIMIT 1",new String[]{scope})){
+                    ready=pool.moveToFirst();
+                }
+                if(!ready){
+                    say("Preparing one-photo QR links. Your selected photo is not assigned yet.");
+                    network.execute(()->{
+                        try(QueueDb q=new QueueDb(this);CloudApi api=new CloudApi(this,config.get("base"),config.token(),config.cellular())){
+                            DeliveryCoordinator.prepare(q,scope,api);
+                            if(scope.equals(config.get("scope")))preview(p);
+                        }catch(Exception e){say("Could not prepare single-photo QR. Photo remains unassigned; check internet and try again.");}
+                    });
+                    return;
+                }
+            }
+            say("Selected photo opened. Confirm its guest destination in the preview.");preview(p);
+        }});
     }
     private void button(LinearLayout p,String text,View.OnClickListener action){LuceUi.action(this,p,text,false,()->action.onClick(p));}
     private void say(String text){runOnUiThread(()->message.setText(text));}
@@ -82,7 +178,7 @@ public final class DeliveryActivity extends Activity {
         io.execute(()->{
             try(QueueDb q=new QueueDb(this)){
                 WatchLedger w=new WatchLedger(q);JSONObject s=w.summary(config.get("scope")),shown=w.group(config.get("scope"),w.shown(config.get("scope"))),receiving=w.group(config.get("scope"),w.active(config.get("scope")));
-                String text="Receiving: "+(s.getString("mode").equals("single")?"single-photo candidates":receiving==null?"no group":receiving.getString("label"))+"\nShowing QR: "+(shown==null?"none":shown.getString("label"))+"\nExcluded at start: "+s.optLong("excluded")+" / Candidates: "+(s.optLong("candidate")+s.optLong("unassigned_archives"))+" / Verified uploads: "+s.optLong("uploaded")+"\nChanged source files needing attention: "+s.optLong("changed_sources");
+                String text="Receiving: "+(s.getString("mode").equals("single")?"single-photo candidates":receiving==null?"no group":receiving.getString("label"))+"\nShowing QR: "+(shown==null?"none":shown.getString("label"))+"\nExcluded at start: "+s.optLong("excluded")+" / Candidates: "+(s.optLong("candidate")+s.optLong("unassigned_archives"))+" / Verified uploads: "+s.optLong("uploaded")+"\nChanged source files needing attention: "+s.optLong("changed_sources")+(shown==null?"\nNo QR yet: tap Next Group or select a photo. New arrivals alone do not create guest links.":"");
                 String link=shown!=null&&shown.optString("state").equals("open")&&!shown.optString("guest_path").isEmpty()?config.get("base")+shown.getString("guest_path"):"";
                 runOnUiThread(()->{if(isFinishing()||isDestroyed())return;summary.setText(text);binding=true;int pos=s.optString("mode").equals("single")?1:0;if(modes.getSelectedItemPosition()!=pos)modes.setSelection(pos);automatic.setChecked(s.optBoolean("auto_assign"));binding=false;renderQr(link);});
             }catch(Exception ignored){}

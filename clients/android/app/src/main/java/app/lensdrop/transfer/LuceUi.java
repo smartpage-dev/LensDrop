@@ -34,6 +34,25 @@ final class LuceUi {
         if(back){Button b=action(a,body,"Back",false,a::finish);b.setGravity(Gravity.START|Gravity.CENTER_VERTICAL);}
         label(a,body,title,28,true);label(a,body,subtitle,14,false);return body;
     }
+    /** Scrollable configuration, always-visible action dock; no WebView or extra framework. */
+    static LinearLayout dockedScreen(Activity a,String title,String subtitle,LinearLayout[] dock){
+        if(Build.VERSION.SDK_INT>=30)a.getWindow().setDecorFitsSystemWindows(false);
+        a.getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_STABLE|View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN|View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION|View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR|View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR);
+        LinearLayout root=column(a);root.setBackgroundColor(BACK);
+        ScrollView scroll=new ScrollView(a);scroll.setFillViewport(true);
+        LinearLayout body=column(a);int p=dp(a,14);body.setPadding(p,p,p,p);
+        scroll.addView(body);root.addView(scroll,new LinearLayout.LayoutParams(-1,0,1));
+        LinearLayout footer=column(a);footer.setPadding(dp(a,9),dp(a,5),dp(a,9),dp(a,8));footer.setBackground(shape(a,Color.WHITE,LINE));
+        root.addView(footer,new LinearLayout.LayoutParams(-1,-2));dock[0]=footer;
+        root.setOnApplyWindowInsetsListener((v,i)->{
+            int top,bottom,left,right;
+            if(Build.VERSION.SDK_INT>=30){android.graphics.Insets bars=i.getInsets(WindowInsets.Type.systemBars()|WindowInsets.Type.displayCutout()|WindowInsets.Type.ime());top=bars.top;bottom=bars.bottom;left=bars.left;right=bars.right;}
+            else{top=i.getSystemWindowInsetTop();bottom=i.getSystemWindowInsetBottom();left=i.getSystemWindowInsetLeft();right=i.getSystemWindowInsetRight();}
+            root.setPadding(left,top,right,bottom);return i;
+        });root.requestApplyInsets();a.setContentView(root);
+        action(a,body,"Back",false,a::finish);label(a,body,title,24,true);label(a,body,subtitle,13,false);
+        return body;
+    }
     static LinearLayout card(Activity a,LinearLayout parent,String title,String note){
         LinearLayout box=column(a);box.setPadding(dp(a,16),dp(a,12),dp(a,16),dp(a,14));box.setBackground(shape(a,Color.WHITE,LINE));
         LinearLayout.LayoutParams lp=new LinearLayout.LayoutParams(-1,-2);lp.setMargins(0,dp(a,14),0,0);parent.addView(box,lp);
