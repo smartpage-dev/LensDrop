@@ -1,0 +1,378 @@
+{
+  "schema": "luce.android.source-snapshot/1",
+  "release": "lensdrop-android-h5.7.1-code13",
+  "version_name": "0.2.0-alpha.6-h5.7.1",
+  "version_code": 13,
+  "source_baseline_sha256": "d05ce6a35d09e59f8c9a9da55b450b5c5ba41b6a7c0cf54cf17addb12b4e7570",
+  "purpose": "Guard H5.7.1 Android source coherence; not proof of native build or device networking.",
+  "files": {
+    ".github/workflows/android-debug.yml": {
+      "sha256": "c124f6c8de995570f83277ca9bc6f185ee0b515d3b7985f324ac7bd83169d75e",
+      "encoding": "utf8-lf"
+    },
+    "clients/android/BUILD_ANDROID.cmd": {
+      "sha256": "24f0a7128489c6294301dfd31ab275c34bc29fd47a62204bd422d7e3f2c3aac1",
+      "encoding": "utf8-lf"
+    },
+    "clients/android/BUILD_ANDROID.sh": {
+      "sha256": "6410ae360d28142739b905770b7fc9d78a1de2489b3d05f27cc2d150b037eb81",
+      "encoding": "utf8-lf"
+    },
+    "clients/android/README.md": {
+      "sha256": "beae12ab338a6134b45de1c7f4f8f9084e89af2371af640c008629571e39f498",
+      "encoding": "utf8-lf"
+    },
+    "clients/android/RUN_BUILD_INTEGRITY_TESTS.sh": {
+      "sha256": "931f45d62bc6bb6a963542c3b5eef1ee733f0c630eadcb347c1133105beb621e",
+      "encoding": "utf8-lf"
+    },
+    "clients/android/RUN_LEDGER_TESTS.sh": {
+      "sha256": "0530c46ecbac91a7a242f4c95a68f8fb5a2bbe1da35b2a00bc5d30c750a36926",
+      "encoding": "utf8-lf"
+    },
+    "clients/android/RUN_POLICY_TESTS.sh": {
+      "sha256": "46d85717845c45fb827cdc79059d8fcb7d3dc7c916ad7f7fddd527f725d5749d",
+      "encoding": "utf8-lf"
+    },
+    "clients/android/RUN_PRINT_POLICY_TESTS.sh": {
+      "sha256": "ed638b4402607b1ec4cd8d8df81fba44b608b169eb01bd37334291d748894121",
+      "encoding": "utf8-lf"
+    },
+    "clients/android/RUN_PRINT_PROFILE_TESTS.sh": {
+      "sha256": "0ae289f9c8460f4e7ab35f8facedf2e5bb94963672c0fd8f1aec1d9a09863ec8",
+      "encoding": "utf8-lf"
+    },
+    "clients/android/RUN_RELIABILITY_TESTS.sh": {
+      "sha256": "11407d1e70b7b6128515685f711203a58c7d22d8965cf54464962d80a41c21a1",
+      "encoding": "utf8-lf"
+    },
+    "clients/android/RUN_TICKET_TESTS.sh": {
+      "sha256": "bc237faef70a76237e2e63d433659bf5f7c9faf29a9f1a6c928d71e1309f17a4",
+      "encoding": "utf8-lf"
+    },
+    "clients/android/RUN_UI_SETUP_TESTS.sh": {
+      "sha256": "8e6cbcecbb0e4efe19883ee4fdf358bf6a83ce0c8dd95efe7d51754d398757f4",
+      "encoding": "utf8-lf"
+    },
+    "clients/android/RUN_WORKFLOW_TESTS.sh": {
+      "sha256": "d9c2ea5b27b03afd57d4a1a31fa2f07cad0870249496c97911eed2a99908f16e",
+      "encoding": "utf8-lf"
+    },
+    "clients/android/app/build.gradle": {
+      "sha256": "79f6ccf89959e3fe6f2094c32df85cc1709c5f42cd5bd606cf624ff53183dc93",
+      "encoding": "utf8-lf"
+    },
+    "clients/android/app/src/main/AndroidManifest.xml": {
+      "sha256": "986cc967a3a89541086a8e00e858647ffa353749dd0799aaf7c3f339e9c6e10e",
+      "encoding": "utf8-lf"
+    },
+    "clients/android/app/src/main/assets/QRCode-LICENSE.txt": {
+      "sha256": "b3c7a2fadb2515b8106eae58439a4b9c0581a4eaa88d6a265701f8d4dd7dadb8",
+      "encoding": "utf8-lf"
+    },
+    "clients/android/app/src/main/assets/qr.js": {
+      "sha256": "bab76b147e2ce00880d6952bbb02ea379b0bb41cd422a611327ebd0c872226fc",
+      "encoding": "utf8-lf"
+    },
+    "clients/android/app/src/main/java/app/lensdrop/transfer/ArchiveStaging.java": {
+      "sha256": "5deb96d6e4b9e9006b4b227344bb386e65a3c0b61fc7032a9b07ea9447babd77",
+      "encoding": "utf8-lf"
+    },
+    "clients/android/app/src/main/java/app/lensdrop/transfer/CloudApi.java": {
+      "sha256": "6ac0da6bfd20f33fc0af32eaa474d9e9f74d7bab7fbe3a557d269e7017da74f3",
+      "encoding": "utf8-lf"
+    },
+    "clients/android/app/src/main/java/app/lensdrop/transfer/Config.java": {
+      "sha256": "ddf24ca09dc2fd6f62887d7786da9f623d660d8c56bd2c6c0cba0067d0f13e26",
+      "encoding": "utf8-lf"
+    },
+    "clients/android/app/src/main/java/app/lensdrop/transfer/DeliveryActivity.java": {
+      "sha256": "e4c85c8e732add25d8c8bc3f2bfa61d9e8450eac82413111e5b5ac68c80aa77b",
+      "encoding": "utf8-lf"
+    },
+    "clients/android/app/src/main/java/app/lensdrop/transfer/DeliveryCoordinator.java": {
+      "sha256": "c9e928834bd3ef11365d66fa1ada6f44936f88725596221c51e069a53828d817",
+      "encoding": "utf8-lf"
+    },
+    "clients/android/app/src/main/java/app/lensdrop/transfer/DirectorySync.java": {
+      "sha256": "3bb152e1dc0ba6b1b98cbf472084eedf72f8dba5b14269fb822c7bda88f3a23a",
+      "encoding": "utf8-lf"
+    },
+    "clients/android/app/src/main/java/app/lensdrop/transfer/EventService.java": {
+      "sha256": "94513d22014f3998e5e94fe92c918900b0360f8c48c5abaf0e2e9a7b2caf455e",
+      "encoding": "utf8-lf"
+    },
+    "clients/android/app/src/main/java/app/lensdrop/transfer/JpegStructure.java": {
+      "sha256": "b1de406d316f51a5fbdf0b481d61f47a809d648684c62df68c72384d6c68fc48",
+      "encoding": "utf8-lf"
+    },
+    "clients/android/app/src/main/java/app/lensdrop/transfer/LanPrintApi.java": {
+      "sha256": "21a320f81f8e07cbac722a958a567d7e060cf40c71c2beb941b7021d98e85e80",
+      "encoding": "utf8-lf"
+    },
+    "clients/android/app/src/main/java/app/lensdrop/transfer/LuceUi.java": {
+      "sha256": "581be71428709c369ce5a6c2d0c89fcdbbbbf682bc5d152f7953b58f129d63d6",
+      "encoding": "utf8-lf"
+    },
+    "clients/android/app/src/main/java/app/lensdrop/transfer/MainActivity.java": {
+      "sha256": "269dcbc659867e2010db9b1c7cb92a1bb6ade5b52843ed726da4a652f53663a3",
+      "encoding": "utf8-lf"
+    },
+    "clients/android/app/src/main/java/app/lensdrop/transfer/MediaScanner.java": {
+      "sha256": "82f79237cb13e6cc5330defd28e788d336719f23325e16445477be34d7eadd60",
+      "encoding": "utf8-lf"
+    },
+    "clients/android/app/src/main/java/app/lensdrop/transfer/PrintActivity.java": {
+      "sha256": "05501351acf8d1618f5cf399711dde7551fe178c806172eb3e114059ea1ddf35",
+      "encoding": "utf8-lf"
+    },
+    "clients/android/app/src/main/java/app/lensdrop/transfer/PrintEngine.java": {
+      "sha256": "3159521863cfc1fa291ec9b2b69b3963793a904f27abcf9ebca81942ae3404cc",
+      "encoding": "utf8-lf"
+    },
+    "clients/android/app/src/main/java/app/lensdrop/transfer/PrintProfilePolicy.java": {
+      "sha256": "9b7f565d1a5e40d56a089d406d93c68769e65cd58d47db9edcc2ac88f7b51092",
+      "encoding": "utf8-lf"
+    },
+    "clients/android/app/src/main/java/app/lensdrop/transfer/PrintQueue.java": {
+      "sha256": "226314ec4e7a9d1b5dc9615f43c9958f31a7886321c3e402c981c29f1cff2528",
+      "encoding": "utf8-lf"
+    },
+    "clients/android/app/src/main/java/app/lensdrop/transfer/PrintRules.java": {
+      "sha256": "2d24d9759d3bf002b7025a9ee81eb94b953e1451c4f4f7c0d13a1254692bd7eb",
+      "encoding": "utf8-lf"
+    },
+    "clients/android/app/src/main/java/app/lensdrop/transfer/PrintService.java": {
+      "sha256": "9f5f5604a9d8b56427a10df560ed23a5a3405885673b1df1c412b817e1aa0566",
+      "encoding": "utf8-lf"
+    },
+    "clients/android/app/src/main/java/app/lensdrop/transfer/QueueDb.java": {
+      "sha256": "00c124ef3629e4f57b9be4aa873db19b852cbabf1463cdeb5dd6b00b8e3ec608",
+      "encoding": "utf8-lf"
+    },
+    "clients/android/app/src/main/java/app/lensdrop/transfer/RecoveryActivity.java": {
+      "sha256": "5882c0f0ff6d1b14e038a396375a262588e4c47808e68c03e635e966947ec962",
+      "encoding": "utf8-lf"
+    },
+    "clients/android/app/src/main/java/app/lensdrop/transfer/RecoveryJob.java": {
+      "sha256": "b894d9220ef732c3c76fe5ef305fdb13d867d11aff9a00efcc86d8cad0a19d03",
+      "encoding": "utf8-lf"
+    },
+    "clients/android/app/src/main/java/app/lensdrop/transfer/RecoveryLedger.java": {
+      "sha256": "e398aab751ffbef3960e7895208dd9242e4b11c7638553fdd081419bd6e95a82",
+      "encoding": "utf8-lf"
+    },
+    "clients/android/app/src/main/java/app/lensdrop/transfer/SessionRules.java": {
+      "sha256": "e9ba98de3d49f71ae3d5d6bf7f00e5d6896d87aff68c9ebb08cf91c66e275615",
+      "encoding": "utf8-lf"
+    },
+    "clients/android/app/src/main/java/app/lensdrop/transfer/SetupFlow.java": {
+      "sha256": "87a6f61371dee1b3cefc19c15714d817da325314a7fcee8ea4e7f3861b7fce0e",
+      "encoding": "utf8-lf"
+    },
+    "clients/android/app/src/main/java/app/lensdrop/transfer/StaffInvitation.java": {
+      "sha256": "a61965b4426a548572b6c990059d4ecb997909a84f600cfe03e78811bae3158f",
+      "encoding": "utf8-lf"
+    },
+    "clients/android/app/src/main/java/app/lensdrop/transfer/StaffQrScannerActivity.java": {
+      "sha256": "cf598f0293bb0e5704497ba4c48a5cc00b7bd1935e9ce9888d0424ddd79a89c0",
+      "encoding": "utf8-lf"
+    },
+    "clients/android/app/src/main/java/app/lensdrop/transfer/StaffSetupActivity.java": {
+      "sha256": "a28912bf9459b7e67ca611182548116413f54a9448072efda74bfc693b022436",
+      "encoding": "utf8-lf"
+    },
+    "clients/android/app/src/main/java/app/lensdrop/transfer/TicketActivity.java": {
+      "sha256": "947638bbbfbb3d23ddca2cfeff8af3d6c4cb9aa502e8eccd28468c45a4a49de7",
+      "encoding": "utf8-lf"
+    },
+    "clients/android/app/src/main/java/app/lensdrop/transfer/TicketLedger.java": {
+      "sha256": "9aa4558861987047c03e45a625d46a798b77d66f37e9aecd041a8a27d3726a6a",
+      "encoding": "utf8-lf"
+    },
+    "clients/android/app/src/main/java/app/lensdrop/transfer/TicketProtocol.java": {
+      "sha256": "d84f4f4de2e51f1dcf3d7da58e865d22a2a282bd7859f0edbfe042f93be63d73",
+      "encoding": "utf8-lf"
+    },
+    "clients/android/app/src/main/java/app/lensdrop/transfer/TicketTransport.java": {
+      "sha256": "7353359c4202f1063539f71455bf52d881cce6712805f26c0c141f7d25df7a15",
+      "encoding": "utf8-lf"
+    },
+    "clients/android/app/src/main/java/app/lensdrop/transfer/TransferLane.java": {
+      "sha256": "d2fc4a8e8761d622a011d406ebc315878004b075cdba5ade68f8f411a4ed3b29",
+      "encoding": "utf8-lf"
+    },
+    "clients/android/app/src/main/java/app/lensdrop/transfer/UploadEngine.java": {
+      "sha256": "35b9b7fb26187fb8b70b0265f8fe5b9a1f369a90638bb7d015a574e7b2c5aef8",
+      "encoding": "utf8-lf"
+    },
+    "clients/android/app/src/main/java/app/lensdrop/transfer/UploadRetryPolicy.java": {
+      "sha256": "7b4287e8c29ad613a4454708d009f66253030e089ec76efe1432d26c0c243c0f",
+      "encoding": "utf8-lf"
+    },
+    "clients/android/app/src/main/java/app/lensdrop/transfer/WatchLedger.java": {
+      "sha256": "d8f6c0dc22bd6a01939b7237af5c4b9085fa5dacde8b0e1328a461ce69e6b3b8",
+      "encoding": "utf8-lf"
+    },
+    "clients/android/app/src/main/java/app/lensdrop/transfer/WatchRules.java": {
+      "sha256": "e84e0669a5122bfc0cd126101cadee6b84c633f91558da3884de306191ab7ffa",
+      "encoding": "utf8-lf"
+    },
+    "clients/android/app/src/main/res/values/styles.xml": {
+      "sha256": "08d5dff63c53c27082750a84f312b41684e3d715c2a7a7c252f3caea7a424a4d",
+      "encoding": "utf8-lf"
+    },
+    "clients/android/build.gradle": {
+      "sha256": "7c2248fd2eddd20ccc0da72abb80cfb4beab12b2ec71cc022b36746df856290a",
+      "encoding": "utf8-lf"
+    },
+    "clients/android/buildfix-tests/README.md": {
+      "sha256": "84b6a6111bc2d546b6096a1fa657100ee2d4cf4623bed6fd041bcf90823eb827",
+      "encoding": "utf8-lf"
+    },
+    "clients/android/buildfix-tests/run_buildfix_tests.py": {
+      "sha256": "814fef4c27d04dc84c662dab6928287a329569c6bfc27d10a6bc9131b9b4b542",
+      "encoding": "utf8-lf"
+    },
+    "clients/android/gradle.properties": {
+      "sha256": "ba3dba89ebf5d6d10556c8685858ece20ed6c83f13ef2012096961042081a575",
+      "encoding": "utf8-lf"
+    },
+    "clients/android/ledger-tests/WatchLedgerIntegrationTest.java": {
+      "sha256": "b9f26974c9ac49c12ad0f47d568c5a28050694275cb771ab313b509808ae8a07",
+      "encoding": "utf8-lf"
+    },
+    "clients/android/ledger-tests/android/content/ContentValues.java": {
+      "sha256": "26eb2dd370a77cec44f0287390df43c1c3db7fe2d238ca37de100995b1968755",
+      "encoding": "utf8-lf"
+    },
+    "clients/android/ledger-tests/android/content/Context.java": {
+      "sha256": "d8dbcb6240a8bed364e9fc5e2314e5144768c83b6251c1cc2ecdce694e6184b9",
+      "encoding": "utf8-lf"
+    },
+    "clients/android/ledger-tests/android/database/Cursor.java": {
+      "sha256": "2a2e39d3dd013971fbe7daa6d151c7a50b60256b6099708ad9adb7e14abdf65e",
+      "encoding": "utf8-lf"
+    },
+    "clients/android/ledger-tests/android/database/sqlite/SQLiteDatabase.java": {
+      "sha256": "7d147692916d53747d4e53fa828424cd0803b5a0eaa7f120fe0da19ef288f526",
+      "encoding": "utf8-lf"
+    },
+    "clients/android/ledger-tests/android/database/sqlite/SQLiteOpenHelper.java": {
+      "sha256": "1b0d8e4cc98713c9abeb10d6d6932d3a979cafbe1115603881c6e650aa52522d",
+      "encoding": "utf8-lf"
+    },
+    "clients/android/ledger-tests/bridge.py": {
+      "sha256": "3983e888a3176f1dc7393903313b6af1c71fab903e3f42e04e05ccd4259b06d3",
+      "encoding": "utf8-lf"
+    },
+    "clients/android/ledger-tests/org/json/JSONArray.java": {
+      "sha256": "c6af8b39b3fd0ba35fc3b6411e460fe9bf8885d6635d49dceedcb7e5d76ad5b6",
+      "encoding": "utf8-lf"
+    },
+    "clients/android/ledger-tests/org/json/JSONObject.java": {
+      "sha256": "08d7451d4dd2354c2f3031b8d43b904cb4401ade842683320d770775bfffb280",
+      "encoding": "utf8-lf"
+    },
+    "clients/android/policy-tests/ParseJava.java": {
+      "sha256": "f303abef27cbf91edac474f22e116ce8ccebbb402430997768ce5b8a11263205",
+      "encoding": "utf8-lf"
+    },
+    "clients/android/policy-tests/PrintProfilePolicyTest.java": {
+      "sha256": "5c93ea5437d39167d09d4012a44c92219ea295287c792d24683e526900906bf9",
+      "encoding": "utf8-lf"
+    },
+    "clients/android/policy-tests/PrintRulesTest.java": {
+      "sha256": "cc3a5c526a6f27436807475f00e32b63360c8e3a17eead758773609dd3db8818",
+      "encoding": "utf8-lf"
+    },
+    "clients/android/policy-tests/SessionRulesTest.java": {
+      "sha256": "653a492ccea65d1ea188786906085460e01016e8ce5f102d3ec38b385537382e",
+      "encoding": "utf8-lf"
+    },
+    "clients/android/reliability-tests/FrozenH53QueueDb.java": {
+      "sha256": "74ecb75aea6eb1651d06e736071fadbcc027a686ec683bc884e6a8c7697bcf48",
+      "encoding": "utf8-lf"
+    },
+    "clients/android/reliability-tests/JpegReliabilityTest.java": {
+      "sha256": "94bf28d86952ae507059b5638a178af0268b1c56e83b37c008e754c8ce05130d",
+      "encoding": "utf8-lf"
+    },
+    "clients/android/reliability-tests/RecoveryReliabilityTest.java": {
+      "sha256": "752766e22bed0e8dd7701448335b0268d4427b9d2801fba76b4bd620ceeab89b",
+      "encoding": "utf8-lf"
+    },
+    "clients/android/settings.gradle": {
+      "sha256": "5af69b765c67cd18eceb0ba66d5a5f1083b6db3fcefd9746a6317e209f2a3ac0",
+      "encoding": "utf8-lf"
+    },
+    "clients/android/ticket-tests/LabProtocolReference.java": {
+      "sha256": "3df6ddbd6ec756c9889bba54458aea375f4d5f4884c11a289dfd3870187c6c6e",
+      "encoding": "utf8-lf"
+    },
+    "clients/android/ticket-tests/LegacyQueueDb.java": {
+      "sha256": "608c1587e7c6d6ed8b910ff2fa9028922176446a8c8d1f5cf2851eb390759cd5",
+      "encoding": "utf8-lf"
+    },
+    "clients/android/ticket-tests/TicketLedgerTest.java": {
+      "sha256": "ffc31390089bf52afceedae7617fe1b456ed88edb10a020fa50495f9a02ba03e",
+      "encoding": "utf8-lf"
+    },
+    "clients/android/ticket-tests/TicketProtocolTest.java": {
+      "sha256": "dbcc4fba9cfca8c9756e8a8525b0c225eda6b97145d32cc1463a7169564d7d02",
+      "encoding": "utf8-lf"
+    },
+    "clients/android/ui-tests/SetupFlowTest.java": {
+      "sha256": "c09759093feed11f95e67e07de45defa01f86fe6382d1af516288d422c6b9815",
+      "encoding": "utf8-lf"
+    },
+    "clients/android/ui-tests/check_ui_contracts.py": {
+      "sha256": "40db0bafbadbb4d800504d99e8142ab6a947c29ea4b35a8ed3a901a07f59c8af",
+      "encoding": "utf8-lf"
+    },
+    "clients/android/ui-tests/parse_sources.py": {
+      "sha256": "571747bfb5b502d2fd9fe9c3ec46b2d8e68bfcd04d3bbf3ed6e263582819a1d6",
+      "encoding": "utf8-lf"
+    },
+    "clients/android/ui-tests/run_scanner_contracts.py": {
+      "sha256": "8903d5393fb08d9077a34b87c03a9eaac0b4b1b7700c7098414f2d84fe600bc3",
+      "encoding": "utf8-lf"
+    },
+    "clients/android/workflow-tests/ArchiveWorkflowTest.java": {
+      "sha256": "5294b9b343865d85d4fc200c481e631091874d4ad616e52074644529b291d43b",
+      "encoding": "utf8-lf"
+    },
+    "clients/android/workflow-tests/FrozenH54PrintQueue.java": {
+      "sha256": "15ffebbdd64d55ba76df0c87d269dc4429a29663dd12232a8da1058f314941a4",
+      "encoding": "utf8-lf"
+    },
+    "clients/android/workflow-tests/FrozenH54QueueDb.java": {
+      "sha256": "e1efa3c41baa50645fb49aa3d17901bfdcf6b2074468d88478f6d491d485be18",
+      "encoding": "utf8-lf"
+    },
+    "clients/android/workflow-tests/stubs/CloudApi.java": {
+      "sha256": "5ccdbdc199c0e86c9649fdc5bdd285d0e7a426166ea98c2668ac4077d9912e6c",
+      "encoding": "utf8-lf"
+    },
+    "clients/android/workflow-tests/stubs/DirectorySync.java": {
+      "sha256": "d3e8734bb43b40bf44139c280d1a47cb377e4dc34fb75b892dddfa743324ccee",
+      "encoding": "utf8-lf"
+    },
+    "tools/github/android_ci.py": {
+      "sha256": "aabb3f3e696efe28adccca2e02b4cdc3222ae5f2491ffeccb411843c8afe7ad5",
+      "encoding": "utf8-lf"
+    },
+    "tools/github/test_android_snapshot.py": {
+      "sha256": "b90bd65c5ea43d3f658593721085d54bc19d5f251d91e850065dbdaef407b452",
+      "encoding": "utf8-lf"
+    },
+    "tools/github/verify_android_snapshot.py": {
+      "sha256": "2e5121b150b36021aaaa361353d1e4f118b07a587dc75bae9936116f492b730f",
+      "encoding": "utf8-lf"
+    },
+    "clients/android/ui-tests/test_mobile_network.py": {
+      "sha256": "43d31ce05975f0922313940736666b18dfe96a6bcb8f55a39c1d52a14f23ee3b",
+      "encoding": "utf8-lf"
+    }
+  }
+}

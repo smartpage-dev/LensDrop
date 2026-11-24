@@ -44,7 +44,10 @@ final class CloudApi implements AutoCloseable {
         Network active=manager.getActiveNetwork();NetworkCapabilities caps=active==null?null:manager.getNetworkCapabilities(active);
         if(caps!=null&&caps.hasCapability(NetworkCapabilities.NET_CAPABILITY_VALIDATED)){
             // Do not deliberately bypass a VPN. Bind cloud traffic only, never the process.
-            if(!caps.hasCapability(NetworkCapabilities.NET_CAPABILITY_NOT_METERED)&&!allowCellular)throw new Failure("mobile_data_not_allowed",true,30000);
+            // A validated active network is allowed whether it is Wi-Fi, 4G/5G,
+            // or metered Wi-Fi. The saved cellular flag only controls an OPTIONAL
+            // alternative cellular request when the active network is unusable.
+            // Keep using the active network to respect Android's VPN routing.
             return (HttpURLConnection)active.openConnection(url);
         }
         if(caps!=null&&caps.hasTransport(NetworkCapabilities.TRANSPORT_VPN))throw new Failure("waiting_for_vpn_internet",true,5000);

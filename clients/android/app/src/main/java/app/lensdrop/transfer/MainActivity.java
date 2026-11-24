@@ -72,7 +72,8 @@ public final class MainActivity extends Activity {
         LinearLayout source=LuceUi.card(this,panes[1],"2  Photo source","Save one camera test JPEG into shared phone storage before choosing its folder.");
         folder=LuceUi.field(this,source,"Choose a shared photo folder",config.get("folder"),false);folder.setFocusable(false);folder.setOnClickListener(v->findFolders());
         LuceUi.action(this,source,"Choose photo folder",true,this::findFolders);
-        mobile=LuceUi.check(this,source,"Allow mobile data for cloud uploads",config.cellular());
+        mobile=LuceUi.check(this,source,"Use cellular fallback if Wi-Fi has no internet (optional)",config.cellular());
+        LuceUi.label(this,source,"4G/5G and metered Wi-Fi work by default for pairing, photo uploads and cloud printing. This option only requests an alternative cellular network if the active connection is unusable. Data charges may apply.",14,false);
         archive=LuceUi.check(this,source,"Archive all new photos privately",archiveEnabled());
         LuceUi.label(this,source,"Archive first; assign/release to guests separately. Existing excluded, skipped and retired files stay untouched. Pause transfers before changing these settings.",14,false);
         LuceUi.action(this,source,"Save photo source",true,this::start);
