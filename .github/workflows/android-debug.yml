@@ -88,6 +88,10 @@ jobs:
           bash clients/android/RUN_TICKET_TESTS.sh 2>&1 | tee ci-output/ticket-tests.log
           bash clients/android/RUN_RELIABILITY_TESTS.sh 2>&1 | tee ci-output/reliability-tests.log
           bash clients/android/RUN_WORKFLOW_TESTS.sh 2>&1 | tee ci-output/archive-workflow-tests.log
+          bash clients/android/RUN_GALLERY_TESTS.sh 2>&1 | tee ci-output/gallery-tests.log
+          bash clients/android/RUN_GALLERY_UI_TESTS.sh 2>&1 | tee ci-output/gallery-ui-contracts.log
+          bash clients/android/SLIDESHOW_QR_TEST.sh 2>&1 | tee ci-output/slideshow-ticket-tests.log
+          python3 clients/android/slideshow-tests/check_slideshow_ui.py 2>&1 | tee ci-output/slideshow-ui-contracts.log
           bash clients/android/RUN_UI_SETUP_TESTS.sh 2>&1 | tee ci-output/ui-setup-tests.log
 
       - name: Compile APK and run Android lint (required)
