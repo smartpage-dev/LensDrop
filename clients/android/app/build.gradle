@@ -6,8 +6,8 @@ android {
         applicationId 'app.lensdrop.transfer'
         minSdk 29
         targetSdk 35
-        versionCode 15
-        versionName '0.2.0-alpha.6-h5.9'
+        versionCode 16
+        versionName '0.2.0-alpha.6-h5.10'
     }
     compileOptions { sourceCompatibility JavaVersion.VERSION_17; targetCompatibility JavaVersion.VERSION_17 }
     buildTypes { release { minifyEnabled false } }

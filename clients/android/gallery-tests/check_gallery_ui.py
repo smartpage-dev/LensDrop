@@ -5,6 +5,9 @@ J=ROOT/'app/src/main/java/app/lensdrop/transfer'
 read=lambda n:(J/n).read_text()
 g=read('GalleryActivity.java'); l=read('GalleryLedger.java');d=read('DeliveryActivity.java');u=read('LuceUi.java');p=read('PrintActivity.java');m=read('MainActivity.java');q=read('QueueDb.java')
 checks={
+ 'partial row preserves three equal columns': 'rows.length()%3!=0' in g and '3-rows.length()%3' in g and 'row.addView(blank' in g,
+ 'cloud star sync uses bounded fetch': '/v1/device/photo-controls' in g and 'cloudFlags' in g and 'cloudRefreshAt' in g,
+ 'cloud visibility requires confirmation': 'gallery_visible' in g and 'projector_visible' in g and 'Cloud update not saved' in g,
  '3-column layout': 'i%3==0' in g and 'LinearLayout.LayoutParams(0,-2,1)' in g,
  'five-second foreground refresh': 'ui.postDelayed(this,5000)' in g and 'onPause(){active=false' in g,
  'refresh does not rebuild unchanged grid': 'next.equals(lastSignature)' in g,

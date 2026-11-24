@@ -97,6 +97,14 @@ async function route(c){
     requireValue(s.run('UPDATE delivery_items SET released=? WHERE photo_id=?',Number(b.released),m[1]).changes>0,404,'personal_photo_not_found');
     json(res,200,{ok:true,public_status:photo.status});return true;
   }
+  m=/^\/v1\/p\/([a-f0-9]{32})\/photos\/([0-9a-f-]+)\/visibility$/.exec(p);
+  if(m&&method==='POST'){
+    const d=publicDelivery(s,m[1]),b=await readJSON(req);
+    requireValue(require('./photo-controls.cjs').policy(s,d.event_id).guest_hide_enabled,403,'guest_public_hide_not_enabled');
+    requireValue(Object.keys(b).length===2&&['gallery_visible','projector_visible'].includes(b.channel)&&b.visible===false,400,'guest_can_only_hide_public_channels');
+    requireValue(s.one('SELECT 1 FROM delivery_items WHERE delivery_id=? AND photo_id=? AND released=1',d.id,m[2]),404,'photo_not_in_delivery');
+    json(res,200,require('./photo-controls.cjs').setPhoto(s,m[2],{[b.channel]:false},'guest',d.event_id));return true;
+  }
   m=/^\/v1\/p\/([a-f0-9]{32})(?:\/(logo|photos\/([0-9a-f-]+)\/(thumb|delivery)))?$/.exec(p);
   if(m&&method==='GET'){
     const d=publicDelivery(s,m[1]);

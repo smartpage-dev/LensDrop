@@ -1,0 +1,16 @@
+{
+  "release": "H5.10",
+  "cloud_version": "0.2.0-alpha.10-hostinger.5.10",
+  "cloud_schema": 9,
+  "android_version": "0.2.0-alpha.6-h5.10",
+  "android_code": 16,
+  "android_photo_schema": 8,
+  "windows_station": "unchanged",
+  "status": "engineering source pilot; no native build or live deployment",
+  "testing": {
+    "cloud": 170,
+    "station": 57,
+    "windows_packaging": 8,
+    "android_gallery_contracts": 26
+  }
+}

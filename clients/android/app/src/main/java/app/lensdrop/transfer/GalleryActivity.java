@@ -34,6 +34,8 @@ public final class GalleryActivity extends Activity {
     private android.widget.CheckBox showHidden;
     private int visibleCount=30;
     private String lastSignature="";
+    private long cloudRefreshAt=0;
+    private final java.util.concurrent.ConcurrentHashMap<String,JSONObject> cloudFlags=new java.util.concurrent.ConcurrentHashMap<>();
     private final Handler ui=new Handler(Looper.getMainLooper());
     private final ExecutorService db=Executors.newSingleThreadExecutor();
     private final ExecutorService thumbs=Executors.newFixedThreadPool(2);
@@ -61,12 +63,21 @@ public final class GalleryActivity extends Activity {
         LinearLayout slot=LuceUi.column(this);LinearLayout.LayoutParams lp=new LinearLayout.LayoutParams(0,-2,1);parent.addView(slot,lp);
         return LuceUi.action(this,slot,title,false,run);
     }
-    private String signature(JSONArray a){StringBuilder b=new StringBuilder();for(int i=0;i<a.length();i++){JSONObject x=a.optJSONObject(i);if(x!=null)b.append(x.optString("id")).append(':').append(x.optString("state")).append(':').append(x.optString("photo_id")).append(':').append(x.optString("delivery_id")).append(':').append(x.optBoolean("starred")).append(';');}return b.toString();}
+    private String signature(JSONArray a){StringBuilder b=new StringBuilder();for(int i=0;i<a.length();i++){JSONObject x=a.optJSONObject(i);if(x!=null)b.append(x.optString("id")).append(':').append(x.optString("state")).append(':').append(x.optString("photo_id")).append(':').append(x.optString("delivery_id")).append(':').append(x.optBoolean("starred")).append(':').append(x.optBoolean("gallery_visible")).append(':').append(x.optBoolean("projector_visible")).append(';');}return b.toString();}
     private void reload(boolean force){
         final String scope=config.get("scope");if(scope.isEmpty()||db.isShutdown()||!reading.compareAndSet(false,true))return;
         db.execute(()->{
             try(QueueDb q=new QueueDb(this)){
-                JSONArray rows=new GalleryLedger(q).page(scope,visibleCount,showHidden.isChecked());String next=signature(rows);
+                JSONArray rows=new GalleryLedger(q).page(scope,visibleCount,showHidden.isChecked());
+                if(android.os.SystemClock.elapsedRealtime()-cloudRefreshAt>15000){
+                    cloudRefreshAt=android.os.SystemClock.elapsedRealtime();
+                    try(CloudApi api=new CloudApi(this,config.get("base"),config.token(),config.cellular())){
+                        JSONObject flags=api.call("/v1/device/photo-controls",null);
+                        JSONArray remote=flags.optJSONArray("photos");if(remote!=null){cloudFlags.clear();for(int j=0;j<remote.length();j++){JSONObject x=remote.optJSONObject(j);if(x!=null)cloudFlags.put(x.optString("photo_id"),x);}}
+                    }catch(Exception ignored){ /* Keep local gallery usable offline. */ }
+                }
+                for(int j=0;j<rows.length();j++){JSONObject x=rows.optJSONObject(j);if(x==null)continue;JSONObject remote=cloudFlags.get(x.optString("photo_id"));if(remote!=null){x.put("starred",remote.optBoolean("starred"));x.put("gallery_visible",remote.optBoolean("gallery_visible"));x.put("projector_visible",remote.optBoolean("projector_visible"));}}
+                String next=signature(rows);
                 runOnUiThread(()->{
                     if(!active||isFinishing()||isDestroyed()||!scope.equals(config.get("scope")))return;
                     status.setText(rows.length()+" photos shown · updates every 5s · " + new java.text.SimpleDateFormat("HH:mm:ss",java.util.Locale.ROOT).format(new java.util.Date()) +
@@ -91,6 +102,7 @@ public final class GalleryActivity extends Activity {
             View.OnClickListener click=v->showPhoto(p,scope);image.setOnClickListener(click);tile.setOnClickListener(click);
             image.setContentDescription("Open photo "+name);loadThumb(p,image,scope,gen,192);
         }
+        if(rows.length()>0&&rows.length()%3!=0){int remaining=3-rows.length()%3;for(int j=0;j<remaining;j++){View blank=new View(this);row.addView(blank,new LinearLayout.LayoutParams(0,LuceUi.dp(this,1),1));}}
         if(rows.length()==0)LuceUi.notice(this,grid,"No photos in this event yet. Start watching the selected folder; existing baseline files stay excluded.");
     }
     private void loadThumb(JSONObject p,ImageView target,String scope,int gen,int px){
@@ -129,12 +141,17 @@ public final class GalleryActivity extends Activity {
         ImageView image=new ImageView(this);image.setAdjustViewBounds(true);image.setScaleType(ImageView.ScaleType.FIT_CENTER);
         box.addView(image,new LinearLayout.LayoutParams(-1,LuceUi.dp(this,270)));
         String key=id+"/"+item.optString("photo_id")+"/192";Bitmap bitmap=cache.get(key);if(bitmap!=null)image.setImageBitmap(bitmap);loadThumb(item,image,scope,generation,900);
-        TextView detail=LuceUi.label(this,box,item.optString("name")+"\n"+item.optString("state")+" · "+(item.optString("guest_label").isEmpty()?"Not assigned to a guest":item.optString("guest_label")),14,true);
+        TextView detail=LuceUi.label(this,box,item.optString("name")+"\n"+item.optString("state")+" · "+(item.optString("guest_label").isEmpty()?"Not assigned to a guest":item.optString("guest_label"))+"\nCloud Gallery: "+(item.optBoolean("gallery_visible")?"Public":"Private / review")+" · Slideshow: "+(item.optBoolean("projector_visible")?"Visible":"Hidden"),14,true);
         ScrollView dialogScroll=new ScrollView(this);dialogScroll.addView(box);
         AlertDialog dialog=new AlertDialog.Builder(this).setTitle("Photo actions").setView(dialogScroll).setNegativeButton("Close",null).create();
-        LuceUi.action(this,box,item.optBoolean("starred")?"★ Remove star":"☆ Star photo",false,()->{
-            dialog.dismiss();db.execute(()->{try(QueueDb q=new QueueDb(this)){new GalleryLedger(q).mark(scope,id,"starred",!item.optBoolean("starred"));}catch(Exception ignored){}runOnUiThread(()->reload(true));});
+        LuceUi.action(this,box,item.optBoolean("starred")?"Remove cloud star":"Star photo in cloud",false,()->{
+            String photo=item.optString("photo_id");if(photo.isEmpty()){new AlertDialog.Builder(this).setMessage("Wait until cloud verification completes before syncing a star.").setPositiveButton("OK",null).show();return;}
+            dialog.dismiss();cloudControl(scope,id,photo,"starred",!item.optBoolean("starred"));
         });
+        if(!item.optString("photo_id").isEmpty()){
+            LuceUi.action(this,box,"Hide from PUBLIC event gallery",false,()->new AlertDialog.Builder(this).setMessage("Keep this photo in the private cloud archive and guest QR, but remove it from the public event gallery?").setPositiveButton("Hide",(d,n)->{dialog.dismiss();cloudControl(scope,id,item.optString("photo_id"),"gallery_visible",false);}).setNegativeButton("Cancel",null).show());
+            LuceUi.action(this,box,"Hide from public slideshow",false,()->new AlertDialog.Builder(this).setMessage("Keep this photo in the private archive and guest QR, but remove it from the public projector?").setPositiveButton("Hide",(d,n)->{dialog.dismiss();cloudControl(scope,id,item.optString("photo_id"),"projector_visible",false);}).setNegativeButton("Cancel",null).show());
+        }
         LuceUi.action(this,box,"Show guest QR / assign photo",true,()->{
             dialog.dismiss();Intent i=new Intent(this,DeliveryActivity.class);i.putExtra("gallery_job_id",id);i.putExtra("gallery_show_delivery",item.optString("delivery_id"));startActivity(i);
         });
@@ -162,6 +179,17 @@ public final class GalleryActivity extends Activity {
             .setPositiveButton(item.optBoolean("hidden")?"Restore tile":"Hide tile",(d,n)->{dialog.dismiss();db.execute(()->{try(QueueDb q=new QueueDb(this)){new GalleryLedger(q).mark(scope,id,"hidden",!item.optBoolean("hidden"));}catch(Exception ignored){}runOnUiThread(()->reload(true));});})
             .setNegativeButton("Cancel",null).show());
         dialog.show();
+    }
+    private void cloudControl(String scope,String localId,String photo,String field,boolean value){
+        db.execute(()->{
+            try(CloudApi api=new CloudApi(this,config.get("base"),config.token(),config.cellular())){
+                JSONObject b=new JSONObject();b.put(field,value);
+                JSONObject result=api.call("/v1/device/photos/"+photo+"/controls",b);
+                if(!photo.equals(result.optString("photo_id")))throw new IllegalStateException("Cloud photo identity mismatch");
+                if(field.equals("starred"))try(QueueDb q=new QueueDb(this)){new GalleryLedger(q).mark(scope,localId,"starred",value);}
+                runOnUiThread(()->{cloudRefreshAt=0;status.setText("Cloud photo control saved: "+field+" = "+value);reload(true);});
+            }catch(Exception e){runOnUiThread(()->new AlertDialog.Builder(this).setTitle("Cloud update not saved").setMessage("The local photo and original are unchanged. Check internet, permission and event pairing, then retry. Code: "+(e instanceof CloudApi.Failure?((CloudApi.Failure)e).code:"request_failed")).setPositiveButton("OK",null).show());}
+        });
     }
     @Override protected void onResume(){super.onResume();active=true;ui.removeCallbacks(timer);ui.post(timer);}
     @Override protected void onPause(){active=false;ui.removeCallbacks(timer);generation++;super.onPause();}

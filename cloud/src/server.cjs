@@ -13,6 +13,7 @@ const { Store, HttpError, requireValue, digest, id, syncDir } = require('./store
 const operations = require('./operations.cjs');
 const presentation = require('./presentation.cjs');
 const deliveries = require('./deliveries.cjs');
+const photoControls = require('./photo-controls.cjs');
 const onboarding = require('./onboarding-print.cjs');
 const workflow = require('./event-workflow.cjs');
 const eventManagement = require('./event-management.cjs');
@@ -131,7 +132,7 @@ function createApp(options = {}) {
           incomplete_uploads: store.one("SELECT COUNT(*) AS n FROM uploads WHERE state='receiving'").n },
         note: 'A successful health check or write probe does not establish persistence across host redeployments or backup durability.' });
     }
-    if (method === 'GET' && ['/', '/admin', '/app.js', '/style.css', '/presentation-admin.js', '/qr.js', '/slideshow.js', '/slideshow.css', '/slideshow-model.js', '/personal.js', '/personal-admin.js', '/onboarding-admin.js', '/pair.js', '/staff-desk.js', '/staff-desk.css', '/operations-shell.js'].includes(p)) {
+    if (method === 'GET' && ['/', '/admin', '/app.js', '/style.css', '/presentation-admin.js', '/qr.js', '/slideshow.js', '/slideshow.css', '/slideshow-model.js', '/personal.js', '/personal-admin.js', '/onboarding-admin.js', '/pair.js', '/staff-desk.js', '/staff-desk.css', '/operations-shell.js', '/photo-controls-admin.js'].includes(p)) {
       const name = p === '/' || p === '/admin' ? 'index.html' : p.slice(1);
       return serveFile(res, path.join(publicDir, name), name.endsWith('.js') ? 'text/javascript' : name.endsWith('.css') ? 'text/css' : 'text/html');
     }
@@ -181,6 +182,20 @@ function createApp(options = {}) {
       presentation.ensure(store, eventId);
       return json(res, 201, { id: eventId, slug, gallery_path: `/g/${slug}`, policy });
     }
+    let control=/^\/v1\/events\/([0-9a-f-]+)\/(photo-policy|diagnostic-export)$/.exec(p);
+    if(control && method==='GET'){admin(req);return json(res,200,control[2]==='photo-policy'?photoControls.policy(store,control[1]):photoControls.diagnostics(store,control[1]));}
+    if(control && control[2]==='photo-policy' && method==='POST'){admin(req);return json(res,200,photoControls.savePolicy(store,control[1],await readJSON(req)));}
+    control=/^\/v1\/photos\/([0-9a-f-]+)\/controls$/.exec(p);
+    if(control && method==='POST'){admin(req);return json(res,200,photoControls.setPhoto(store,control[1],await readJSON(req),'admin'));}
+    if(control && method==='GET'){admin(req);return json(res,200,photoControls.describe(store,control[1]));}
+    if(p==='/v1/device/photo-controls'&&method==='GET'){const dev=device(req);const rows=store.all('SELECT id,starred,status,projector_visible FROM photos WHERE event_id=? AND device_id=? AND is_test=0 ORDER BY seq DESC LIMIT 200',dev.event_id,dev.id);return json(res,200,{photos:rows.map(x=>({photo_id:x.id,starred:!!x.starred,gallery_visible:x.status==='live',projector_visible:!!x.projector_visible&&x.status!=='hidden'}))});}
+    control=/^\/v1\/device\/photos\/([0-9a-f-]+)\/controls$/.exec(p);
+    if(control && method==='GET'){const dev=device(req),r=store.one('SELECT id FROM photos WHERE id=? AND device_id=? AND event_id=?',control[1],dev.id,dev.event_id);requireValue(r,404,'photo_not_found');return json(res,200,photoControls.describe(store,control[1]));}
+    if(control && method==='POST'){const dev=device(req),r=store.one('SELECT id FROM photos WHERE id=? AND device_id=? AND event_id=?',control[1],dev.id,dev.event_id);requireValue(r,404,'photo_not_found');return json(res,200,photoControls.setPhoto(store,control[1],await readJSON(req),'photographer',dev.event_id));}
+    control=/^\/v1\/devices\/([0-9a-f-]+)\/admin-visibility$/.exec(p);
+    if(control && method==='POST'){admin(req);const b=await readJSON(req);requireValue(Object.keys(b).length===1&&typeof b.hidden==='boolean',400,'invalid_device_visibility');const d=store.one('SELECT * FROM devices WHERE id=? AND is_service=0',control[1]);requireValue(d,404,'device_not_found');store.run('UPDATE devices SET admin_hidden=? WHERE id=?',Number(b.hidden),d.id);return json(res,200,{device_id:d.id,admin_hidden:b.hidden,revoked:!!d.revoked});}
+    control=/^\/v1\/devices\/([0-9a-f-]+)\/archive$/.exec(p);
+    if(control && method==='POST'){admin(req);const b=await readJSON(req);requireValue(Object.keys(b).length===1&&b.confirm==='ARCHIVE_AND_REVOKE',400,'archive_confirmation_required');const d=store.one('SELECT id,admin_archived FROM devices WHERE id=? AND is_service=0',control[1]);requireValue(d,404,'device_not_found');store.run('UPDATE devices SET revoked=1,admin_hidden=1,admin_archived=1 WHERE id=?',d.id);return json(res,200,{device_id:d.id,revoked:true,archived:true,photos_retained:true});}
     if (p === '/v1/events' && method === 'GET') { admin(req); return json(res, 200, store.all('SELECT * FROM events ORDER BY created DESC')); }
     let em = /^\/v1\/events\/([0-9a-f-]+)\/(lifecycle|visibility-summary)$/.exec(p);
     if(em && method==='GET'){admin(req);return json(res,200,em[2]==='lifecycle'?eventManagement.event(store,em[1]):eventManagement.counts(store,em[1]));}
@@ -215,6 +230,10 @@ function createApp(options = {}) {
         if(b.policy!==undefined)store.run('UPDATE events SET policy=? WHERE id=?',b.policy,eventId);
         store.run('UPDATE event_presentation SET enabled=?,settings=?,revision=revision+1,updated=? WHERE event_id=?',
           b.enabled===undefined?before.enabled:Number(b.enabled),JSON.stringify(config),now(),eventId);
+        if(b.settings&&Object.prototype.hasOwnProperty.call(b.settings,'auto_projector_new')){
+          const ep=photoControls.policy(store,eventId);
+          if(ep.configured)store.run('UPDATE event_photo_policies SET projector_auto=?,revision=revision+1 WHERE event_id=?',Number(config.auto_projector_new),eventId);
+        }
       });
       return json(res,200,presentation.describe(store,eventId));
     }
@@ -289,7 +308,7 @@ function createApp(options = {}) {
     m = /^\/v1\/devices\/([0-9a-f-]+)\/rotate$/.exec(p);
     if (m && method === 'POST') {
       admin(req); const dev=store.one('SELECT * FROM devices WHERE id=?',m[1]);
-      requireValue(dev&&!dev.is_service,404,'device_not_found');
+      requireValue(dev&&!dev.is_service,404,'device_not_found');requireValue(!dev.admin_archived,409,'archived_device_enroll_new_identity');
       const secret=crypto.randomBytes(32).toString('base64url');
       store.run('UPDATE devices SET token_hash=?,revoked=0 WHERE id=?',digest(secret),dev.id);
       return json(res,200,{device_id:dev.id,event_id:dev.event_id,token:secret});
@@ -300,7 +319,7 @@ function createApp(options = {}) {
       requireValue(store.one('SELECT id FROM events WHERE id=?', m[1]), 404, 'event_not_found');
       const before = Number(url.searchParams.get('before') || Number.MAX_SAFE_INTEGER);
       requireValue(Number.isSafeInteger(before) && before > 0, 400, 'invalid_cursor');
-      const photos = store.all('SELECT seq,id,filename,device_id,status,projector_visible,size,created,is_test FROM photos WHERE event_id=? AND seq<? ORDER BY seq DESC LIMIT 200', m[1], before);
+      const photos = store.all('SELECT seq,id,filename,device_id,status,projector_visible,starred,size,created,is_test FROM photos WHERE event_id=? AND seq<? ORDER BY seq DESC LIMIT 200', m[1], before);
       return json(res, 200, {
         devices: store.all('SELECT id FROM devices WHERE event_id=? AND is_service=0', m[1]).map(d => operations.deviceSummary(store,d.id)),
         photos, next_before: photos.length === 200 ? photos.at(-1).seq : null,
@@ -434,14 +453,16 @@ function createApp(options = {}) {
           await atomicRename(store.file('temp', `${photoId}.delivery`), store.file('delivery', `${photoId}.jpg`));
           await atomicRename(store.file('temp', `${photoId}.thumb`), store.file('thumbs', `${photoId}.jpg`));
           options.faultHook?.('originals_renamed');
-          const policy = u.is_test ? 'hidden' : u.delivery_id || u.archive_private ? 'review' : store.one('SELECT policy FROM events WHERE id=?', dev.event_id).policy;
-          const projectorAuto = !u.is_test && presentation.settings(presentation.ensure(store,dev.event_id)).auto_projector_new ? 1 : 0;
+          const legacy = u.is_test ? 'hidden' : u.delivery_id || u.archive_private ? 'review' : store.one('SELECT policy FROM events WHERE id=?', dev.event_id).policy;
+          const legacyProjector = !u.is_test && presentation.settings(presentation.ensure(store,dev.event_id)).auto_projector_new ? 1 : 0;
+          const {status:policy,projector:projectorAuto}=photoControls.uploadVisibility(store,u,legacy,legacyProjector);
           store.tx(() => {
             requireValue(store.one('SELECT revoked FROM devices WHERE id=?', dev.id).revoked === 0, 401, 'device_revoked');
             store.run('INSERT INTO photos(id,event_id,device_id,filename,size,sha256,status,width,height,created,is_test,projector_visible) VALUES(?,?,?,?,?,?,?,?,?,?,?,?)',
               photoId, dev.event_id, dev.id, u.filename, u.size, u.sha256, policy, meta.width, meta.height, now(), u.is_test, projectorAuto);
             deliveries.bindPhoto(store,u,photoId);
             workflow.linkPrintsForPhoto(store,photoId);
+            photoControls.audit(store,dev.event_id,photoId,'system','cloud_verified');
             store.run("UPDATE uploads SET state='complete',photo_id=?,updated=? WHERE id=?", photoId, now(), uploadId);
           });
           options.faultHook?.('photo_committed');
@@ -505,6 +526,7 @@ function createApp(options = {}) {
       if (res.headersSent || res.destroyed) { if (!res.destroyed) res.destroy(); return; }
       const status = err.status || (['ENOSPC','EDQUOT'].includes(err.code) ? 507 : 500);
       if ([429,503,507].includes(status)) res.setHeader('Retry-After', status === 507 ? '60' : '5');
+      photoControls.logError(store,req.method,req.url.split('?')[0],status,String(err.code||'internal_error'));
       if (status >= 500) console.error(JSON.stringify({ type: 'request_error', code: err.code || 'internal_error' }));
       json(res, status, { error: err instanceof HttpError ? err.code : status === 507 ? 'cloud_storage_low' : 'internal_error' });
     });

@@ -4,7 +4,7 @@ const version = require('../package.json').version;
 const HEARTBEAT_TTL = 90_000;
 function migrate(s) {
   const v = s.one('PRAGMA user_version').user_version;
-  if (v > 8) throw new Error('Database is newer than this application. Restore the matching application; do not downgrade.');
+  if (v > 9) throw new Error('Database is newer than this application. Restore the matching application; do not downgrade.');
   s.tx(() => {
     for (const [table, name, definition] of [
       ['uploads','is_test','INTEGER NOT NULL DEFAULT 0'],
@@ -23,7 +23,7 @@ function sanitizeHeartbeat(b) {
   return out;
 }
 function deviceSummary(s, deviceId, at = Date.now()) {
-  const d = s.one('SELECT id,event_id,label,revoked,last_seen,heartbeat,heartbeat_at FROM devices WHERE id=?',deviceId);
+  const d = s.one('SELECT id,event_id,label,revoked,admin_hidden,admin_archived,last_seen,heartbeat,heartbeat_at FROM devices WHERE id=?',deviceId);
   let h = {};
   try { h = sanitizeHeartbeat(JSON.parse(d.heartbeat || '{}')); } catch {}
   const fresh = Number.isFinite(d.heartbeat_at) && at-d.heartbeat_at <= HEARTBEAT_TTL;
@@ -33,7 +33,7 @@ function deviceSummary(s, deviceId, at = Date.now()) {
     FROM uploads WHERE device_id=? AND is_test=0`,deviceId);
   const tests = s.one(`SELECT count(*) received,coalesce(sum(state='complete'),0) verified FROM uploads WHERE device_id=? AND is_test=1`,deviceId);
   const known = Number.isSafeInteger(h.received) && Number.isSafeInteger(h.queued) && Number.isSafeInteger(h.blocked) && Number.isSafeInteger(h.uploaded);
-  return {id:d.id,event_id:d.event_id,label:d.label,revoked:!!d.revoked,last_seen:d.last_seen,
+  return {id:d.id,event_id:d.event_id,label:d.label,revoked:!!d.revoked,admin_hidden:!!d.admin_hidden,admin_archived:!!d.admin_archived,last_seen:d.last_seen,
     heartbeat_at:d.heartbeat_at, heartbeat:JSON.stringify(h), heartbeat_fresh:fresh,
     source_received:known?h.received:null, source_counts_known:known,
     unassigned_archives:known?(h.unassigned_archives||0):null,pending_assignments:known?(h.pending_assignments||0):null,

@@ -51,7 +51,7 @@ function staffScope(c,match){
 }
 function cursor(url){const n=Number(url.searchParams.get('before')||Number.MAX_SAFE_INTEGER);need(Number.isSafeInteger(n)&&n>0,400,'invalid_cursor');return n;}
 function photoRecord(s,p){const d=s.one('SELECT d.id,d.label,d.kind,d.token,d.state,i.released FROM delivery_items i JOIN deliveries d ON d.id=i.delivery_id WHERE i.photo_id=?',p.id);
- return {id:p.id,seq:p.seq,filename:p.filename,width:p.width,height:p.height,bytes:p.size,status:p.status,device_label:p.device_label||'',delivery:d?{id:d.id,label:d.label,kind:d.kind,state:d.state,released:!!d.released}:null};}
+ return {id:p.id,seq:p.seq,filename:p.filename,width:p.width,height:p.height,bytes:p.size,status:p.status,starred:!!p.starred,projector_visible:!!p.projector_visible,printed:!!s.one("SELECT 1 FROM print_photo_links l JOIN print_jobs j ON j.id=l.job_id WHERE l.photo_id=? AND j.state IN ('operator_confirmed') LIMIT 1",p.id),device_label:p.device_label||'',delivery:d?{id:d.id,label:d.label,kind:d.kind,state:d.state,released:!!d.released}:null};}
 function orders(s,event,delivery=null,stationId=null){
  return s.all(`SELECT j.*,l.photo_id,c.collected_at FROM print_jobs j JOIN print_photo_links l ON l.job_id=j.id LEFT JOIN print_collection c ON c.job_id=j.id ${delivery?'JOIN delivery_items di ON di.photo_id=l.photo_id':''} WHERE j.event_id=? ${delivery?'AND di.delivery_id=?':''} ${stationId?'AND j.station_id=?':''} ORDER BY j.created DESC LIMIT 100`,event,...(delivery?[delivery]:[]),...(stationId?[stationId]:[])).map(r=>({...OP.describeJob(r),photo_id:r.photo_id,collected_at:r.collected_at||null}));
 }
@@ -125,14 +125,17 @@ async function routeInner(c){const {store:s,p,method,url,req,res,admin,device,re
   json(res,200,{ok:true});return true;
  }
  // Admin endpoint has an event segment; station endpoint derives its scope from the credential.
- m=/^\/v1\/(?:events\/([0-9a-f-]+)\/staff|station\/staff)\/(config|photos|lookup|orders|assign|collect|cancel-prepared|photo\/([0-9a-f-]+)\/(thumb|delivery))$/.exec(p);
+ m=/^\/v1\/(?:events\/([0-9a-f-]+)\/staff|station\/staff)\/(config|photos|photo-control|lookup|orders|assign|collect|cancel-prepared|photo\/([0-9a-f-]+)\/(thumb|delivery))$/.exec(p);
  if(!m)return false;const scope=staffScope(c,m),action=m[2];
  if(action==='config'&&method==='GET'){json(res,200,{event:s.one('SELECT id,name FROM events WHERE id=?',scope.event),workflow:settings(s,scope.event),max_copies:scope.maxCopies,stations:s.all('SELECT st.*,ss.enabled AS staff_enabled,ss.max_copies AS staff_max_copies FROM print_stations st LEFT JOIN station_staff ss ON ss.station_id=st.id WHERE st.event_id=? AND st.revoked=0'+(scope.station?' AND st.id=?':''),scope.event,...(scope.station?[scope.station]:[])).map(st=>({...OP.stationPublic(st),staff_enabled:!!st.staff_enabled,staff_max_copies:st.staff_max_copies||1})),note:'Staff operated. Ticket lookup NEVER prints. No quota/payment redemption system.'});return true;}
  if(action.startsWith('photo/')&&method==='GET'){need(s.one("SELECT id FROM photos WHERE id=? AND event_id=? AND is_test=0 AND status<>'hidden'",m[3],scope.event),404,'photo_not_available');await serveFile(res,s.file(m[4]==='thumb'?'thumbs':'delivery',m[3]+'.jpg'),'image/jpeg');return true;}
  if(action==='photos'&&method==='GET'){
-  const before=cursor(url),rows=s.all("SELECT p.*,d.label AS device_label FROM photos p JOIN devices d ON d.id=p.device_id WHERE p.event_id=? AND p.is_test=0 AND p.status<>'hidden' AND p.seq<? ORDER BY p.seq DESC LIMIT 50",scope.event,before);
-  json(res,200,{photos:rows.map(p=>photoRecord(s,p)),next_before:rows.length===50?rows.at(-1).seq:null});return true;
+  const before=cursor(url),filter=url.searchParams.get('filter')||'all';need(['all','starred','printed','not_printed','review','public','projector','hidden'].includes(filter),400,'invalid_photo_filter');
+  const clause={all:'',starred:'AND p.starred=1',printed:"AND EXISTS(SELECT 1 FROM print_photo_links l JOIN print_jobs j ON j.id=l.job_id WHERE l.photo_id=p.id AND j.state IN ('operator_confirmed'))",not_printed:"AND NOT EXISTS(SELECT 1 FROM print_photo_links l JOIN print_jobs j ON j.id=l.job_id WHERE l.photo_id=p.id AND j.state IN ('operator_confirmed'))",review:"AND p.status='review'",public:"AND p.status='live'",projector:'AND p.projector_visible=1',hidden:"AND p.status='hidden'"}[filter];
+  const rows=s.all(`SELECT p.*,d.label AS device_label FROM photos p JOIN devices d ON d.id=p.device_id WHERE p.event_id=? AND p.is_test=0 AND p.seq<? ${clause} ORDER BY p.seq DESC LIMIT 50`,scope.event,before);
+  json(res,200,{photos:rows.map(p=>photoRecord(s,p)),filter,next_before:rows.length===50?rows.at(-1).seq:null});return true;
  }
+ if(action==='photo-control'&&method==='POST'){const b=await readJSON(req);need(P.UUID.test(b.photo_id||'')&&typeof b.field==='string'&&typeof b.value==='boolean'&&Object.keys(b).length===3,400,'invalid_photo_control');need(['starred','gallery_visible','projector_visible'].includes(b.field),400,'invalid_photo_control');json(res,200,require('./photo-controls.cjs').setPhoto(s,b.photo_id,{[b.field]:b.value},scope.actor,scope.event));return true;}
  if(action==='lookup'&&method==='POST'){
   const b=await readJSON(req);need(typeof b.reference==='string'&&b.reference.length<=512,400,'invalid_ticket_reference');let ref=b.reference.trim(),d;
   const short=/^(?:REF\s+)?([0-9a-f]{8})$/i.exec(ref);

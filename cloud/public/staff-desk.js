@@ -2,15 +2,15 @@
 // Shared by authenticated cloud Admin and the authenticated loopback station dashboard.
 (()=>{
  const el=(tag,text,cls)=>{const n=document.createElement(tag);if(text!==undefined)n.textContent=text;if(cls)n.className=cls;return n;};
- function mount(root,c){let dead=false,epoch=0,collection=null,before=null,configuration=null,preview=null,urls=new Set();const pendingKey='lensdrop_staff_order_v1:'+c.scope;
+ function mount(root,c){let dead=false,epoch=0,collection=null,before=null,configuration=null,preview=null,urls=new Set(),photoFilter='all',lastRows='';const pendingKey='lensdrop_staff_order_v1:'+c.scope;
   root.replaceChildren();root.classList.add('staff-desk');root.append(el('h2','Staff Photo Desk / H5.5'),el('p','Private event library. Lookup never prints. Select a photo, review its profile and copies, then confirm. Collection is recorded separately from physical output.'));
   const msg=el('p','','desk-message'),configArea=el('div'),tools=el('div',undefined,'desk-actions'),reference=el('input'),heading=el('h3','All event photos'),grid=el('div',undefined,'desk-grid'),orderArea=el('div'),pendingArea=el('div');
   reference.placeholder='Staff: scan / paste guest QR, full collection ID or 8-character REF';reference.setAttribute('aria-label','Guest ticket reference');reference.autocomplete='off';
   const say=t=>{if(!dead)msg.textContent=t;};
   function button(label,fn){const b=el('button',label);b.type='button';b.onclick=async()=>{if(b.disabled)return;b.disabled=true;try{await fn();}catch(e){fail(e);}finally{b.disabled=false;}};return b;}
   function fail(e){say(e.message);if(/staff_desk_not_enabled|station_.*(?:revoked|invalid)|admin_auth_required|local_ui_auth_required/.test(e.message)){epoch++;dropImages();preview?.close();grid.replaceChildren();orderArea.replaceChildren();configuration=null;}}
-  const next=button('Older photos',()=>load(true));next.hidden=true;
-  tools.append(button('Refresh setup',configure),button('All event photos',async()=>{collection=null;reference.value='';await load();}),reference,button('Lookup ticket (NO PRINT)',lookup));
+  const filter=el('select');for(const [v,t] of [['all','All private photos'],['starred','Starred'],['printed','Printed / submitted'],['not_printed','Not printed'],['review','Awaiting review'],['public','Public gallery'],['projector','Slideshow'],['hidden','Globally hidden']])filter.add(new Option(t,v));filter.onchange=()=>{photoFilter=filter.value;before=null;lastRows='';load().catch(fail);};const next=button('Older photos',()=>load(true));next.hidden=true;
+  tools.append(button('Refresh setup',configure),button('All event photos',async()=>{collection=null;lastRows='';reference.value='';await load();}),reference,button('Lookup ticket (NO PRINT)',lookup),filter);
   reference.addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();lookup().catch(fail);}});
   root.append(msg,configArea,tools,pendingArea,heading,grid,next,el('h3','Print orders and collection'),button('Refresh orders',loadOrders),orderArea);
   function dropImages(){for(const u of urls)URL.revokeObjectURL(u);urls.clear();}
@@ -21,14 +21,14 @@
    }
    if(!grid.children.length)await load();showPending();
   }
-  async function lookup(){const ref=reference.value.trim();if(!ref)throw Error('Enter a guest ticket reference first.');const data=await c.api('lookup',{reference:ref});if(dead)return;collection=data.collection;render(data);renderOrders(data.orders);say('Found '+collection.label+'. No print request was created.');}
-  async function load(older=false){let data;if(collection)data=await c.api('lookup',{reference:collection.id,...(older&&before?{before}: {})});else data=await c.api('photos'+(older&&before?'?before='+before:''));if(dead)return;render(data);if(!older)await loadOrders();}
+  async function lookup(){const ref=reference.value.trim();if(!ref)throw Error('Enter a guest ticket reference first.');const data=await c.api('lookup',{reference:ref});if(dead)return;collection=data.collection;lastRows='';render(data);renderOrders(data.orders);say('Found '+collection.label+'. No print request was created.');}
+  async function load(older=false){let data;if(collection)data=await c.api('lookup',{reference:collection.id,...(older&&before?{before}: {})});else data=await c.api('photos?filter='+encodeURIComponent(photoFilter)+(older&&before?'&before='+before:''));if(dead)return;const signature=JSON.stringify(data.photos.map(p=>[p.id,p.status,p.starred,p.projector_visible,p.printed,p.delivery?.id,p.delivery?.released]));if(older||signature!==lastRows){lastRows=signature;render(data);}if(!older)await loadOrders();}
   function render(data){const ticket=++epoch;dropImages();heading.textContent=collection?collection.label+' / '+collection.id:'All private event photos';before=data.next_before;next.hidden=!before;grid.replaceChildren();
    if(!data.photos.length)grid.append(el('p','No eligible photos yet. Uploading or guest assignment may still be pending. Hidden/Test photos are not selectable here.'));
-   for(const p of data.photos){const card=el('article'),img=el('img');img.alt='Private preview of '+p.filename;img.loading='lazy';const label=el('p',p.filename+' / '+p.device_label+' / '+p.status),guest=el('p',p.delivery?p.delivery.label+' / personal '+(p.delivery.released?'released':'awaiting approval'):'Staff-only: not assigned to a guest');card.append(img,label,guest,button('Preview / prepare print',()=>openPreview(p)));
-    if(!p.delivery&&collection)card.append(button('Assign to this guest (NO PRINT)',async()=>{if(!confirm('Assign this photo permanently to '+collection.label+'? This is separate from printing.'))return;await c.api('assign',{photo_id:p.id,delivery_id:collection.id});await load();}));
-    if(!p.delivery)card.append(button('Assign to a guest reference',async()=>{const ref=prompt('Paste the intended guest link, collection ID or printed REF. No printing will occur.');if(!ref)return;const found=await c.api('lookup',{reference:ref});if(!confirm('Assign '+p.filename+' to '+found.collection.label+' / '+found.collection.id+'?'))return;await c.api('assign',{photo_id:p.id,delivery_id:found.collection.id});await load();}));
-    grid.append(card);image(p.id,'thumb',img,ticket).catch(e=>say(e.message));
+   for(const p of data.photos){const card=el('article'),img=el('img');img.alt='Private preview of '+p.filename;img.loading='lazy';const label=el('p',(p.starred?'★ ':'')+p.filename+' / '+p.device_label+' / '+p.status+' / '+(p.printed?'printed/submitted':'not printed')),guest=el('p',p.delivery?p.delivery.label+' / personal '+(p.delivery.released?'released':'awaiting approval'):'Staff-only: not assigned to a guest');card.append(img,label,guest);if(p.status!=='hidden')card.append(button('Preview / prepare print',()=>openPreview(p)));if(c.admin||c.scope){for(const [field,title,value] of [['starred',p.starred?'Unstar':'Star',!p.starred],['gallery_visible',p.status==='live'?'Hide from public gallery':'Show in public gallery',p.status!=='live'],['projector_visible',p.projector_visible?'Hide from slideshow':'Show on slideshow',!p.projector_visible]]){if(p.status==='hidden'&&field!=='starred')continue;card.append(button(title+' (NO PRINT)',async()=>{if(field!=='starred'&&!confirm('Change public visibility of '+p.filename+'?'))return;await c.api('photo-control',{photo_id:p.id,field,value});await load();}));}}
+    if(p.status!=='hidden'&&!p.delivery&&collection)card.append(button('Assign to this guest (NO PRINT)',async()=>{if(!confirm('Assign this photo permanently to '+collection.label+'? This is separate from printing.'))return;await c.api('assign',{photo_id:p.id,delivery_id:collection.id});await load();}));
+    if(p.status!=='hidden'&&!p.delivery)card.append(button('Assign to a guest reference',async()=>{const ref=prompt('Paste the intended guest link, collection ID or printed REF. No printing will occur.');if(!ref)return;const found=await c.api('lookup',{reference:ref});if(!confirm('Assign '+p.filename+' to '+found.collection.label+' / '+found.collection.id+'?'))return;await c.api('assign',{photo_id:p.id,delivery_id:found.collection.id});await load();}));
+    grid.append(card);if(p.status==='hidden'){img.alt='Globally hidden photo: preview intentionally disabled';}else image(p.id,'thumb',img,ticket).catch(e=>say(e.message));
    }
   }
   function specBody(p,station,profile,copies,reprint){return {id:crypto.randomUUID(),photo_id:p.id,station_id:station.id,profile_id:profile.id,profile_revision:profile.revision,copies,delivery_id:p.delivery?.id||null,reprint_of:reprint||null};}
@@ -49,8 +49,8 @@
   }
   async function loadOrders(){const data=collection?await c.api('lookup',{reference:collection.id}):await c.api('orders');if(!dead)renderOrders(data.orders);}
   function renderOrders(rows){orderArea.replaceChildren();for(const r of rows||[]){const item=el('article'),txt=el('p',r.id+' / '+r.state+' / '+r.copies+' sheet copies / '+(r.collected_at?'COLLECTED':'not collected'));item.append(txt);if(r.state==='operator_confirmed'&&!r.collected_at)item.append(button('Confirm handover / collected (NO PRINT)',async()=>{if(!confirm('Confirm the guest physically received this order? No new print will be sent.'))return;await c.api('collect',{job_id:r.id});await loadOrders();}));orderArea.append(item);}if(!rows?.length)orderArea.append(el('p','No linked print orders in this view. Local receipts / cloud archives may still be pending.'));}
-  configure().catch(fail);
-  return {scope:c.scope,destroy(){dead=true;epoch++;dropImages();preview?.close();root.replaceChildren();}};
+  const timer=setInterval(()=>{if(dead||document.hidden||collection||preview||document.activeElement===reference||document.activeElement===filter)return;load().catch(fail);},10000);configure().catch(fail);
+  return {scope:c.scope,destroy(){dead=true;clearInterval(timer);epoch++;dropImages();preview?.close();root.replaceChildren();}};
  }
  window.LuceStaffDesk={mount};
 })();

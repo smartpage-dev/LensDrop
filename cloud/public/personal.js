@@ -16,6 +16,7 @@
     }catch(e){$('personalState').textContent=e.message;if(!lastOk||Date.now()-lastOk>30000||e.message.includes('unavailable'))clear();}
     finally{busy=false;}
   }
+  const guestActions=document.createElement('div');guestActions.className='actions';for(const [channel,label] of [['gallery_visible','Hide this photo from public event gallery'],['projector_visible','Hide this photo from public slideshow']]){const b=document.createElement('button');b.textContent=label;b.className='secondary';b.onclick=async()=>{if(!selected||!confirm(label+'? Your private guest photo remains available.'))return;b.disabled=true;try{const r=await fetch(base+'/photos/'+selected+'/visibility',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({channel,visible:false})});if(!r.ok)throw Error('Could not change public visibility. Contact staff.');$('personalState').textContent='Public visibility updated. Your private photo remains available.';}catch(e){$('personalState').textContent=e.message;}finally{b.disabled=false;}};guestActions.append(b);}document.querySelector('#personalPreview').append(guestActions);
   $('closePersonal').onclick=()=>{$('personalPreview').close();$('personalImage').removeAttribute('src');selected=null;};
   $('latestPage').onclick=()=>{before=null;refresh();};$('olderPage').onclick=()=>{before=next;refresh();};
   document.addEventListener('visibilitychange',()=>{if(!document.hidden){clear();lastOk=0;refresh();}});

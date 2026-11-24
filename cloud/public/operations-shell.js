@@ -23,7 +23,7 @@
  const legacy=make('details','ops-advanced'),summary=make('summary',null,'Advanced: legacy manual device token (not QR pairing)');legacy.append(summary,panels[1]);bodies.setup.append(legacy);
  const caution=make('p','ops-tip','To pair a phone, use “Create 5-minute pairing QR” above. “Create device token” is a legacy manual route and does not generate a QR.');legacy.before(caution);
  core.forEach(x=>bodies.overview.append(x));workspace.remove();
- bodies.photos.append(photos,$('personalPanel'));bodies.print.append($('staffDesk'));bodies.projection.append($('presentationPanel'));
+ bodies.photos.append(photos,$('h510Policy'),$('personalPanel'));bodies.print.append($('staffDesk'));bodies.projection.append($('presentationPanel'));
  const refreshbar=make('div','ops-refresh');refreshbar.innerHTML='<label for="ops-interval">Auto refresh <select id="ops-interval"><option value="15000">15 seconds</option><option value="30000">30 seconds</option><option value="0">Off</option></select></label><button id="ops-now" class="secondary">Refresh now</button><small id="ops-checked">No successful check yet</small>';
  nav.after(refreshbar);
  let selected='overview',connected=false,busy=false,interval=15000,stamp=0;
