@@ -51,3 +51,6 @@ station.log*
 native-job-*.json
 
 .h5-ui-tests/
+
+# Disposable H5.5 UI fixture and local compiler output
+.h55-ui-tests/
