@@ -1,0 +1,1 @@
+All three Cloud ZIP names in this folder are byte-identical H5.5/schema7 aliases. Use the H5_5 filename. Do not follow a historical schema5/6 downgrade instruction or reinitialize storage. Only this cloud archive goes to Hostinger; full project ZIP goes to your private Git repository.
