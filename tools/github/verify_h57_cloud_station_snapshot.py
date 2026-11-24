@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Fail before native builds when the H5.7 cloud/station source checkout is incomplete.
+"""Fail before native builds when the H5.9 cloud/station source checkout is incomplete.
 No network access, no runtime secrets, no application writes.
 """
 from pathlib import Path
@@ -8,7 +8,7 @@ import json
 import sys
 
 ROOT = Path(__file__).resolve().parents[2]
-MANIFEST = ROOT / "CLOUD_STATION_SOURCE_SNAPSHOT_H5_7.json"
+MANIFEST = ROOT / "CLOUD_STATION_SOURCE_SNAPSHOT_H5_9.json"
 
 
 def verify(root=ROOT, manifest=MANIFEST):
@@ -28,9 +28,9 @@ def verify(root=ROOT, manifest=MANIFEST):
 if __name__ == "__main__":
     count, failures = verify()
     if failures:
-        print("H5.7 CLOUD/STATION SOURCE SNAPSHOT FAILED; source checkout is incomplete or mixed.", file=sys.stderr)
+        print("H5.9 CLOUD/STATION SOURCE SNAPSHOT FAILED; source checkout is incomplete or mixed.", file=sys.stderr)
         for issue in failures:
             print("  " + issue, file=sys.stderr)
-        print("Restore the exact H5.7 source files; do not disable this gate.", file=sys.stderr)
+        print("Restore the exact H5.9 source files; do not disable this gate.", file=sys.stderr)
         sys.exit(1)
-    print(f"H5.7 cloud/station source snapshot OK: {count} exact files")
+    print(f"H5.9 cloud/station source snapshot OK: {count} exact files")

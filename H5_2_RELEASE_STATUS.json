@@ -1,0 +1,15 @@
+{
+  "release": "H5.2 CP9550DW source update",
+  "date": "2026-11-20",
+  "android_version": "0.2.0-alpha.6-h5.2",
+  "android_code": 7,
+  "station_version": "0.1.1-alpha.h5.2",
+  "cloud_version": "0.2.0-alpha.6-hostinger.5",
+  "native_build_executed": false,
+  "hardware_tested": false,
+  "live_deployment_changed": false,
+  "cloud_production_changed": false,
+  "guide": "docs/h5_2/CP9550DW_SETUP.html",
+  "report": "docs/h5_2/RELEASE_REPORT.md",
+  "historical_status_file": "RELEASE_STATUS.json"
+}

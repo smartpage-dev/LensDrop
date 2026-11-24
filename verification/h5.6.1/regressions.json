@@ -1,0 +1,74 @@
+[
+  {
+    "name": "ui-setup",
+    "exit_code": 0,
+    "completed": true,
+    "seconds": 3.63
+  },
+  {
+    "name": "session-policy",
+    "exit_code": 0,
+    "completed": true,
+    "seconds": 0.57
+  },
+  {
+    "name": "print-policy",
+    "exit_code": 0,
+    "completed": true,
+    "seconds": 3.08
+  },
+  {
+    "name": "cp9550-profiles",
+    "exit_code": 0,
+    "completed": true,
+    "seconds": 0.67
+  },
+  {
+    "name": "watch-ledger",
+    "exit_code": 0,
+    "completed": true,
+    "seconds": 2.83
+  },
+  {
+    "name": "ticket",
+    "exit_code": 0,
+    "completed": true,
+    "seconds": 3.03
+  },
+  {
+    "name": "reliability",
+    "exit_code": 0,
+    "completed": true,
+    "seconds": 2.92
+  },
+  {
+    "name": "archive-workflow",
+    "exit_code": 0,
+    "completed": true,
+    "seconds": 3.59
+  },
+  {
+    "name": "h55-contracts",
+    "exit_code": 1,
+    "completed": true,
+    "seconds": 0.06
+  },
+  {
+    "name": "h55-contracts",
+    "exit_code": 1,
+    "completed": true,
+    "seconds": 0.03
+  },
+  {
+    "name": "h55-contracts",
+    "exit_code": 0,
+    "completed": true,
+    "seconds": 0.06
+  },
+  {
+    "name": "h55-contracts",
+    "exit_code": 0,
+    "completed": true,
+    "seconds": 0.03
+  }
+]

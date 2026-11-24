@@ -1,3 +1,9 @@
+# Current build repair: LensDrop H5.6.1 / Android code12
+
+Start with **START_BUILD_REPAIR_H5_6_1.html**. The missing Intent import is corrected and the complete Android source/workflow has a coherence gate. Use CURRENT_RELEASE.json for current status. No APK or live deployment is included. Preserve app data and signing identity.
+
+The following retained guide is historical; newer versioned guides take precedence.
+
 # Current Android update: LensDrop H5.6
 
 Open **START_ANDROID_H5_6.html** for the current Android UI/scanner guide and **docs/h5_6/RELEASE_REPORT.md** for evidence and limits. Android is 0.2.0-alpha.6-h5.6 / code11; cloud and Windows remain H5.5, unchanged. No APK or native build validation is included. Existing signing identity, data and queues must be preserved. Run the Android workflow on a NEW updated commit. The native lint gate remains mandatory.

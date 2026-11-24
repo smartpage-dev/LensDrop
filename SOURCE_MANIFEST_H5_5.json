@@ -1,0 +1,2727 @@
+{
+  "schema": "lensdrop.source.manifest/1",
+  "release": "H5.5",
+  "date": "2026-11-23",
+  "files": [
+    {
+      "path": ".gitattributes",
+      "bytes": 243,
+      "sha256": "c9f6ead25728789351112e43aa581404fee8c93b076c189ef6aeb2b4a591f34b"
+    },
+    {
+      "path": ".github/workflows/android-debug.yml",
+      "bytes": 4453,
+      "sha256": "785664b487433c91374e76b4e87fb9c1d7a8021914a9a6bea45078a470d70741"
+    },
+    {
+      "path": ".github/workflows/windows-print-station.yml",
+      "bytes": 2592,
+      "sha256": "4d009c8bdc4b5f03a3b4c060745daae6e1f8088666f8f1513e3498e454ecbab5"
+    },
+    {
+      "path": ".gitignore",
+      "bytes": 973,
+      "sha256": "ac85ea763471b976af16447c875d2799ba46c080f2a9c50234a7439d6ca83b0a"
+    },
+    {
+      "path": "GITHUB_BUILD_PACKAGE_R1.md",
+      "bytes": 2139,
+      "sha256": "d11911728055f595de2c490ba5d770a9d47091eec624d065708f4581baf4a8cd"
+    },
+    {
+      "path": "GITHUB_PACKAGE_MANIFEST_SHA256.txt",
+      "bytes": 29640,
+      "sha256": "cb137a6c10999e64bbb63ef460ae9ea6992955db52c459d387a229eecf5a55af"
+    },
+    {
+      "path": "GITHUB_PACKAGE_STATUS.json",
+      "bytes": 648,
+      "sha256": "7358f95f82512102f67ff35ec6bc0dd91aeac774ada5fd62645329dc1f91e626"
+    },
+    {
+      "path": "GITHUB_PACKAGING_REPORT.md",
+      "bytes": 2167,
+      "sha256": "ae3585db70e0305d3f0716f4ee7b81c1e95cff946637e9e6295afc751a582a97"
+    },
+    {
+      "path": "GITHUB_R1_MANIFEST_SHA256.txt",
+      "bytes": 38023,
+      "sha256": "9e556d6ac863b06f5c6c5b7a22641f6660f3a2ef10cf86aa11f32c9ff70d2ee1"
+    },
+    {
+      "path": "H5_1_MANIFEST_SHA256.txt",
+      "bytes": 40571,
+      "sha256": "dd770210379e859fe923feb63c7ed67a505eafcd7d0ab790ffebb9cdde5dd696"
+    },
+    {
+      "path": "H5_2_MANIFEST_SHA256.txt",
+      "bytes": 43639,
+      "sha256": "13759872657074bae95e8487533324ec6c20943328bd39c61788b0611fdc0fb8"
+    },
+    {
+      "path": "H5_2_RELEASE_STATUS.json",
+      "bytes": 497,
+      "sha256": "3e98a958c416648a8e9cfa3b08e02455c23db387c54815d26391535bd3975add"
+    },
+    {
+      "path": "H5_3_MANIFEST_SHA256.txt",
+      "bytes": 46285,
+      "sha256": "5cee027cb5a451ae8d3cbfdb28d8f8a1ad84e97e6f060871ae5d1861ca4b8759"
+    },
+    {
+      "path": "H5_3_RELEASE_STATUS.json",
+      "bytes": 545,
+      "sha256": "a904a4be3f0210e2c926a4e1a24f2bf6411f549ee85f1f87deace915d0426a91"
+    },
+    {
+      "path": "H5_4_MANIFEST_SHA256.txt",
+      "bytes": 52413,
+      "sha256": "71ba6ee0a879b19fbd3bbcc4480bdde47a686752d67fd84eeedf9c4d957c8243"
+    },
+    {
+      "path": "MANIFEST_SHA256.txt",
+      "bytes": 37261,
+      "sha256": "6171998d99c6e64cc5daf11887a1b306f2aa9912f13fd49bb12ba4894762a1b1"
+    },
+    {
+      "path": "PACKAGE_CHECKS.txt",
+      "bytes": 371,
+      "sha256": "e78aa82d8042fd8f0bdf8789e677a69a03b0cf11310e69a836972588e4e8a22e"
+    },
+    {
+      "path": "README.md",
+      "bytes": 680,
+      "sha256": "65f05d6af48f7f3e5a1261e88c37389995ef1ea2f53f691d496c6cbf9f8adb97"
+    },
+    {
+      "path": "README.txt",
+      "bytes": 725,
+      "sha256": "fa352b7b76ecec23e7ee6fb5e2af33367f6037bffe84d6820d739a0259d9dc28"
+    },
+    {
+      "path": "RELEASE_STATUS.json",
+      "bytes": 2088,
+      "sha256": "7d57d7d1b212c65b1c9b510de44baef60151ce0b5caf89da765f77cb64c38bda"
+    },
+    {
+      "path": "START_ARCHIVE_STAFFPRINT_H5_5.html",
+      "bytes": 22098,
+      "sha256": "f2eb2aee809c062772e6060fa4e415f5b0018f85ba1f01df3b7266abab9a37db"
+    },
+    {
+      "path": "START_ARCHIVE_STAFFPRINT_H5_5.md",
+      "bytes": 17824,
+      "sha256": "49c771b1be44f82b00ba1f4f19e8d2e82ccd28708088684791fc4e5487100c3c"
+    },
+    {
+      "path": "START_CP9550DW_H5_2.html",
+      "bytes": 5465,
+      "sha256": "e5b57d4de10d47bfbbf9579217e82b64073843e9cf7182d4bf374eab5f3f60d8"
+    },
+    {
+      "path": "START_GITHUB_H5.html",
+      "bytes": 5465,
+      "sha256": "e5b57d4de10d47bfbbf9579217e82b64073843e9cf7182d4bf374eab5f3f60d8"
+    },
+    {
+      "path": "START_GITHUB_H5.md",
+      "bytes": 6697,
+      "sha256": "d453be7ad6f88b983276fbc0e3a322a50960938ce6a8d354ec2d97f5386f9424"
+    },
+    {
+      "path": "START_GITHUB_HERE.html",
+      "bytes": 2303,
+      "sha256": "3343cb07056cbe932cbf262236212b343e06245789cac4c54b98a1f11309b490"
+    },
+    {
+      "path": "START_HERE.html",
+      "bytes": 771,
+      "sha256": "6c151d497d19a76486d336423e4e4cec6ed084d50a0f0c1e611521690aa69666"
+    },
+    {
+      "path": "START_HERE_GUIDE.txt",
+      "bytes": 134,
+      "sha256": "51920bd92178e902419ce9c102c30b7177cdbb706510703634bba26b4c075641"
+    },
+    {
+      "path": "START_QR_TICKET_H5_3.html",
+      "bytes": 13296,
+      "sha256": "8f4b2f999faa707972c4f2390ec3e6a06e25903ab6cffd7aab5e08116255323d"
+    },
+    {
+      "path": "START_QR_TICKET_H5_3.md",
+      "bytes": 10413,
+      "sha256": "6ae290b092b47e3fa1c0eb0e92d7155e47fe4d6cdcf46df2a38131bdab47e59c"
+    },
+    {
+      "path": "START_RELIABILITY_H5_4.html",
+      "bytes": 4352,
+      "sha256": "4ab91a5c8e223387a317786840e1e4d947d6ae241b70a932ca714cd741ef4d75"
+    },
+    {
+      "path": "clients/.gitignore",
+      "bytes": 87,
+      "sha256": "c7cbfaeb67496d44ac904c025eeae38ae6929babc34b0b41a089dad52c905404"
+    },
+    {
+      "path": "clients/README.md",
+      "bytes": 676,
+      "sha256": "b4fa57fcdad710dc6d047be998b8fd7a9b6c72b78e1ef1285d3b7d260dd8ca86"
+    },
+    {
+      "path": "clients/RELEASE_STATUS.json",
+      "bytes": 1387,
+      "sha256": "9f3386e0846acb364f9f4a0701627a3ce9690ce4a4109f3099210fb026040d47"
+    },
+    {
+      "path": "clients/START_HERE_GUIDE.txt",
+      "bytes": 214,
+      "sha256": "2912f3fe0d5951fcb65d7c73698ff6a955c804c1ffca7a2f2bfbf05bbb7a43ea"
+    },
+    {
+      "path": "clients/android/BUILD_ANDROID.cmd",
+      "bytes": 749,
+      "sha256": "ad3268da97ac4e4cc7a3fe302f663c4d0c42947ca208f75cb97a4c2c4312d91b"
+    },
+    {
+      "path": "clients/android/BUILD_ANDROID.sh",
+      "bytes": 680,
+      "sha256": "6410ae360d28142739b905770b7fc9d78a1de2489b3d05f27cc2d150b037eb81"
+    },
+    {
+      "path": "clients/android/README.md",
+      "bytes": 5390,
+      "sha256": "beae12ab338a6134b45de1c7f4f8f9084e89af2371af640c008629571e39f498"
+    },
+    {
+      "path": "clients/android/RUN_LEDGER_TESTS.sh",
+      "bytes": 411,
+      "sha256": "0530c46ecbac91a7a242f4c95a68f8fb5a2bbe1da35b2a00bc5d30c750a36926"
+    },
+    {
+      "path": "clients/android/RUN_POLICY_TESTS.sh",
+      "bytes": 261,
+      "sha256": "46d85717845c45fb827cdc79059d8fcb7d3dc7c916ad7f7fddd527f725d5749d"
+    },
+    {
+      "path": "clients/android/RUN_PRINT_POLICY_TESTS.sh",
+      "bytes": 417,
+      "sha256": "ed638b4402607b1ec4cd8d8df81fba44b608b169eb01bd37334291d748894121"
+    },
+    {
+      "path": "clients/android/RUN_PRINT_PROFILE_TESTS.sh",
+      "bytes": 266,
+      "sha256": "0ae289f9c8460f4e7ab35f8facedf2e5bb94963672c0fd8f1aec1d9a09863ec8"
+    },
+    {
+      "path": "clients/android/RUN_RELIABILITY_TESTS.sh",
+      "bytes": 613,
+      "sha256": "11407d1e70b7b6128515685f711203a58c7d22d8965cf54464962d80a41c21a1"
+    },
+    {
+      "path": "clients/android/RUN_TICKET_TESTS.sh",
+      "bytes": 546,
+      "sha256": "bc237faef70a76237e2e63d433659bf5f7c9faf29a9f1a6c928d71e1309f17a4"
+    },
+    {
+      "path": "clients/android/RUN_WORKFLOW_TESTS.sh",
+      "bytes": 496,
+      "sha256": "d9c2ea5b27b03afd57d4a1a31fa2f07cad0870249496c97911eed2a99908f16e"
+    },
+    {
+      "path": "clients/android/app/build.gradle",
+      "bytes": 525,
+      "sha256": "b61e8efd44633a5c7c377d30ab5e612ed76ae4bf8d5b7276aab74a9ec5db8575"
+    },
+    {
+      "path": "clients/android/app/src/main/AndroidManifest.xml",
+      "bytes": 2628,
+      "sha256": "ddb97f3be9153d2d80491a8ce76f01313291983c1b9fb970916ac02098a05e27"
+    },
+    {
+      "path": "clients/android/app/src/main/assets/QRCode-LICENSE.txt",
+      "bytes": 11962,
+      "sha256": "b3c7a2fadb2515b8106eae58439a4b9c0581a4eaa88d6a265701f8d4dd7dadb8"
+    },
+    {
+      "path": "clients/android/app/src/main/assets/qr.js",
+      "bytes": 30322,
+      "sha256": "bab76b147e2ce00880d6952bbb02ea379b0bb41cd422a611327ebd0c872226fc"
+    },
+    {
+      "path": "clients/android/app/src/main/java/app/lensdrop/transfer/ArchiveStaging.java",
+      "bytes": 4864,
+      "sha256": "5deb96d6e4b9e9006b4b227344bb386e65a3c0b61fc7032a9b07ea9447babd77"
+    },
+    {
+      "path": "clients/android/app/src/main/java/app/lensdrop/transfer/CloudApi.java",
+      "bytes": 7124,
+      "sha256": "6c80f4e118f69fe86e79d08060be5d2c9384334d79f33680e08fc85d82f1b156"
+    },
+    {
+      "path": "clients/android/app/src/main/java/app/lensdrop/transfer/Config.java",
+      "bytes": 4403,
+      "sha256": "ddf24ca09dc2fd6f62887d7786da9f623d660d8c56bd2c6c0cba0067d0f13e26"
+    },
+    {
+      "path": "clients/android/app/src/main/java/app/lensdrop/transfer/DeliveryActivity.java",
+      "bytes": 16808,
+      "sha256": "91f71a1f06e408e82a12af91902da0529dbc1d0573efff069d5f6fa3caee755c"
+    },
+    {
+      "path": "clients/android/app/src/main/java/app/lensdrop/transfer/DeliveryCoordinator.java",
+      "bytes": 3663,
+      "sha256": "c9e928834bd3ef11365d66fa1ada6f44936f88725596221c51e069a53828d817"
+    },
+    {
+      "path": "clients/android/app/src/main/java/app/lensdrop/transfer/DirectorySync.java",
+      "bytes": 1037,
+      "sha256": "3bb152e1dc0ba6b1b98cbf472084eedf72f8dba5b14269fb822c7bda88f3a23a"
+    },
+    {
+      "path": "clients/android/app/src/main/java/app/lensdrop/transfer/EventService.java",
+      "bytes": 3774,
+      "sha256": "94513d22014f3998e5e94fe92c918900b0360f8c48c5abaf0e2e9a7b2caf455e"
+    },
+    {
+      "path": "clients/android/app/src/main/java/app/lensdrop/transfer/JpegStructure.java",
+      "bytes": 3639,
+      "sha256": "b1de406d316f51a5fbdf0b481d61f47a809d648684c62df68c72384d6c68fc48"
+    },
+    {
+      "path": "clients/android/app/src/main/java/app/lensdrop/transfer/LanPrintApi.java",
+      "bytes": 4634,
+      "sha256": "21a320f81f8e07cbac722a958a567d7e060cf40c71c2beb941b7021d98e85e80"
+    },
+    {
+      "path": "clients/android/app/src/main/java/app/lensdrop/transfer/MainActivity.java",
+      "bytes": 18150,
+      "sha256": "0e1d4b781481713ba10fba9f563cc81ec8cc49c0acd2edf17448bf26d93df663"
+    },
+    {
+      "path": "clients/android/app/src/main/java/app/lensdrop/transfer/MediaScanner.java",
+      "bytes": 5266,
+      "sha256": "82f79237cb13e6cc5330defd28e788d336719f23325e16445477be34d7eadd60"
+    },
+    {
+      "path": "clients/android/app/src/main/java/app/lensdrop/transfer/PrintActivity.java",
+      "bytes": 17120,
+      "sha256": "3d6f492da1fe76ed6bc377c99df330b0887b0041553e4618f2519d735b134710"
+    },
+    {
+      "path": "clients/android/app/src/main/java/app/lensdrop/transfer/PrintEngine.java",
+      "bytes": 7147,
+      "sha256": "3159521863cfc1fa291ec9b2b69b3963793a904f27abcf9ebca81942ae3404cc"
+    },
+    {
+      "path": "clients/android/app/src/main/java/app/lensdrop/transfer/PrintProfilePolicy.java",
+      "bytes": 2097,
+      "sha256": "9b7f565d1a5e40d56a089d406d93c68769e65cd58d47db9edcc2ac88f7b51092"
+    },
+    {
+      "path": "clients/android/app/src/main/java/app/lensdrop/transfer/PrintQueue.java",
+      "bytes": 3895,
+      "sha256": "226314ec4e7a9d1b5dc9615f43c9958f31a7886321c3e402c981c29f1cff2528"
+    },
+    {
+      "path": "clients/android/app/src/main/java/app/lensdrop/transfer/PrintRules.java",
+      "bytes": 689,
+      "sha256": "2d24d9759d3bf002b7025a9ee81eb94b953e1451c4f4f7c0d13a1254692bd7eb"
+    },
+    {
+      "path": "clients/android/app/src/main/java/app/lensdrop/transfer/PrintService.java",
+      "bytes": 1729,
+      "sha256": "9f5f5604a9d8b56427a10df560ed23a5a3405885673b1df1c412b817e1aa0566"
+    },
+    {
+      "path": "clients/android/app/src/main/java/app/lensdrop/transfer/QueueDb.java",
+      "bytes": 17517,
+      "sha256": "00c124ef3629e4f57b9be4aa873db19b852cbabf1463cdeb5dd6b00b8e3ec608"
+    },
+    {
+      "path": "clients/android/app/src/main/java/app/lensdrop/transfer/RecoveryActivity.java",
+      "bytes": 12727,
+      "sha256": "7d7d574be3fa6703b6646c0ea6135793136c411592992d43ffa8e738279a5f79"
+    },
+    {
+      "path": "clients/android/app/src/main/java/app/lensdrop/transfer/RecoveryJob.java",
+      "bytes": 1915,
+      "sha256": "b894d9220ef732c3c76fe5ef305fdb13d867d11aff9a00efcc86d8cad0a19d03"
+    },
+    {
+      "path": "clients/android/app/src/main/java/app/lensdrop/transfer/RecoveryLedger.java",
+      "bytes": 7967,
+      "sha256": "e398aab751ffbef3960e7895208dd9242e4b11c7638553fdd081419bd6e95a82"
+    },
+    {
+      "path": "clients/android/app/src/main/java/app/lensdrop/transfer/SessionRules.java",
+      "bytes": 2480,
+      "sha256": "e9ba98de3d49f71ae3d5d6bf7f00e5d6896d87aff68c9ebb08cf91c66e275615"
+    },
+    {
+      "path": "clients/android/app/src/main/java/app/lensdrop/transfer/StaffSetupActivity.java",
+      "bytes": 7230,
+      "sha256": "704e4cd1b815054b8b352b1ad069e2d8cb95dfa283401accd7c7a12c06ac4ab2"
+    },
+    {
+      "path": "clients/android/app/src/main/java/app/lensdrop/transfer/TicketActivity.java",
+      "bytes": 17355,
+      "sha256": "2c4fc3a0cc4861870be7e1282b090c2f70e7b71847a81df7b175d55c1f3d4686"
+    },
+    {
+      "path": "clients/android/app/src/main/java/app/lensdrop/transfer/TicketLedger.java",
+      "bytes": 5815,
+      "sha256": "9aa4558861987047c03e45a625d46a798b77d66f37e9aecd041a8a27d3726a6a"
+    },
+    {
+      "path": "clients/android/app/src/main/java/app/lensdrop/transfer/TicketProtocol.java",
+      "bytes": 4584,
+      "sha256": "d84f4f4de2e51f1dcf3d7da58e865d22a2a282bd7859f0edbfe042f93be63d73"
+    },
+    {
+      "path": "clients/android/app/src/main/java/app/lensdrop/transfer/TicketTransport.java",
+      "bytes": 3566,
+      "sha256": "7353359c4202f1063539f71455bf52d881cce6712805f26c0c141f7d25df7a15"
+    },
+    {
+      "path": "clients/android/app/src/main/java/app/lensdrop/transfer/TransferLane.java",
+      "bytes": 350,
+      "sha256": "d2fc4a8e8761d622a011d406ebc315878004b075cdba5ade68f8f411a4ed3b29"
+    },
+    {
+      "path": "clients/android/app/src/main/java/app/lensdrop/transfer/UploadEngine.java",
+      "bytes": 15739,
+      "sha256": "35b9b7fb26187fb8b70b0265f8fe5b9a1f369a90638bb7d015a574e7b2c5aef8"
+    },
+    {
+      "path": "clients/android/app/src/main/java/app/lensdrop/transfer/UploadRetryPolicy.java",
+      "bytes": 686,
+      "sha256": "7b4287e8c29ad613a4454708d009f66253030e089ec76efe1432d26c0c243c0f"
+    },
+    {
+      "path": "clients/android/app/src/main/java/app/lensdrop/transfer/WatchLedger.java",
+      "bytes": 16777,
+      "sha256": "d8f6c0dc22bd6a01939b7237af5c4b9085fa5dacde8b0e1328a461ce69e6b3b8"
+    },
+    {
+      "path": "clients/android/app/src/main/java/app/lensdrop/transfer/WatchRules.java",
+      "bytes": 960,
+      "sha256": "e84e0669a5122bfc0cd126101cadee6b84c633f91558da3884de306191ab7ffa"
+    },
+    {
+      "path": "clients/android/build.gradle",
+      "bytes": 69,
+      "sha256": "7c2248fd2eddd20ccc0da72abb80cfb4beab12b2ec71cc022b36746df856290a"
+    },
+    {
+      "path": "clients/android/buildfix-tests/README.md",
+      "bytes": 588,
+      "sha256": "84b6a6111bc2d546b6096a1fa657100ee2d4cf4623bed6fd041bcf90823eb827"
+    },
+    {
+      "path": "clients/android/buildfix-tests/run_buildfix_tests.py",
+      "bytes": 8531,
+      "sha256": "0be4bea61f76bd47c99f10e0743a369821b7881b68aa8f390f48a74bbaada99e"
+    },
+    {
+      "path": "clients/android/gradle.properties",
+      "bytes": 103,
+      "sha256": "ba3dba89ebf5d6d10556c8685858ece20ed6c83f13ef2012096961042081a575"
+    },
+    {
+      "path": "clients/android/ledger-tests/WatchLedgerIntegrationTest.java",
+      "bytes": 11287,
+      "sha256": "b9f26974c9ac49c12ad0f47d568c5a28050694275cb771ab313b509808ae8a07"
+    },
+    {
+      "path": "clients/android/ledger-tests/android/content/ContentValues.java",
+      "bytes": 456,
+      "sha256": "26eb2dd370a77cec44f0287390df43c1c3db7fe2d238ca37de100995b1968755"
+    },
+    {
+      "path": "clients/android/ledger-tests/android/content/Context.java",
+      "bytes": 183,
+      "sha256": "d8dbcb6240a8bed364e9fc5e2314e5144768c83b6251c1cc2ecdce694e6184b9"
+    },
+    {
+      "path": "clients/android/ledger-tests/android/database/Cursor.java",
+      "bytes": 744,
+      "sha256": "2a2e39d3dd013971fbe7daa6d151c7a50b60256b6099708ad9adb7e14abdf65e"
+    },
+    {
+      "path": "clients/android/ledger-tests/android/database/sqlite/SQLiteDatabase.java",
+      "bytes": 3983,
+      "sha256": "7d147692916d53747d4e53fa828424cd0803b5a0eaa7f120fe0da19ef288f526"
+    },
+    {
+      "path": "clients/android/ledger-tests/android/database/sqlite/SQLiteOpenHelper.java",
+      "bytes": 1184,
+      "sha256": "1b0d8e4cc98713c9abeb10d6d6932d3a979cafbe1115603881c6e650aa52522d"
+    },
+    {
+      "path": "clients/android/ledger-tests/bridge.py",
+      "bytes": 878,
+      "sha256": "3983e888a3176f1dc7393903313b6af1c71fab903e3f42e04e05ccd4259b06d3"
+    },
+    {
+      "path": "clients/android/ledger-tests/org/json/JSONArray.java",
+      "bytes": 355,
+      "sha256": "c6af8b39b3fd0ba35fc3b6411e460fe9bf8885d6635d49dceedcb7e5d76ad5b6"
+    },
+    {
+      "path": "clients/android/ledger-tests/org/json/JSONObject.java",
+      "bytes": 970,
+      "sha256": "08d7451d4dd2354c2f3031b8d43b904cb4401ade842683320d770775bfffb280"
+    },
+    {
+      "path": "clients/android/policy-tests/ParseJava.java",
+      "bytes": 889,
+      "sha256": "f303abef27cbf91edac474f22e116ce8ccebbb402430997768ce5b8a11263205"
+    },
+    {
+      "path": "clients/android/policy-tests/PrintProfilePolicyTest.java",
+      "bytes": 1807,
+      "sha256": "5c93ea5437d39167d09d4012a44c92219ea295287c792d24683e526900906bf9"
+    },
+    {
+      "path": "clients/android/policy-tests/PrintRulesTest.java",
+      "bytes": 1684,
+      "sha256": "cc3a5c526a6f27436807475f00e32b63360c8e3a17eead758773609dd3db8818"
+    },
+    {
+      "path": "clients/android/policy-tests/SessionRulesTest.java",
+      "bytes": 1441,
+      "sha256": "653a492ccea65d1ea188786906085460e01016e8ce5f102d3ec38b385537382e"
+    },
+    {
+      "path": "clients/android/reliability-tests/FrozenH53QueueDb.java",
+      "bytes": 12373,
+      "sha256": "74ecb75aea6eb1651d06e736071fadbcc027a686ec683bc884e6a8c7697bcf48"
+    },
+    {
+      "path": "clients/android/reliability-tests/JpegReliabilityTest.java",
+      "bytes": 5121,
+      "sha256": "94bf28d86952ae507059b5638a178af0268b1c56e83b37c008e754c8ce05130d"
+    },
+    {
+      "path": "clients/android/reliability-tests/RecoveryReliabilityTest.java",
+      "bytes": 11913,
+      "sha256": "752766e22bed0e8dd7701448335b0268d4427b9d2801fba76b4bd620ceeab89b"
+    },
+    {
+      "path": "clients/android/settings.gradle",
+      "bytes": 282,
+      "sha256": "5af69b765c67cd18eceb0ba66d5a5f1083b6db3fcefd9746a6317e209f2a3ac0"
+    },
+    {
+      "path": "clients/android/ticket-tests/LabProtocolReference.java",
+      "bytes": 5925,
+      "sha256": "3df6ddbd6ec756c9889bba54458aea375f4d5f4884c11a289dfd3870187c6c6e"
+    },
+    {
+      "path": "clients/android/ticket-tests/LegacyQueueDb.java",
+      "bytes": 11515,
+      "sha256": "608c1587e7c6d6ed8b910ff2fa9028922176446a8c8d1f5cf2851eb390759cd5"
+    },
+    {
+      "path": "clients/android/ticket-tests/TicketLedgerTest.java",
+      "bytes": 9304,
+      "sha256": "ffc31390089bf52afceedae7617fe1b456ed88edb10a020fa50495f9a02ba03e"
+    },
+    {
+      "path": "clients/android/ticket-tests/TicketProtocolTest.java",
+      "bytes": 5023,
+      "sha256": "dbcc4fba9cfca8c9756e8a8525b0c225eda6b97145d32cc1463a7169564d7d02"
+    },
+    {
+      "path": "clients/android/workflow-tests/ArchiveWorkflowTest.java",
+      "bytes": 12120,
+      "sha256": "5294b9b343865d85d4fc200c481e631091874d4ad616e52074644529b291d43b"
+    },
+    {
+      "path": "clients/android/workflow-tests/FrozenH54PrintQueue.java",
+      "bytes": 3636,
+      "sha256": "15ffebbdd64d55ba76df0c87d269dc4429a29663dd12232a8da1058f314941a4"
+    },
+    {
+      "path": "clients/android/workflow-tests/FrozenH54QueueDb.java",
+      "bytes": 14420,
+      "sha256": "e1efa3c41baa50645fb49aa3d17901bfdcf6b2074468d88478f6d491d485be18"
+    },
+    {
+      "path": "clients/android/workflow-tests/stubs/CloudApi.java",
+      "bytes": 207,
+      "sha256": "5ccdbdc199c0e86c9649fdc5bdd285d0e7a426166ea98c2668ac4077d9912e6c"
+    },
+    {
+      "path": "clients/android/workflow-tests/stubs/DirectorySync.java",
+      "bytes": 314,
+      "sha256": "d3e8734bb43b40bf44139c280d1a47cb377e4dc34fb75b892dddfa743324ccee"
+    },
+    {
+      "path": "clients/desktop/OPEN_OPERATOR_CONSOLE.cmd",
+      "bytes": 261,
+      "sha256": "3a52606d83cdc1ca28863374809a1d4e76dd6e3a20520447001df5de03dba236"
+    },
+    {
+      "path": "clients/desktop/OPEN_OPERATOR_CONSOLE.sh",
+      "bytes": 72,
+      "sha256": "2be0822e36171282f5991f147edc2d90b7ba55a596bdbdb8f8ea7dda2239cadf"
+    },
+    {
+      "path": "clients/desktop/START_MAC_LINUX.sh",
+      "bytes": 298,
+      "sha256": "1e1a3927048740d6ffd6b5ba512510d7d67bec00dac3012cc610d3a8adda0711"
+    },
+    {
+      "path": "clients/desktop/START_WINDOWS.cmd",
+      "bytes": 422,
+      "sha256": "5e212c705e5edc477a660d44dbdab6fcaec0979620c37991a62a968a1dc064b2"
+    },
+    {
+      "path": "clients/desktop/lensdrop_agent.py",
+      "bytes": 28096,
+      "sha256": "1b4f3491832970fb5340fe021cbbaf15a39213a7dcd8da53157daece0d772830"
+    },
+    {
+      "path": "clients/desktop/lensdrop_console.py",
+      "bytes": 11215,
+      "sha256": "dae9f37d0f4c2f3bc57c0cd3ac958f44d3b232351cf74182ab68398fa2c4ef6d"
+    },
+    {
+      "path": "clients/docs/DEVELOPMENT_UPDATE.md",
+      "bytes": 7312,
+      "sha256": "a240495e894bee5970fd81f33d8b5ea4c77aabb91eb6adbccdd5a3b934988b5f"
+    },
+    {
+      "path": "clients/docs/RESEARCH_AND_ARCHITECTURE.md",
+      "bytes": 9935,
+      "sha256": "70a357a176aca596e377394d496c6c7caa2496778ca046caa304f6246986e6f8"
+    },
+    {
+      "path": "clients/docs/TEST_REPORT.md",
+      "bytes": 3534,
+      "sha256": "0ef863cfd02ef0a6744d45b69c035bb6d2e93bd93b4dbd311282e033e866d3d6"
+    },
+    {
+      "path": "clients/docs/VALIDATION_PLAN.md",
+      "bytes": 5858,
+      "sha256": "895ffd541290cb2a22316cf76646604b5437eecde7279247cab9e94afce3d2d6"
+    },
+    {
+      "path": "clients/docs/user-guide/LensDrop_Full_User_and_Setup_Guide_v0.2-alpha_r1.docx",
+      "bytes": 66442,
+      "sha256": "f84326a7a9ba70470a99f653ea1d58b9b6292051670ef6834cb7794ea54338a1"
+    },
+    {
+      "path": "clients/docs/user-guide/LensDrop_Full_User_and_Setup_Guide_v0.2-alpha_r1.html",
+      "bytes": 69983,
+      "sha256": "204ff4c809da061da7caf1fbbd8d964f3b4412673b122851676bab4f6e972d44"
+    },
+    {
+      "path": "clients/docs/user-guide/LensDrop_Full_User_and_Setup_Guide_v0.2-alpha_r1.md",
+      "bytes": 52070,
+      "sha256": "7d298da66ec0fe94dabaa108c4e13d4e9cde90b7b887638aee63095d23f81f8e"
+    },
+    {
+      "path": "clients/docs/user-guide/LensDrop_Full_User_and_Setup_Guide_v0.2-alpha_r1.pdf",
+      "bytes": 345245,
+      "sha256": "eee92e1302efe4841f34237ecb9ab1703e5ffe80977181323075f701fa50d523"
+    },
+    {
+      "path": "clients/docs/user-guide/validation/README.txt",
+      "bytes": 1032,
+      "sha256": "55eebd563d817d1f8cb25673983ea6b9fffa1da43a9a2d5a6d2cc130901ee0aa"
+    },
+    {
+      "path": "clients/docs/user-guide/validation/browser-attempt-not-passed.txt",
+      "bytes": 534,
+      "sha256": "c8f1b78e22f0d436660146d5473885bdf02c80e6c4689ceb5e3e37af2f390d91"
+    },
+    {
+      "path": "clients/docs/user-guide/validation/cloud-tests-rerun.txt",
+      "bytes": 3004,
+      "sha256": "c1f59a1d2498b621dae258d11235d09d407f7354f64d751ed5c0e76b9c273d04"
+    },
+    {
+      "path": "clients/docs/user-guide/validation/desktop-api-walkthrough-results.txt",
+      "bytes": 936,
+      "sha256": "4f38a5a5c0c361b7a05eb8a98325a4a144876be42a58ee510972f32c21b581da"
+    },
+    {
+      "path": "clients/docs/user-guide/validation/desktop-client-tests-rerun.txt",
+      "bytes": 1476,
+      "sha256": "0de53b30778f12c724848aa0dfacc6434c21c595367607d91796ea28af98f68b"
+    },
+    {
+      "path": "clients/print-station/README.md",
+      "bytes": 3101,
+      "sha256": "99012277581dd5fc7a8d32d3200ce339922bdcf381b5596fc12617664d459a46"
+    },
+    {
+      "path": "clients/print-station/THIRD_PARTY_NOTICES.md",
+      "bytes": 1013,
+      "sha256": "edaabdbac70c71fa8fec3f3e9f3f5e503451c5af19e87a2e88f9d26f4a75a5c1"
+    },
+    {
+      "path": "clients/print-station/licenses/QRCode-LICENSE.txt",
+      "bytes": 11962,
+      "sha256": "b3c7a2fadb2515b8106eae58439a4b9c0581a4eaa88d6a265701f8d4dd7dadb8"
+    },
+    {
+      "path": "clients/print-station/licenses/QRCode-PROVENANCE.txt",
+      "bytes": 496,
+      "sha256": "12880ae1aa14193dc676be7abe197ba1905afa9e1d573208cd2f87fd439aa085"
+    },
+    {
+      "path": "clients/print-station/native/DriverSnapshot.cs",
+      "bytes": 6399,
+      "sha256": "d56d707e340d12da853f01044a10c858a2394e9850fdcd3de904010da68cbc45"
+    },
+    {
+      "path": "clients/print-station/native/LensDropStation.csproj",
+      "bytes": 469,
+      "sha256": "43c418aa360d02e132eb6ca5f4fe707104c897f5c4b0f83dd08719543fad6d10"
+    },
+    {
+      "path": "clients/print-station/native/PhotoLayout.cs",
+      "bytes": 2781,
+      "sha256": "8673ad06a1a9a65904ea7fe591996d770b711d6fa55a3b92af700543ffed299d"
+    },
+    {
+      "path": "clients/print-station/native/Program.cs",
+      "bytes": 14450,
+      "sha256": "e7084e3dc971530dcf38c7833f491c10cb61aef7230170da4152726579414736"
+    },
+    {
+      "path": "clients/print-station/native/app.manifest",
+      "bytes": 383,
+      "sha256": "4d76878301b1a449bdde0b1d105491876ce00d354e631058410d4db6c1598917"
+    },
+    {
+      "path": "clients/print-station/package.json",
+      "bytes": 242,
+      "sha256": "070d82fffec07b30590046b7eed409d4aadc36a18ed1d5845fe6af56088058fc"
+    },
+    {
+      "path": "clients/print-station/public/app.js",
+      "bytes": 8884,
+      "sha256": "aa619a7ea0707737b9e6bfba1dc63aa04ed7a234ecadd928cb6f65af7e2c09f6"
+    },
+    {
+      "path": "clients/print-station/public/index.html",
+      "bytes": 5052,
+      "sha256": "25c8c7b83d37cb2c9310ab2cc7f86959031d6d446cb6e9b7675a91dce5aab9b7"
+    },
+    {
+      "path": "clients/print-station/public/qr.js",
+      "bytes": 30322,
+      "sha256": "bab76b147e2ce00880d6952bbb02ea379b0bb41cd422a611327ebd0c872226fc"
+    },
+    {
+      "path": "clients/print-station/public/staff-desk.css",
+      "bytes": 1498,
+      "sha256": "4c1b3079cb702e197242f8d71e9bff399e880b21b815f115904d07efb54aa21d"
+    },
+    {
+      "path": "clients/print-station/public/staff-desk.js",
+      "bytes": 11978,
+      "sha256": "eb2ad01ab632c24ab9e449f12a38ff3589b0ed0e01047e81084cbf06e00f71ec"
+    },
+    {
+      "path": "clients/print-station/public/style.css",
+      "bytes": 1501,
+      "sha256": "8dc9c56377627556a810743524d058ded58f527225ebe1cc633fb9faf93559e9"
+    },
+    {
+      "path": "clients/print-station/src/ledger.cjs",
+      "bytes": 4458,
+      "sha256": "d8c248440d717958c575a323172c89c3c10f10a52dc7ec37a3b9ab825a038697"
+    },
+    {
+      "path": "clients/print-station/src/main.cjs",
+      "bytes": 767,
+      "sha256": "e1bb7a6eef16159c60a4bc8446d599bdf9ca52fcfeba0ddb557c7235eab36573"
+    },
+    {
+      "path": "clients/print-station/src/print-protocol.cjs",
+      "bytes": 3746,
+      "sha256": "9b50bcf0c25c40494cbcc43355428358e1d2b3757899a79e4982ed23320e77e9"
+    },
+    {
+      "path": "clients/print-station/src/printer-profiles.cjs",
+      "bytes": 3223,
+      "sha256": "15768e05619ddb9a5e6f10de649d0786c83671d9773f9f33fa0f95563665a2e7"
+    },
+    {
+      "path": "clients/print-station/src/station.cjs",
+      "bytes": 24712,
+      "sha256": "ad62333061899f8132b853d8f4a482f65b91336c91591973c0241e56aa694384"
+    },
+    {
+      "path": "clients/print-station/src/submission-watchdog.cjs",
+      "bytes": 519,
+      "sha256": "da8693b67cc7a71d8275c39acb4fe56757e51ed43c3b1e67ea64d1de772276f1"
+    },
+    {
+      "path": "clients/print-station/tests/cp9550-profiles.test.cjs",
+      "bytes": 3983,
+      "sha256": "3bff635c6fa54df4ba2dcc15f5a07a156cac8f8887048d44aae258cc5efde11a"
+    },
+    {
+      "path": "clients/print-station/tests/station.test.cjs",
+      "bytes": 25857,
+      "sha256": "1626a8d2b13c324b21945449c11356185c59ee9d63054485c5ba3b65b68d4624"
+    },
+    {
+      "path": "clients/print-station/tools/Allow-Private-LAN.ps1",
+      "bytes": 834,
+      "sha256": "9e66079efa3b385e4c1f361e5a4d25e12de939f313f430cd5d43baae112890b2"
+    },
+    {
+      "path": "clients/print-station/tools/Remove-LAN-Rule.ps1",
+      "bytes": 249,
+      "sha256": "d3db3b038c4a132356c23eb16b1f0382564eaf42f47110453a1fc6260f58036b"
+    },
+    {
+      "path": "clients/tests/test-results.txt",
+      "bytes": 3859,
+      "sha256": "c46c373ac107937122cb7c7e1a754270025c124a9e02ec87022b8b38c4a46db0"
+    },
+    {
+      "path": "clients/tests/test_client.py",
+      "bytes": 7780,
+      "sha256": "b576ce4ee628045b397e8cdc3659e8daff5fe24bba3e7896d03d913a3c04eec9"
+    },
+    {
+      "path": "clients/tests/test_operations.py",
+      "bytes": 8563,
+      "sha256": "eee77bdb9e9913718ed20160e87c3de04a0edf494ebc7b5cc5a35825b403d6dc"
+    },
+    {
+      "path": "clients/tests/ui/tk_smoke.py",
+      "bytes": 885,
+      "sha256": "eeff1153523ca8e792d5d1cf3bfbe51d93c4ea739d7935ae1c257f280a19b2ef"
+    },
+    {
+      "path": "clients/tests/ui/ui_dom_check.py",
+      "bytes": 5317,
+      "sha256": "f1bb0a436e4008b268460bb11b0ea3a38ff88a891c968dffbe8f9e9e0d014a40"
+    },
+    {
+      "path": "cloud/.gitignore",
+      "bytes": 86,
+      "sha256": "86625653929286849716be091fb6039568674f5ef44114c04bf58833d0957797"
+    },
+    {
+      "path": "cloud/H5_4_CLOUD_SHA256SUMS.txt",
+      "bytes": 20584,
+      "sha256": "89cf528f4274617eade70ffb5dfcb8e99f82e77d39e1c51bab5f5b14b1341777"
+    },
+    {
+      "path": "cloud/MANIFEST_SHA256.txt",
+      "bytes": 19650,
+      "sha256": "75b6cf7d37287183ca04f3f2c930e5c72f812a5d02ab4921f2433929102e03a9"
+    },
+    {
+      "path": "cloud/README.md",
+      "bytes": 2175,
+      "sha256": "4c4f031f19618364b63390822f071385a453df04234e0333f7ba474df9e9931d"
+    },
+    {
+      "path": "cloud/RELEASE_STATUS.json",
+      "bytes": 1686,
+      "sha256": "0c169caf750261b175ed0bcc43b3baa5e8cfcc91df7820634df1c5624a986cb9"
+    },
+    {
+      "path": "cloud/START_HERE.html",
+      "bytes": 2498,
+      "sha256": "61f890027b8941885d2c11f76029e1e0af9be1e3168f165fd5e8bc0ac402a892"
+    },
+    {
+      "path": "cloud/START_HERE_GUIDE.txt",
+      "bytes": 205,
+      "sha256": "75576497d456147a04c9c418d897c3bceecc0e54293a7827e6ffd04090740392"
+    },
+    {
+      "path": "cloud/START_HERE_H5_4.html",
+      "bytes": 19224,
+      "sha256": "8c0ee896468e0fc27ce66cb5d411f4a206845e7ba2c77e6aed3715fda7e986e6"
+    },
+    {
+      "path": "cloud/START_HERE_H5_5.html",
+      "bytes": 527,
+      "sha256": "bca6a8729e397e0b38f13b03521f05f06749a19571754e3add00a1ff4c4342c2"
+    },
+    {
+      "path": "cloud/docs/API.md",
+      "bytes": 8171,
+      "sha256": "dd945e3c51efe75e91911a9933c07d5f730ffbd54eb1c09c08adef31eeb53741"
+    },
+    {
+      "path": "cloud/docs/DEPLOYMENT_AND_LIMITS.md",
+      "bytes": 4806,
+      "sha256": "698c27ef0b55a70faf0881a0c80d80e85efb0b9048e6e09995a626e9f655a723"
+    },
+    {
+      "path": "cloud/docs/DEVELOPMENT_UPDATE.md",
+      "bytes": 7501,
+      "sha256": "bd68b98e0d3bb03d8bcc186c468533b269a92029cd06df5333953fcd5fc5f5af"
+    },
+    {
+      "path": "cloud/docs/RESEARCH_AND_ARCHITECTURE.md",
+      "bytes": 9935,
+      "sha256": "70a357a176aca596e377394d496c6c7caa2496778ca046caa304f6246986e6f8"
+    },
+    {
+      "path": "cloud/docs/TEST_REPORT.md",
+      "bytes": 3723,
+      "sha256": "ec63695a6c0b6c9b302b1af126bb633e98c0247cb2832ad8427150096df4a710"
+    },
+    {
+      "path": "cloud/docs/VALIDATION_PLAN.md",
+      "bytes": 5858,
+      "sha256": "895ffd541290cb2a22316cf76646604b5437eecde7279247cab9e94afce3d2d6"
+    },
+    {
+      "path": "cloud/docs/archive/H3_1_PACKAGE_CHECKS.txt",
+      "bytes": 564,
+      "sha256": "6b0c12690345460b989d6ddb8896280cfb150975403d6601a7a509da3c2dac34"
+    },
+    {
+      "path": "cloud/docs/archive/H3_1_RELEASE_STATUS.json",
+      "bytes": 1242,
+      "sha256": "a238771f463e1e7b91de9979db82c167c677af27f995f166629247cc98dad9e8"
+    },
+    {
+      "path": "cloud/docs/archive/README_0.2.0-alpha.1.md",
+      "bytes": 4660,
+      "sha256": "c86d0eb957570d3efa389791005cc4796aae1e920896268bc4b098af1e96504d"
+    },
+    {
+      "path": "cloud/docs/archive/README_H2.md",
+      "bytes": 2808,
+      "sha256": "f83d2ac139b8008fb013723c5e496c6c231f6c141ce5315a1a9c2fc55f68ff72"
+    },
+    {
+      "path": "cloud/docs/archive/README_H3.md",
+      "bytes": 3511,
+      "sha256": "4f8548343f2999c07991e7197158749d5439cfebd718ae10bee442f4ad991556"
+    },
+    {
+      "path": "cloud/docs/archive/RELEASE_STATUS_H3.json",
+      "bytes": 1369,
+      "sha256": "7efc9f347f3235d552bf80390b970d3e8d7ff68e32e3728a176ee3cd4242219a"
+    },
+    {
+      "path": "cloud/docs/archive/cloud-tests_0.2.0-alpha.1.txt",
+      "bytes": 3005,
+      "sha256": "44f059f9ebed601791fd8f166bf8049aecbdc0b003904c78553633c4c83fab6a"
+    },
+    {
+      "path": "cloud/docs/enhanced/CHANGED_PROGRAM_FILES_FROM_H1.json",
+      "bytes": 4478,
+      "sha256": "749d9282c5421e5716fa3d982b6b5b6db342110d75567b132641a54d162a275c"
+    },
+    {
+      "path": "cloud/docs/enhanced/LensDrop_H2_Enhanced_Release_Report.md",
+      "bytes": 10766,
+      "sha256": "8dbc6bb60f2e41cac10f63e182d6e6d32e2899f193d9cf13c3f1346f45c43adb"
+    },
+    {
+      "path": "cloud/docs/enhanced/LensDrop_H2_Enhanced_User_and_Upgrade_Guide.docx",
+      "bytes": 47216,
+      "sha256": "39b2dfbcc0afa9fdf82c681021c0179afc58bca93d7b02d47ccd33285e017a2f"
+    },
+    {
+      "path": "cloud/docs/enhanced/LensDrop_H2_Enhanced_User_and_Upgrade_Guide.html",
+      "bytes": 20470,
+      "sha256": "812bbe26f9e1648ed4f8ac0548242c79030568bf7ca2381d4e59b4218f9f2431"
+    },
+    {
+      "path": "cloud/docs/enhanced/LensDrop_H2_Enhanced_User_and_Upgrade_Guide.md",
+      "bytes": 16427,
+      "sha256": "77bb718d21d1d87dcfbb2510c6d1e7b45091bd5a44baabfbe3db4a8d8953fcff"
+    },
+    {
+      "path": "cloud/docs/enhanced/LensDrop_H2_Enhanced_User_and_Upgrade_Guide.pdf",
+      "bytes": 344830,
+      "sha256": "d5382accdb2b442ef390513b276482c085761221df37559ed61803b65fec3512"
+    },
+    {
+      "path": "cloud/docs/enhanced/ui-renders/LensDrop_H2_Admin_Mobile_UI_Snapshot.png",
+      "bytes": 196324,
+      "sha256": "36e7b653c081f7794d9311eecb27272d254859af758b6433cf55fddb9cfc866f"
+    },
+    {
+      "path": "cloud/docs/enhanced/ui-renders/LensDrop_H2_Admin_UI_Snapshot.png",
+      "bytes": 221110,
+      "sha256": "96f9c55f3ca96de48b4725222628642a5131be8f2cb2aa989f16c2e302d38f7a"
+    },
+    {
+      "path": "cloud/docs/enhanced/ui-renders/LensDrop_H2_Desktop_Console_Linux.png",
+      "bytes": 61786,
+      "sha256": "29589db16a9aaa4bfd541b97a512a0e7cbf909da1e2f18475d61d55f0405b311"
+    },
+    {
+      "path": "cloud/docs/enhanced/ui-renders/README.txt",
+      "bytes": 281,
+      "sha256": "02f63aabd43c6f9568f91446eab3cfca360dc8bbba45f475cd9cef5f4ae2c807"
+    },
+    {
+      "path": "cloud/docs/h4/CHANGED_PROGRAM_FILES_FROM_H3_1.json",
+      "bytes": 7399,
+      "sha256": "50a0b67c4f580d47e165001ac0c56c93cc5674117077480c0df8417820841e21"
+    },
+    {
+      "path": "cloud/docs/h4/LensDrop_H4_Release_Report.md",
+      "bytes": 7219,
+      "sha256": "c1f7a93df4949b6d8188170ae0c85d08de0fb21b003b87a7785c5b1468390634"
+    },
+    {
+      "path": "cloud/docs/h4/LensDrop_H4_WatchFolder_and_PersonalQR_Guide.html",
+      "bytes": 75296,
+      "sha256": "c04cc5ed3b72b140d84cd4931ed1a32fed9af48492dc388e0bd64b2033034695"
+    },
+    {
+      "path": "cloud/docs/h4/LensDrop_H4_WatchFolder_and_PersonalQR_Guide.md",
+      "bytes": 21565,
+      "sha256": "f950f44e77a78f357bda89a4b9016898a98d518372588427ad03bc4925dc8dd7"
+    },
+    {
+      "path": "cloud/docs/h4/screenshots/H4_Admin_Personal_Delivery.png",
+      "bytes": 35555,
+      "sha256": "fc366e9aceacf92b5e8948077795352708f8715a5f0bd85eeb02b8091fb8602c"
+    },
+    {
+      "path": "cloud/docs/h4/screenshots/H4_Personal_Gallery_Desktop.png",
+      "bytes": 62184,
+      "sha256": "16c9f4fb9e6334ec067b5d8c12703e8dbd19ba7f5244cf58f68df78f6cb0373d"
+    },
+    {
+      "path": "cloud/docs/h4/screenshots/H4_Personal_Gallery_Mobile.png",
+      "bytes": 52002,
+      "sha256": "de8de8b70c0860515910189075dc2cb3e77a95e9c21c33be90582f335f64fe5e"
+    },
+    {
+      "path": "cloud/docs/h4/screenshots/H4_Personal_QR_Test.png",
+      "bytes": 1729,
+      "sha256": "fe5b3840e7fbab79c96a32a4bf4647c3a907cf95fb0c28015825dbc5db741843"
+    },
+    {
+      "path": "cloud/docs/h4/screenshots/results.json",
+      "bytes": 943,
+      "sha256": "ea962c155b5fada22ab1d4c798bf15b4817b50f49d305f015b2d4c41667fb2a1"
+    },
+    {
+      "path": "cloud/docs/h5/LensDrop_H5_Release_Report.md",
+      "bytes": 5274,
+      "sha256": "17eb892c7df4c5b5ea35172efb82398365fe47f02e708f52cbe90a6cb762b735"
+    },
+    {
+      "path": "cloud/docs/h5/LensDrop_H5_Setup_Guide.html",
+      "bytes": 24070,
+      "sha256": "28f120561b8749a372c9dcc0d37f7c62d3efaaf7c0117f93b2d544485964d768"
+    },
+    {
+      "path": "cloud/docs/h5/LensDrop_H5_Setup_Guide.md",
+      "bytes": 20222,
+      "sha256": "e47ba75570223dcc42bc28a7316235259fe892b3ae95dcaa5f3d3c48761e6595"
+    },
+    {
+      "path": "cloud/docs/h5/test-results/build-final.log",
+      "bytes": 602,
+      "sha256": "c0bad4a77c4b54f0ee69a561defe76f848e4df65e1a971a876958e981a62bf10"
+    },
+    {
+      "path": "cloud/docs/h5/test-results/cloud-final.log",
+      "bytes": 27266,
+      "sha256": "4cbf34d7fb68f4fdcf69d8e94628fefb7d237eb6363a27ef45fb9289d4a4bf90"
+    },
+    {
+      "path": "cloud/docs/h5/test-results/desktop-final.log",
+      "bytes": 3859,
+      "sha256": "c46c373ac107937122cb7c7e1a754270025c124a9e02ec87022b8b38c4a46db0"
+    },
+    {
+      "path": "cloud/docs/h5/test-results/java-syntax-final.log",
+      "bytes": 1866,
+      "sha256": "d0ee9c16199e7f03d2a8fd77c53306837061665f48bd9a0c9e7e44e7426c27c8"
+    },
+    {
+      "path": "cloud/docs/h5/test-results/ledger-final.log",
+      "bytes": 1899,
+      "sha256": "ddb7276afec9ca656c4cd54f0a7e8897010d04da316a14f2dc831c0c3dc68689"
+    },
+    {
+      "path": "cloud/docs/h5/test-results/policy-final.log",
+      "bytes": 400,
+      "sha256": "7966eca1cfc27a2dae0e01f6ca86626f296d7c1b73b98a158d83549fedcafa16"
+    },
+    {
+      "path": "cloud/docs/h5/test-results/print-policy-final.log",
+      "bytes": 641,
+      "sha256": "7dd073f4a9851581d7e129d94330a927a08e9551c4f39ef9011fda1809b53e91"
+    },
+    {
+      "path": "cloud/docs/h5/test-results/station-final.log",
+      "bytes": 6091,
+      "sha256": "a8e5b7115ca8c64b79e3d889179547ea71df434d941da7f50493b1a9543902a3"
+    },
+    {
+      "path": "cloud/docs/h5/test-results/ui-checks.json",
+      "bytes": 844,
+      "sha256": "961a5dd9660ef472f90f166725a928530614737018baf75214400aee64e0b0fe"
+    },
+    {
+      "path": "cloud/docs/h5/test-results/ui-harness.log",
+      "bytes": 641,
+      "sha256": "359ad86e078b5e06a6eee6b1d10890f15c6834494af443e94c1674380138e700"
+    },
+    {
+      "path": "cloud/docs/h5_4/FINDING_STATUS.json",
+      "bytes": 9575,
+      "sha256": "a034d34c5c8f4894c2b4d8de1af44e319705ee3716c0a094288c43a6f4c455d6"
+    },
+    {
+      "path": "cloud/docs/h5_4/RELEASE_REPORT.md",
+      "bytes": 7429,
+      "sha256": "2716ad842d3a40985c95dedc32e7314437acb01718005e60d6a8dc482bce8893"
+    },
+    {
+      "path": "cloud/docs/h5_4/SETUP_AND_TEST.html",
+      "bytes": 19994,
+      "sha256": "2cb70112c196d5f9b4a1e4b1198ecc0c66e160af53aebca1e33da486d7e7d605"
+    },
+    {
+      "path": "cloud/docs/h5_4/SETUP_AND_TEST.md",
+      "bytes": 15789,
+      "sha256": "8e18b9f2e1727e1422bc1090ecc7a008646a07f8b86103a81c35c1bb33646c8d"
+    },
+    {
+      "path": "cloud/docs/h5_5/API_REFERENCE.md",
+      "bytes": 4809,
+      "sha256": "d0d9786c30c48fd7ad7e436a58f269615b3249fa35bfa998f6c236ca48cec03d"
+    },
+    {
+      "path": "cloud/docs/h5_5/RELEASE_REPORT.md",
+      "bytes": 6444,
+      "sha256": "601a5ff8cd199f9b0479c572a9069875cf8f4c6b55c6d393d0a2ccb1259d9db2"
+    },
+    {
+      "path": "cloud/docs/h5_5/SETUP_AND_TEST.html",
+      "bytes": 22098,
+      "sha256": "f2eb2aee809c062772e6060fa4e415f5b0018f85ba1f01df3b7266abab9a37db"
+    },
+    {
+      "path": "cloud/docs/h5_5/SETUP_AND_TEST.md",
+      "bytes": 17824,
+      "sha256": "49c771b1be44f82b00ba1f4f19e8d2e82ccd28708088684791fc4e5487100c3c"
+    },
+    {
+      "path": "cloud/docs/hostinger/LensDrop_Hostinger_Setup_Guide_v0.2-alpha_H1.docx",
+      "bytes": 48388,
+      "sha256": "c5cc776b4a62b0a660523998be6a320371ec29f82dabd33060e41189802b38fd"
+    },
+    {
+      "path": "cloud/docs/hostinger/LensDrop_Hostinger_Setup_Guide_v0.2-alpha_H1.html",
+      "bytes": 26190,
+      "sha256": "2c2563a8e6e79371f8b8934a3bfe08168da92b8eef9a991538eba9f3b8f48e02"
+    },
+    {
+      "path": "cloud/docs/hostinger/LensDrop_Hostinger_Setup_Guide_v0.2-alpha_H1.md",
+      "bytes": 20921,
+      "sha256": "371726e51656bad551cdd816fa9afb4e0687a605ad57c811959fe6481a60fab0"
+    },
+    {
+      "path": "cloud/docs/hostinger/LensDrop_Hostinger_Setup_Guide_v0.2-alpha_H1.pdf",
+      "bytes": 154468,
+      "sha256": "5be87253c8bdc0af24ef0b4dcefb8e02278e922a04a407d6ca52ad768e4dfba9"
+    },
+    {
+      "path": "cloud/docs/hostinger/RELEASE_NOTES.md",
+      "bytes": 3172,
+      "sha256": "ce8e3b5879fe197d01278cee0b74a1d2ae76abbae9d752210669583403f92b24"
+    },
+    {
+      "path": "cloud/docs/hostinger/validation/build-check.txt",
+      "bytes": 578,
+      "sha256": "1a7ea22690dfd81b6d0b6e89e5689b52137973dda19d55d87f4fc909ac691712"
+    },
+    {
+      "path": "cloud/docs/hostinger/validation/cloud-tests.txt",
+      "bytes": 5436,
+      "sha256": "f14a4a13114a52fc1d7e86cbd3d56edbefded92a29ad25c3cbdf2ba797daaea3"
+    },
+    {
+      "path": "cloud/docs/hostinger/validation/dependency-install-attempt.txt",
+      "bytes": 318,
+      "sha256": "af0cc525b2e7d453e7751ad734a941a2a93f2658c808692dda9530ee349b7ded"
+    },
+    {
+      "path": "cloud/docs/hostinger/validation/desktop-tests.txt",
+      "bytes": 1509,
+      "sha256": "d722d633d5607c7b5fe819589bd23b933aaa1a18c7e5bd7cf5cb1ee694c1a759"
+    },
+    {
+      "path": "cloud/docs/hostinger/validation/package-validation.txt",
+      "bytes": 750,
+      "sha256": "50b4e9c956d9af1f9c1a4a2e4185579de20a708cc1bf6476985502485a3837cc"
+    },
+    {
+      "path": "cloud/docs/slideshow/API_H3.md",
+      "bytes": 3101,
+      "sha256": "962a219d331706e6b4e9e87bbec688d952d836430f34e004d4cab17afde0badb"
+    },
+    {
+      "path": "cloud/docs/slideshow/CHANGED_PROGRAM_FILES_FROM_H2.json",
+      "bytes": 5605,
+      "sha256": "b9f1a2811b8dc72375e318a7fbbb031960d96e9b0f53c208c82545e6bbdd67d9"
+    },
+    {
+      "path": "cloud/docs/slideshow/LensDrop_H3_Admin_and_Slideshow_Guide.html",
+      "bytes": 277292,
+      "sha256": "e94f50f8a744f7b608e4c3233057487228b7f2984ee3a43fffaf08c60b662e65"
+    },
+    {
+      "path": "cloud/docs/slideshow/LensDrop_H3_Admin_and_Slideshow_Guide.pdf",
+      "bytes": 600865,
+      "sha256": "97336d8f4d4a188c59a2a9049f5f9e7408fb62df8b48e57de7d404b404df5d0f"
+    },
+    {
+      "path": "cloud/docs/slideshow/LensDrop_H3_Slideshow_Release_Report.md",
+      "bytes": 8394,
+      "sha256": "ca1517815452dbeb53bc3f89128f2b223f7b6f8e3ba6fa38db9b4a24dd1bfd82"
+    },
+    {
+      "path": "cloud/docs/slideshow/ui-renders/LensDrop_H3_Admin_Mobile.png",
+      "bytes": 199465,
+      "sha256": "bdb9f54e8275eb244d605c7c6c0c3295c38856476486d3da4f452d8df26686f5"
+    },
+    {
+      "path": "cloud/docs/slideshow/ui-renders/LensDrop_H3_Admin_Slideshow_Panel.png",
+      "bytes": 196133,
+      "sha256": "3712b183a3329cd7d6c629e2b8d55081c28ac63e645bd71869eef4c4a6ee0af3"
+    },
+    {
+      "path": "cloud/docs/slideshow/ui-renders/LensDrop_H3_Guest_Gallery.png",
+      "bytes": 74200,
+      "sha256": "5bc2b7cc63365d26de03d75f5e06245f3c6266d45172c7f199e7d5016f7a5ef9"
+    },
+    {
+      "path": "cloud/docs/slideshow/ui-renders/LensDrop_H3_Slideshow_Landscape.png",
+      "bytes": 199208,
+      "sha256": "95bb4677759022e004ea8580670962c7394fd31efff89c3770c6e712fa69b737"
+    },
+    {
+      "path": "cloud/docs/slideshow/ui-renders/LensDrop_H3_Slideshow_Portrait.png",
+      "bytes": 102794,
+      "sha256": "f10a5c76b08e65346a84401e35b27d1d5879621ddd9b3e4dc95669020168d14a"
+    },
+    {
+      "path": "cloud/docs/slideshow/ui-renders/README.txt",
+      "bytes": 344,
+      "sha256": "ce8383bb772699a64fc4b73f79e9cc99d50947263a8b3481a1200cc29614f6df"
+    },
+    {
+      "path": "cloud/docs/startup-fix/CHANGED_FILES_FROM_H3.json",
+      "bytes": 1158,
+      "sha256": "0e5dae2837f35e70ff22efafa510ff67e5b010dcf9e4e2bf750475803999a508"
+    },
+    {
+      "path": "cloud/docs/startup-fix/LensDrop_H3_1_Startup_Fix_Report.md",
+      "bytes": 6429,
+      "sha256": "0a25ab846061ced3e845bbb7accd95ae2660d87a48498d77160a1b0ee6257f68"
+    },
+    {
+      "path": "cloud/docs/startup-fix/RECOVER_503.html",
+      "bytes": 7121,
+      "sha256": "1f4688aeba1871a7d47b5ab0374deff9acfd71d1cbe60eceb5e8f1d298661255"
+    },
+    {
+      "path": "cloud/docs/startup-fix/RECOVER_503.md",
+      "bytes": 5715,
+      "sha256": "67e7fc4af7326005c9ab00c74e7255228545967c70ecb4974816e5e24a6a4026"
+    },
+    {
+      "path": "cloud/docs/user-guide/LensDrop_Full_User_and_Setup_Guide_v0.2-alpha_r1.docx",
+      "bytes": 66442,
+      "sha256": "f84326a7a9ba70470a99f653ea1d58b9b6292051670ef6834cb7794ea54338a1"
+    },
+    {
+      "path": "cloud/docs/user-guide/LensDrop_Full_User_and_Setup_Guide_v0.2-alpha_r1.html",
+      "bytes": 69983,
+      "sha256": "204ff4c809da061da7caf1fbbd8d964f3b4412673b122851676bab4f6e972d44"
+    },
+    {
+      "path": "cloud/docs/user-guide/LensDrop_Full_User_and_Setup_Guide_v0.2-alpha_r1.md",
+      "bytes": 52070,
+      "sha256": "7d298da66ec0fe94dabaa108c4e13d4e9cde90b7b887638aee63095d23f81f8e"
+    },
+    {
+      "path": "cloud/docs/user-guide/LensDrop_Full_User_and_Setup_Guide_v0.2-alpha_r1.pdf",
+      "bytes": 345245,
+      "sha256": "eee92e1302efe4841f34237ecb9ab1703e5ffe80977181323075f701fa50d523"
+    },
+    {
+      "path": "cloud/docs/user-guide/validation/README.txt",
+      "bytes": 1032,
+      "sha256": "55eebd563d817d1f8cb25673983ea6b9fffa1da43a9a2d5a6d2cc130901ee0aa"
+    },
+    {
+      "path": "cloud/docs/user-guide/validation/browser-attempt-not-passed.txt",
+      "bytes": 534,
+      "sha256": "c8f1b78e22f0d436660146d5473885bdf02c80e6c4689ceb5e3e37af2f390d91"
+    },
+    {
+      "path": "cloud/docs/user-guide/validation/cloud-tests-rerun.txt",
+      "bytes": 3004,
+      "sha256": "c1f59a1d2498b621dae258d11235d09d407f7354f64d751ed5c0e76b9c273d04"
+    },
+    {
+      "path": "cloud/docs/user-guide/validation/desktop-api-walkthrough-results.txt",
+      "bytes": 936,
+      "sha256": "4f38a5a5c0c361b7a05eb8a98325a4a144876be42a58ee510972f32c21b581da"
+    },
+    {
+      "path": "cloud/docs/user-guide/validation/desktop-client-tests-rerun.txt",
+      "bytes": 1476,
+      "sha256": "0de53b30778f12c724848aa0dfacc6434c21c595367607d91796ea28af98f68b"
+    },
+    {
+      "path": "cloud/docs/validation-h2/android-build-availability.log",
+      "bytes": 451,
+      "sha256": "54226013b3a723cd738340f3f03c35bb2e7a45e370897ba76cc5545af94d2ed2"
+    },
+    {
+      "path": "cloud/docs/validation-h2/android-policy-final.log",
+      "bytes": 400,
+      "sha256": "7966eca1cfc27a2dae0e01f6ca86626f296d7c1b73b98a158d83549fedcafa16"
+    },
+    {
+      "path": "cloud/docs/validation-h2/android-syntax-final.log",
+      "bytes": 741,
+      "sha256": "4babaf09be31410d9f084e2e56ecb282c930355cc1aeacc455332507c0bc96e1"
+    },
+    {
+      "path": "cloud/docs/validation-h2/browser-h2-checks.log",
+      "bytes": 178,
+      "sha256": "206338aead834e237f6e55223602dd1ecce9a69f55cc0e5a0ce8e2043731311e"
+    },
+    {
+      "path": "cloud/docs/validation-h2/client-h2-final.log",
+      "bytes": 3845,
+      "sha256": "a5f86c8a1a6c06e8721555a65a30519dd701c443af47bd61f68dcda32426af6b"
+    },
+    {
+      "path": "cloud/docs/validation-h2/cloud-h2-build.log",
+      "bytes": 578,
+      "sha256": "145de1545ff12172bf331065c39dbc6fd8d93cf2aa00f1247d8120199dc67ea1"
+    },
+    {
+      "path": "cloud/docs/validation-h2/cloud-h2-final.log",
+      "bytes": 8724,
+      "sha256": "626137bb757032410c42bfc272ba3b8add519becbd1635f1b3e9649d44c63191"
+    },
+    {
+      "path": "cloud/docs/validation-h2/dependency-network-check.log",
+      "bytes": 457,
+      "sha256": "e457baf6e130b179696107560cd8df682358abff0af044ef8e7753bc54a95b4a"
+    },
+    {
+      "path": "cloud/docs/validation-h2/tk-smoke.log",
+      "bytes": 192,
+      "sha256": "eec8a02f4c1189fa194521dfb7a760029e2b48417d4dacc28cf4fb671e00499f"
+    },
+    {
+      "path": "cloud/docs/validation-h2/ui-dom-h2-checks.log",
+      "bytes": 585,
+      "sha256": "4da027b296dd70b990188e90a488b2051583f2a0f476df3999b889f1305d57dd"
+    },
+    {
+      "path": "cloud/docs/validation-h3/browser-h3-checks.log",
+      "bytes": 1702,
+      "sha256": "2946d1887697dfaaf703be0d76ad9a146479722ad522fc17aad5d428dc1bf70e"
+    },
+    {
+      "path": "cloud/docs/validation-h3/build-h3-final.log",
+      "bytes": 602,
+      "sha256": "ca7f898fa637f244e6acaa59cbbdca331dff4b7e64d070f0e92cf88e451b6266"
+    },
+    {
+      "path": "cloud/docs/validation-h3/cloud-h3-tests.log",
+      "bytes": 13638,
+      "sha256": "a605473106e4cb36730c8c7518a583c4336df5a1536356348ae8c163dc713a9a"
+    },
+    {
+      "path": "cloud/docs/validation-h3/dependency-install.log",
+      "bytes": 470,
+      "sha256": "5b859de462cb62cced200ef504ae6f76b8c2a8a7f43d828f3a06d0bfac0a29eb"
+    },
+    {
+      "path": "cloud/docs/validation-h3/desktop-h3-compatibility.log",
+      "bytes": 3831,
+      "sha256": "faa550f697c373cf797dbce265852fcd9428b6572f77759094dbe246f3588794"
+    },
+    {
+      "path": "cloud/docs/validation-h3/document-qa.log",
+      "bytes": 371,
+      "sha256": "552bfa9c41839f5bc084c1d5ef96f4cbf9b50761531edd6201e55f9231cf222a"
+    },
+    {
+      "path": "cloud/docs/validation-h3/native-browser-navigation.log",
+      "bytes": 265,
+      "sha256": "7730490a522ccff55b99a159d9da6f4c87fbccf68c28716b64aed92731bb710f"
+    },
+    {
+      "path": "cloud/docs/validation-h3/unchanged-clients.log",
+      "bytes": 81,
+      "sha256": "dfeaef25b1e6ee6a717d59ed94255ab33b59761866ef9f9e897f17cbcdd82440"
+    },
+    {
+      "path": "cloud/docs/validation-h31/h3-baseline-build.log",
+      "bytes": 602,
+      "sha256": "f534baa88f43699e2f77c9793d68adb28e9fde442921cd4e203871a5d4be2dd2"
+    },
+    {
+      "path": "cloud/docs/validation-h31/h3-before-missing-key.log",
+      "bytes": 1299,
+      "sha256": "5783a37983bf5b60a39e324c5c3b7269b4baec0343c5281bd1f9990d191b0323"
+    },
+    {
+      "path": "cloud/docs/validation-h31/h31-build.log",
+      "bytes": 606,
+      "sha256": "757d1983699e3f915ab577dd2f5ceca4f6ae2022d5626af70a129988313cc95a"
+    },
+    {
+      "path": "cloud/docs/validation-h31/h31-cloud-tests.log",
+      "bytes": 17143,
+      "sha256": "0135c6ec0705e6439025afbcca20ced6ce0096313bc65782ebf959e650df36d0"
+    },
+    {
+      "path": "cloud/docs/validation-h31/h31-desktop-tests.log",
+      "bytes": 3831,
+      "sha256": "a7d7e785ec94132599441a657973518c544e65aca49ca3e9c0ea4ecb654296a5"
+    },
+    {
+      "path": "cloud/docs/validation-h31/h31-entrypoint-tests.log",
+      "bytes": 3608,
+      "sha256": "b3b0ff59aebd889d408228bbb32fc36ec8a5f183b84a89542bde486bbc16e1a6"
+    },
+    {
+      "path": "cloud/docs/validation-h31/h31-helper-browser.log",
+      "bytes": 411,
+      "sha256": "5a7117b7fbf057c13e6f3064159669aca05a2e97ae6b2b632e4276e1a7f7c10c"
+    },
+    {
+      "path": "cloud/docs/validation-h4/android-build-attempt.log",
+      "bytes": 87,
+      "sha256": "b707a1c20203abf3d98d68b1bde4ae3e7bef2243b3b85c320d8015af3cbcb80c"
+    },
+    {
+      "path": "cloud/docs/validation-h4/android-syntax-final.log",
+      "bytes": 1009,
+      "sha256": "8aedd21bd668474ac3037720019d0a51d6c81ae3d6154b20d11225b3a63a85ee"
+    },
+    {
+      "path": "cloud/docs/validation-h4/cloud-build-final.log",
+      "bytes": 602,
+      "sha256": "300e7545140c477fbbfc71154c71180afeb10aba7bb77c539718bcf36dfbc931"
+    },
+    {
+      "path": "cloud/docs/validation-h4/cloud-regression-final.log",
+      "bytes": 22310,
+      "sha256": "f488a7028dfcd61ad276ad0dd7098e59456b16441705282c8b2d3aebda630bc9"
+    },
+    {
+      "path": "cloud/docs/validation-h4/desktop-regression.log",
+      "bytes": 3831,
+      "sha256": "50598b07614c9662389d89f1c8a92794f90e529802bd32187467b1a392180424"
+    },
+    {
+      "path": "cloud/docs/validation-h4/guide-qa.log",
+      "bytes": 275,
+      "sha256": "09a2aa09023b92e02d83ffb39f5bd9ac3b7759d2c5d7a7fe2de7c3e41ed8a877"
+    },
+    {
+      "path": "cloud/docs/validation-h4/h4-browser-bridge-final.log",
+      "bytes": 948,
+      "sha256": "57c13bc77544496d438bca76461138ffc1517f0f04e1defdd864a1031f8e0c3f"
+    },
+    {
+      "path": "cloud/docs/validation-h4/h4-browser-first.log",
+      "bytes": 2168,
+      "sha256": "8b56bc28d43cc6a0837ee96a9040a2d876a1ed1df28fd465482c96406d514a26"
+    },
+    {
+      "path": "cloud/docs/validation-h4/java-policy-final.log",
+      "bytes": 400,
+      "sha256": "7966eca1cfc27a2dae0e01f6ca86626f296d7c1b73b98a158d83549fedcafa16"
+    },
+    {
+      "path": "cloud/docs/validation-h4/ledger-integration-final.log",
+      "bytes": 1899,
+      "sha256": "ddb7276afec9ca656c4cd54f0a7e8897010d04da316a14f2dc831c0c3dc68689"
+    },
+    {
+      "path": "cloud/docs/validation-h4/unchanged-legacy-desktop.txt",
+      "bytes": 140,
+      "sha256": "5abc22d6e9871dab97466ac607f5d09270b3f65c8f551f9c5909e931977948be"
+    },
+    {
+      "path": "cloud/hostinger-settings.json",
+      "bytes": 559,
+      "sha256": "a16780d61e161f020d21107c362e1ed1a18ef9b9519b0b118c544a9a41fcd76c"
+    },
+    {
+      "path": "cloud/package.json",
+      "bytes": 668,
+      "sha256": "334f7de761123fb5f029cd7b4c359c63d4c864dce33fa0312605d799f2c9093a"
+    },
+    {
+      "path": "cloud/public/app.js",
+      "bytes": 11507,
+      "sha256": "91082159f9991611dfc0ac661317d9e503ee28ce7000b84f29215d7acc373601"
+    },
+    {
+      "path": "cloud/public/gallery.html",
+      "bytes": 1089,
+      "sha256": "c874c2d8b4f287baeeb04b40e3010ee1f1efd2acf5a1ac84bed83e4f1cc21914"
+    },
+    {
+      "path": "cloud/public/gallery.js",
+      "bytes": 3405,
+      "sha256": "b760509ed5c329adf5889d9e76d330d6691c9778d34135705185da6072827add"
+    },
+    {
+      "path": "cloud/public/index.html",
+      "bytes": 12313,
+      "sha256": "65ad8f234e81d1cdcada7120ca32e110ee50af0f37b0256ddb51829d86b1c601"
+    },
+    {
+      "path": "cloud/public/onboarding-admin.js",
+      "bytes": 6370,
+      "sha256": "ad306fe2a85055dd1c887afa0fb4e6781692d75c5a16e698f70d62680aec0692"
+    },
+    {
+      "path": "cloud/public/pair.html",
+      "bytes": 684,
+      "sha256": "e5b9158d75838faaeb4767eb8f1d44f307126c065695bab160ff398cbd7bc89b"
+    },
+    {
+      "path": "cloud/public/pair.js",
+      "bytes": 278,
+      "sha256": "7406c2ab1b682f0566dd596b3b60c297d01f5e4aa732417df8f2c01e6887cc71"
+    },
+    {
+      "path": "cloud/public/personal-admin.js",
+      "bytes": 3961,
+      "sha256": "b1d854b11ff08f62197f694a5ee026cf42eb2d8ed82b6c96e7349143faf80fc4"
+    },
+    {
+      "path": "cloud/public/personal.html",
+      "bytes": 1293,
+      "sha256": "8b0c6b906087510fe46adc1c804abe7c2cc31f84425150dabfcdc037f0177a50"
+    },
+    {
+      "path": "cloud/public/personal.js",
+      "bytes": 2879,
+      "sha256": "aef1dde18b4e001535a52d5820403d7021b4b971f29d503dd4e492a8c1f15da1"
+    },
+    {
+      "path": "cloud/public/presentation-admin.js",
+      "bytes": 11634,
+      "sha256": "7effe0b4347b54139000ef2fe8cb784d59388759f6be614ec6d0ba27e0c1edd7"
+    },
+    {
+      "path": "cloud/public/qr.js",
+      "bytes": 30322,
+      "sha256": "bab76b147e2ce00880d6952bbb02ea379b0bb41cd422a611327ebd0c872226fc"
+    },
+    {
+      "path": "cloud/public/slideshow-model.js",
+      "bytes": 1591,
+      "sha256": "30f919cc177ba4ee68030f05ba3c8eeb18b5a2cb1f0199c13d35a36ba87286cf"
+    },
+    {
+      "path": "cloud/public/slideshow.css",
+      "bytes": 5168,
+      "sha256": "e7790a3c505f72d1d77179d7f0adbb8b27d1edd45a4e7f13f6a89757460a7faf"
+    },
+    {
+      "path": "cloud/public/slideshow.html",
+      "bytes": 2803,
+      "sha256": "48751e331e100c2a6f1658fb2362509701a996ca1d85eaac0fb92cf758c893eb"
+    },
+    {
+      "path": "cloud/public/slideshow.js",
+      "bytes": 11172,
+      "sha256": "7791ae70e939f58b682b58838d923d2b945105a215fd3294ddf9079fb040ebd5"
+    },
+    {
+      "path": "cloud/public/staff-desk.css",
+      "bytes": 1498,
+      "sha256": "4c1b3079cb702e197242f8d71e9bff399e880b21b815f115904d07efb54aa21d"
+    },
+    {
+      "path": "cloud/public/staff-desk.js",
+      "bytes": 11978,
+      "sha256": "eb2ad01ab632c24ab9e449f12a38ff3589b0ed0e01047e81084cbf06e00f71ec"
+    },
+    {
+      "path": "cloud/public/style.css",
+      "bytes": 6904,
+      "sha256": "344ee293fb64b229ecf485e138b8c82e10acdc2f395118244d7f46864df56d9b"
+    },
+    {
+      "path": "cloud/reference/03_pipeline.patched.js",
+      "bytes": 23397,
+      "sha256": "1aa29846683754e11f5a602ae8628cd8928e87a87a7990ac0975fba22c6986ec"
+    },
+    {
+      "path": "cloud/reference/README.md",
+      "bytes": 1186,
+      "sha256": "5513a319eb443fad631f56b44131261a50a76897c424f74578a175587cb472b0"
+    },
+    {
+      "path": "cloud/reference/lensdrop-original.html",
+      "bytes": 167492,
+      "sha256": "aa10f0474cc1cec1d861b3d900cfbe75f1c78e8bc3a1c7bddef12438eaf46109"
+    },
+    {
+      "path": "cloud/reference/lensdrop-prototype-patched.html",
+      "bytes": 167942,
+      "sha256": "963b936820dc0c9ac61f3a3c1a2fa8d226cd32272f742bf95f21195086b8cbdf"
+    },
+    {
+      "path": "cloud/sample.env",
+      "bytes": 407,
+      "sha256": "99e14ee6500e57d599959690f37e9f3bf4e619fb52b3f8e73116da14ff1a5385"
+    },
+    {
+      "path": "cloud/sample.hostinger.env",
+      "bytes": 712,
+      "sha256": "fa85e0030964b58ab0eee6b32131b5203c7ec282b14c94b8e11a4d37d170bb41"
+    },
+    {
+      "path": "cloud/scripts/build-qr.cjs",
+      "bytes": 1298,
+      "sha256": "34f65b16a2c21589b657060dbe21282e6094fc9ce13468a7672286c061e7a8ff"
+    },
+    {
+      "path": "cloud/scripts/build.cjs",
+      "bytes": 2619,
+      "sha256": "e16577d766d857e13fd2e8ae65770178d59eaf120e4fe7092645721031a93f7d"
+    },
+    {
+      "path": "cloud/scripts/generate-secrets.cjs",
+      "bytes": 789,
+      "sha256": "4be4610d6cf7d4003d75ed4ff72b4c0cdd51ae330333dc5ab7c8388dc7898e37"
+    },
+    {
+      "path": "cloud/server.js",
+      "bytes": 2527,
+      "sha256": "0214b49d3949316587e33ab17d16ea8e04b4bbec6b24a01652681003cb6723df"
+    },
+    {
+      "path": "cloud/shared/print-protocol.cjs",
+      "bytes": 3746,
+      "sha256": "9b50bcf0c25c40494cbcc43355428358e1d2b3757899a79e4982ed23320e77e9"
+    },
+    {
+      "path": "cloud/src/deliveries.cjs",
+      "bytes": 10000,
+      "sha256": "80cd5f5764639ac6170b128e7a16ab8ed0f9fede00b75042051e0304f52516ea"
+    },
+    {
+      "path": "cloud/src/event-workflow.cjs",
+      "bytes": 20479,
+      "sha256": "0b8c6cfe7542330874b4cb2ceb22d4d525c5f71bf5f0ce067ea53a5b263a9080"
+    },
+    {
+      "path": "cloud/src/hosting.cjs",
+      "bytes": 6510,
+      "sha256": "d69d3c79ab7c4141fae60b082183e0ce95916054a91fec5d7bfa08f7ef4e1772"
+    },
+    {
+      "path": "cloud/src/onboarding-print.cjs",
+      "bytes": 22778,
+      "sha256": "ff3f651c62902d1084f2c4ed57b9f08a8af221423084a46d0e84831c1fa5feaf"
+    },
+    {
+      "path": "cloud/src/operations.cjs",
+      "bytes": 5775,
+      "sha256": "60b1fcfea20a30b532eb24e14636bbed9accf90426055369acda942ccc326b76"
+    },
+    {
+      "path": "cloud/src/presentation.cjs",
+      "bytes": 4572,
+      "sha256": "b09bb5a0d8a384e89ada94935c41d6e48e1dcf1cb93be53a32a039fe71833443"
+    },
+    {
+      "path": "cloud/src/print-assets.cjs",
+      "bytes": 3747,
+      "sha256": "175950d6774795f5b71812c1f978e86788eea6d8b84e2cb6a71bd2b6234eca08"
+    },
+    {
+      "path": "cloud/src/qr.cjs",
+      "bytes": 1137,
+      "sha256": "8a62f421d1e73d3c8c95bfa6f0df7aeb7104b35b00d1683b37d9a86233704191"
+    },
+    {
+      "path": "cloud/src/server.cjs",
+      "bytes": 34780,
+      "sha256": "dd3d285f19cc9f01c38806256c543fb5e9c62f296fd6c008880d30be6a576ac0"
+    },
+    {
+      "path": "cloud/src/store.cjs",
+      "bytes": 5037,
+      "sha256": "b9e31b6cb55140b97d626540f1a965e663206cf91f21d2cccaf49cdbf1d1340e"
+    },
+    {
+      "path": "cloud/tests/api.test.cjs",
+      "bytes": 7877,
+      "sha256": "858fc27648ee03c60a37ff0d1d161acd6697f3408a7e64213e6345b2154de3e8"
+    },
+    {
+      "path": "cloud/tests/crash-worker.cjs",
+      "bytes": 496,
+      "sha256": "dbe02d373ce13511ec5c52214e033555ee61072cafd3697758ec9e83f91de38a"
+    },
+    {
+      "path": "cloud/tests/crash.test.cjs",
+      "bytes": 3374,
+      "sha256": "183cd5a59b1ffcbe54a983e926e3f56f187c2a2f4805a95d148026968a546b4a"
+    },
+    {
+      "path": "cloud/tests/deliveries.test.cjs",
+      "bytes": 13466,
+      "sha256": "98cf45a111975a83eef844a96de5df657a33d786b397dd2764c0d0835e52136e"
+    },
+    {
+      "path": "cloud/tests/entrypoint-host.test.cjs",
+      "bytes": 11086,
+      "sha256": "2742e395bff477765427d1f572d214415d2ed8a61f5b68ae9326d8c97642af64"
+    },
+    {
+      "path": "cloud/tests/h5-fixture.cjs",
+      "bytes": 3964,
+      "sha256": "ee493f1a5f51e18a808b14bf8a49c6151ce0de9594edd76b21783c3d7e5b2838"
+    },
+    {
+      "path": "cloud/tests/h5-onboarding-print.test.cjs",
+      "bytes": 10533,
+      "sha256": "5dc994d850d4ca3d88961bf639838f3ba400862a9126052cd97070d1e2119acd"
+    },
+    {
+      "path": "cloud/tests/h54-reliability.test.cjs",
+      "bytes": 10302,
+      "sha256": "b2312c4c290bf91411ed7f05137585d2bad1cbb4ab60f631c5222ac38c1d0c70"
+    },
+    {
+      "path": "cloud/tests/h55-workflow.test.cjs",
+      "bytes": 17044,
+      "sha256": "ce38e689c824bca7a7bc49ac9d9963e1b0a2a39ed45297bfdb810bffa1b9b756"
+    },
+    {
+      "path": "cloud/tests/helpers/release-fixture.cjs",
+      "bytes": 949,
+      "sha256": "c45fa50afd7f8758d01d8f60193b26448c5de480bb7bf5e952e6470e8222e17b"
+    },
+    {
+      "path": "cloud/tests/hosting.test.cjs",
+      "bytes": 10134,
+      "sha256": "f7e702bf82afda680e27fcf1f894f70b5b9b293303fe163a8361bfa694f4665b"
+    },
+    {
+      "path": "cloud/tests/legacy.test.cjs",
+      "bytes": 2173,
+      "sha256": "96337c009ea6832eb0b4328739e66e0cc7a9494b827fd5188e33d9656880bc5a"
+    },
+    {
+      "path": "cloud/tests/operations.test.cjs",
+      "bytes": 10176,
+      "sha256": "a752b148146c2e836342092263d0c4d375655d28d77d0dbd8d3c88efa941d32d"
+    },
+    {
+      "path": "cloud/tests/presentation.test.cjs",
+      "bytes": 12753,
+      "sha256": "99a00ffccaf4ac7de160b6c47a39c9def9d98d4c56d15a33c8259a7a5ca63242"
+    },
+    {
+      "path": "cloud/tests/release-fixture.test.cjs",
+      "bytes": 2599,
+      "sha256": "4ac55adf5c3533b364b2fa95ca0eb08984094d4c834abed064146017c10c6296"
+    },
+    {
+      "path": "cloud/tests/slideshow-model.test.cjs",
+      "bytes": 3597,
+      "sha256": "dedc38c73b02e03dd25919c751052c3e25ac51bdf83deefadfc0ccb863a571d1"
+    },
+    {
+      "path": "cloud/tests/test-results.txt",
+      "bytes": 27266,
+      "sha256": "4cbf34d7fb68f4fdcf69d8e94628fefb7d237eb6363a27ef45fb9289d4a4bf90"
+    },
+    {
+      "path": "cloud/tests/ui/README.md",
+      "bytes": 1585,
+      "sha256": "3e745a28fdfe2e561838d773c01641d527fecb119505fcd5f25e492f584cc1ed"
+    },
+    {
+      "path": "cloud/tests/ui/check_bridge.py",
+      "bytes": 11182,
+      "sha256": "9ede926484f6d6e2cb91cd84e4efd2ec2e81e2a522e4573e304c5175a622be7d"
+    },
+    {
+      "path": "cloud/tests/ui/check_recovery_helper.py",
+      "bytes": 1719,
+      "sha256": "a3b8de187b63d54e45581d7c7b18bc6d0c4ebe8dfcd8de51677428588da9e4ca"
+    },
+    {
+      "path": "cloud/tests/ui/h4-browser-check.py",
+      "bytes": 7582,
+      "sha256": "918f6be170ee7dfe0cb6c7e81e8d68c86f5f61a9c87fe586e052e8e38b840a3d"
+    },
+    {
+      "path": "cloud/tests/ui/h4-seed.cjs",
+      "bytes": 2730,
+      "sha256": "68ffbed8824c70e07b335ca970429fa4949011312ce0fa429155126999e1df92"
+    },
+    {
+      "path": "cloud/tests/ui/make_fixtures.py",
+      "bytes": 1382,
+      "sha256": "89af4b0f99df3f76825418f08a21578ada75fda93be4670d554e5cecbb158b24"
+    },
+    {
+      "path": "cloud/tests/ui/seed-server.cjs",
+      "bytes": 2519,
+      "sha256": "a49d9a327cad92c830854e06698f6a0ac969475a1a3002c8407b42f392a23228"
+    },
+    {
+      "path": "cloud/tools/Hostinger_Setup_Helper.html",
+      "bytes": 5829,
+      "sha256": "557ef884ecd2dfe78d7db595e07084f84b55b28c3b3759d3c2c7f6841a89fe69"
+    },
+    {
+      "path": "cloud/tools/personal-qr-rehearsal.cjs",
+      "bytes": 6050,
+      "sha256": "9fa70ba6c703141a3ddfaa19227a9867d9e3827f9dae52b4b022dbadb3d31980"
+    },
+    {
+      "path": "cloud/vendor/QRCode/LICENSE.txt",
+      "bytes": 11962,
+      "sha256": "b3c7a2fadb2515b8106eae58439a4b9c0581a4eaa88d6a265701f8d4dd7dadb8"
+    },
+    {
+      "path": "cloud/vendor/QRCode/PROVENANCE.txt",
+      "bytes": 496,
+      "sha256": "12880ae1aa14193dc676be7abe197ba1905afa9e1d573208cd2f87fd439aa085"
+    },
+    {
+      "path": "cloud/vendor/QRCode/QR8bitByte.js",
+      "bytes": 382,
+      "sha256": "a67f0b2239db81b1fc1dfd8e169a879d7075dd79d0ae00dc155e9c3bac595891"
+    },
+    {
+      "path": "cloud/vendor/QRCode/QRBitBuffer.js",
+      "bytes": 702,
+      "sha256": "0b5de11b341f5dd92caf3e3a26469f86fa3eb9b3795db6a489e4d53d91ecb67d"
+    },
+    {
+      "path": "cloud/vendor/QRCode/QRErrorCorrectLevel.js",
+      "bytes": 54,
+      "sha256": "d11a145632cea07057084190e86243b3054f30fc77256dc5ea0dc0e0cae54608"
+    },
+    {
+      "path": "cloud/vendor/QRCode/QRMaskPattern.js",
+      "bytes": 157,
+      "sha256": "b1f5a99876a31fccbfba89b973e11a4eb295f47b4b00e923814215309c0a725e"
+    },
+    {
+      "path": "cloud/vendor/QRCode/QRMath.js",
+      "bytes": 673,
+      "sha256": "481fe65cd1a049a3cdd659ff20c45eb4e0cb2db285fa63a42478727e1b051667"
+    },
+    {
+      "path": "cloud/vendor/QRCode/QRMode.js",
+      "bytes": 149,
+      "sha256": "6b8ec04257a2d23b01e8189815292dca3651b38ea0a8f9c975b3c1d18dfb1b01"
+    },
+    {
+      "path": "cloud/vendor/QRCode/QRPolynomial.js",
+      "bytes": 1332,
+      "sha256": "76eb786a451ceee003cb4279b7bc559e8a77321dad19ce11825a4d98d470b422"
+    },
+    {
+      "path": "cloud/vendor/QRCode/QRRSBlock.js",
+      "bytes": 5556,
+      "sha256": "78281d6a39b575a1078f1f70e7311e4a3c8b67e15e5468c25521b64d6ff6b931"
+    },
+    {
+      "path": "cloud/vendor/QRCode/QRUtil.js",
+      "bytes": 8222,
+      "sha256": "4191ce852ba66124c4f1fc3bb1a507f667193c0466731339d8c1e66a19aa6bc5"
+    },
+    {
+      "path": "cloud/vendor/QRCode/index.js",
+      "bytes": 10666,
+      "sha256": "7377be90fc61a40268acf7f30d5bd89c2fca99c57ef5391623de8c151b8da7df"
+    },
+    {
+      "path": "delivery-validation/android-build-attempt.log",
+      "bytes": 87,
+      "sha256": "b707a1c20203abf3d98d68b1bde4ae3e7bef2243b3b85c320d8015af3cbcb80c"
+    },
+    {
+      "path": "delivery-validation/android-syntax-final.log",
+      "bytes": 1009,
+      "sha256": "8aedd21bd668474ac3037720019d0a51d6c81ae3d6154b20d11225b3a63a85ee"
+    },
+    {
+      "path": "delivery-validation/cloud-build-final.log",
+      "bytes": 602,
+      "sha256": "300e7545140c477fbbfc71154c71180afeb10aba7bb77c539718bcf36dfbc931"
+    },
+    {
+      "path": "delivery-validation/cloud-regression-final.log",
+      "bytes": 22310,
+      "sha256": "f488a7028dfcd61ad276ad0dd7098e59456b16441705282c8b2d3aebda630bc9"
+    },
+    {
+      "path": "delivery-validation/desktop-regression.log",
+      "bytes": 3831,
+      "sha256": "50598b07614c9662389d89f1c8a92794f90e529802bd32187467b1a392180424"
+    },
+    {
+      "path": "delivery-validation/guide-qa.log",
+      "bytes": 275,
+      "sha256": "09a2aa09023b92e02d83ffb39f5bd9ac3b7759d2c5d7a7fe2de7c3e41ed8a877"
+    },
+    {
+      "path": "delivery-validation/h4-browser-bridge-final.log",
+      "bytes": 948,
+      "sha256": "57c13bc77544496d438bca76461138ffc1517f0f04e1defdd864a1031f8e0c3f"
+    },
+    {
+      "path": "delivery-validation/h4-browser-first.log",
+      "bytes": 2168,
+      "sha256": "8b56bc28d43cc6a0837ee96a9040a2d876a1ed1df28fd465482c96406d514a26"
+    },
+    {
+      "path": "delivery-validation/java-policy-final.log",
+      "bytes": 400,
+      "sha256": "7966eca1cfc27a2dae0e01f6ca86626f296d7c1b73b98a158d83549fedcafa16"
+    },
+    {
+      "path": "delivery-validation/ledger-integration-final.log",
+      "bytes": 1899,
+      "sha256": "ddb7276afec9ca656c4cd54f0a7e8897010d04da316a14f2dc831c0c3dc68689"
+    },
+    {
+      "path": "delivery-validation/unchanged-legacy-desktop.txt",
+      "bytes": 140,
+      "sha256": "5abc22d6e9871dab97466ac607f5d09270b3f65c8f551f9c5909e931977948be"
+    },
+    {
+      "path": "deploy/LensDrop_Hostinger_Cloud_H5_4_Reliability.zip",
+      "bytes": 3415041,
+      "sha256": "f190bfc4b213bb7cbd3226f19faabe081ccedca4573d809aca50042155650071"
+    },
+    {
+      "path": "deploy/LensDrop_Hostinger_Cloud_H5_5_Archive_StaffPrint.zip",
+      "bytes": 3415041,
+      "sha256": "f190bfc4b213bb7cbd3226f19faabe081ccedca4573d809aca50042155650071"
+    },
+    {
+      "path": "deploy/LensDrop_Hostinger_Cloud_H5_QR_Pairing_Print.zip",
+      "bytes": 3415041,
+      "sha256": "f190bfc4b213bb7cbd3226f19faabe081ccedca4573d809aca50042155650071"
+    },
+    {
+      "path": "deploy/README_H5_5.md",
+      "bytes": 286,
+      "sha256": "30636b588ff89fd4af9c7022c7b21fcc96824daff5160a56953a79fa55e33e91"
+    },
+    {
+      "path": "docs/github/README.md",
+      "bytes": 14437,
+      "sha256": "e25f66789d05f19dca553ad0a0d6479236ef0e2575916a3fd78678cacaae0b16"
+    },
+    {
+      "path": "docs/github/validation/VALIDATION_SCOPE.txt",
+      "bytes": 557,
+      "sha256": "c5c51cce707b49f1965267d70e723883695d67640c2b0c18d32fae17a4b16c40"
+    },
+    {
+      "path": "docs/github/validation/gitignore-checks.json",
+      "bytes": 1544,
+      "sha256": "1bf1ca0769fb38d68ec2bbc33ba8047f4699d4f54143fe437d6a5bab8ded7910"
+    },
+    {
+      "path": "docs/github/validation/helper-checks.json",
+      "bytes": 2276,
+      "sha256": "62284fd5da234ea444feeac027e6a5263db871875a20e6a259f3a760b0d80000"
+    },
+    {
+      "path": "docs/github/validation/ledger-tests-rerun.txt",
+      "bytes": 1548,
+      "sha256": "ebd58ee491974ed77268c478ab9b3469fc65fa125dcba345639c0954eb5c5eb2"
+    },
+    {
+      "path": "docs/github/validation/policy-tests.txt",
+      "bytes": 400,
+      "sha256": "7966eca1cfc27a2dae0e01f6ca86626f296d7c1b73b98a158d83549fedcafa16"
+    },
+    {
+      "path": "docs/github-h5-r1/VERIFICATION.json",
+      "bytes": 2986,
+      "sha256": "11997c029bcf00d40c7142545b9e4024279d5a850bb064c4ce759a316e1ea6f0"
+    },
+    {
+      "path": "docs/github-h5-r1/ledger-tests.log",
+      "bytes": 1899,
+      "sha256": "ddb7276afec9ca656c4cd54f0a7e8897010d04da316a14f2dc831c0c3dc68689"
+    },
+    {
+      "path": "docs/github-h5-r1/policy-tests.log",
+      "bytes": 400,
+      "sha256": "7966eca1cfc27a2dae0e01f6ca86626f296d7c1b73b98a158d83549fedcafa16"
+    },
+    {
+      "path": "docs/github-h5-r1/print-policy-tests.log",
+      "bytes": 641,
+      "sha256": "7dd073f4a9851581d7e129d94330a927a08e9551c4f39ef9011fda1809b53e91"
+    },
+    {
+      "path": "docs/h5/LensDrop_H5_Release_Report.md",
+      "bytes": 5274,
+      "sha256": "17eb892c7df4c5b5ea35172efb82398365fe47f02e708f52cbe90a6cb762b735"
+    },
+    {
+      "path": "docs/h5/LensDrop_H5_Setup_Guide.html",
+      "bytes": 24070,
+      "sha256": "28f120561b8749a372c9dcc0d37f7c62d3efaaf7c0117f93b2d544485964d768"
+    },
+    {
+      "path": "docs/h5/LensDrop_H5_Setup_Guide.md",
+      "bytes": 20222,
+      "sha256": "e47ba75570223dcc42bc28a7316235259fe892b3ae95dcaa5f3d3c48761e6595"
+    },
+    {
+      "path": "docs/h5/Source_Change_Inventory.json",
+      "bytes": 17460,
+      "sha256": "6b24086ab590c4d53b2095ee73035ae353b257d295fa9307c3b5f5bf3daff058"
+    },
+    {
+      "path": "docs/h5/screenshots/H5_Cloud_Staff_Pairing.png",
+      "bytes": 156334,
+      "sha256": "7659d03382cd4a847585113335aba3a1b48da8f8358a5a6fe1efc2c85e72ad45"
+    },
+    {
+      "path": "docs/h5/screenshots/H5_Cloud_Staff_Pairing_Mobile.png",
+      "bytes": 137256,
+      "sha256": "e5205867482f1276a547dee7eb7cb07950437c797ebe2812831ba48dc7897cdd"
+    },
+    {
+      "path": "docs/h5/screenshots/H5_Print_Station_Dashboard.png",
+      "bytes": 201116,
+      "sha256": "71e6815a88777824824a11315e4029e2ba192d8d1de7e53051f862aa4f8ae65c"
+    },
+    {
+      "path": "docs/h5/test-results/build-final.log",
+      "bytes": 602,
+      "sha256": "c0bad4a77c4b54f0ee69a561defe76f848e4df65e1a971a876958e981a62bf10"
+    },
+    {
+      "path": "docs/h5/test-results/cloud-final.log",
+      "bytes": 27266,
+      "sha256": "4cbf34d7fb68f4fdcf69d8e94628fefb7d237eb6363a27ef45fb9289d4a4bf90"
+    },
+    {
+      "path": "docs/h5/test-results/desktop-final.log",
+      "bytes": 3859,
+      "sha256": "c46c373ac107937122cb7c7e1a754270025c124a9e02ec87022b8b38c4a46db0"
+    },
+    {
+      "path": "docs/h5/test-results/java-syntax-final.log",
+      "bytes": 1866,
+      "sha256": "d0ee9c16199e7f03d2a8fd77c53306837061665f48bd9a0c9e7e44e7426c27c8"
+    },
+    {
+      "path": "docs/h5/test-results/ledger-final.log",
+      "bytes": 1899,
+      "sha256": "ddb7276afec9ca656c4cd54f0a7e8897010d04da316a14f2dc831c0c3dc68689"
+    },
+    {
+      "path": "docs/h5/test-results/policy-final.log",
+      "bytes": 400,
+      "sha256": "7966eca1cfc27a2dae0e01f6ca86626f296d7c1b73b98a158d83549fedcafa16"
+    },
+    {
+      "path": "docs/h5/test-results/print-policy-final.log",
+      "bytes": 641,
+      "sha256": "7dd073f4a9851581d7e129d94330a927a08e9551c4f39ef9011fda1809b53e91"
+    },
+    {
+      "path": "docs/h5/test-results/station-final.log",
+      "bytes": 6091,
+      "sha256": "a8e5b7115ca8c64b79e3d889179547ea71df434d941da7f50493b1a9543902a3"
+    },
+    {
+      "path": "docs/h5/test-results/ui-checks.json",
+      "bytes": 844,
+      "sha256": "961a5dd9660ef472f90f166725a928530614737018baf75214400aee64e0b0fe"
+    },
+    {
+      "path": "docs/h5/test-results/ui-harness.log",
+      "bytes": 641,
+      "sha256": "359ad86e078b5e06a6eee6b1d10890f15c6834494af443e94c1674380138e700"
+    },
+    {
+      "path": "docs/h5_1/BUILD_FIX_REPORT.md",
+      "bytes": 5908,
+      "sha256": "2b6192a835e305bf9add1aa255994fdaf9f1af2e2352f2a1e8b23449c8225332"
+    },
+    {
+      "path": "docs/h5_1/CHANGED_FILES.json",
+      "bytes": 2080,
+      "sha256": "2f39682b8d00e3cc237e9622619ca8126aff25c68b42039bd710d661f1bc58ae"
+    },
+    {
+      "path": "docs/h5_1/ERROR_EXCERPTS.txt",
+      "bytes": 5914,
+      "sha256": "2fba75780ef5a7da7fba03e1db230a6a2b1ec9e6b8fc464e7e20741f609ab726"
+    },
+    {
+      "path": "docs/h5_1/INPUT_SHA256.json",
+      "bytes": 311,
+      "sha256": "3ef91f6cf1696ea1baad528b93321637647cb7ec50d72021b6011cb560ae0b9f"
+    },
+    {
+      "path": "docs/h5_1/LOCAL_ENVIRONMENT.txt",
+      "bytes": 762,
+      "sha256": "5628ea3f2695e9bbd972fd62fa69a41e244f208c8151c0102a5f234f3a3d42d5"
+    },
+    {
+      "path": "docs/h5_1/UPGRADE_GUIDE.html",
+      "bytes": 9643,
+      "sha256": "ca9f97120c81d4d3608da66a6abaa4d7d9bb21c143161f18ac6b6a8f3abf9504"
+    },
+    {
+      "path": "docs/h5_1/UPGRADE_GUIDE.md",
+      "bytes": 6697,
+      "sha256": "d453be7ad6f88b983276fbc0e3a322a50960938ce6a8d354ec2d97f5386f9424"
+    },
+    {
+      "path": "docs/h5_1/test-evidence/baseline-hosting-failure.log",
+      "bytes": 5236,
+      "sha256": "977cd39b4651ee0cc1a4952cda80c78ff2c1f87327bfa525161c28873d4c584b"
+    },
+    {
+      "path": "docs/h5_1/test-evidence/buildfix-tests.log",
+      "bytes": 1891,
+      "sha256": "44413bcad9114f7cae9a5df434a8ea85cfa953396f469de3e646a63c62fd8593"
+    },
+    {
+      "path": "docs/h5_1/test-evidence/cloud-build.log",
+      "bytes": 602,
+      "sha256": "d304602c8335061576def0c919371f9075aaeb1e8a3f39dfe482113634f1086f"
+    },
+    {
+      "path": "docs/h5_1/test-evidence/cloud-tests.log",
+      "bytes": 28004,
+      "sha256": "2c68649e7fe5c3dda113f83d923dd762ca356baee8bc671b59f5751c64db4402"
+    },
+    {
+      "path": "docs/h5_1/test-evidence/desktop-tests.log",
+      "bytes": 3831,
+      "sha256": "1371d562d8d6c857ed58d675d7efe6ee8cd06df0661904989f37c7fc5f2bd429"
+    },
+    {
+      "path": "docs/h5_1/test-evidence/hosting-fixed.log",
+      "bytes": 3252,
+      "sha256": "732b83107e137e683286f4b0da1c50e8e8f9269d6b56bc1d8db745249c2ad306"
+    },
+    {
+      "path": "docs/h5_1/test-evidence/java-syntax.log",
+      "bytes": 3004,
+      "sha256": "6583c746faf58d285bdcc23a536ba60875e3e5ebd27c8abefe4de254a2e69862"
+    },
+    {
+      "path": "docs/h5_1/test-evidence/ledger-tests.log",
+      "bytes": 1899,
+      "sha256": "ddb7276afec9ca656c4cd54f0a7e8897010d04da316a14f2dc831c0c3dc68689"
+    },
+    {
+      "path": "docs/h5_1/test-evidence/policy-tests.log",
+      "bytes": 400,
+      "sha256": "7966eca1cfc27a2dae0e01f6ca86626f296d7c1b73b98a158d83549fedcafa16"
+    },
+    {
+      "path": "docs/h5_1/test-evidence/print-policy-and-buildfix-tests.log",
+      "bytes": 2532,
+      "sha256": "8612e02e8d91d2065b726cfa58631fcd7f060487b752e02b24aaf875860a05dc"
+    },
+    {
+      "path": "docs/h5_1/test-evidence/station-tests.log",
+      "bytes": 6100,
+      "sha256": "b8b6d75c7ed2419ebbcbb7b9b783958b49db4273789dc61af3756a79c8e901aa"
+    },
+    {
+      "path": "docs/h5_2/CHANGED_FILES.json",
+      "bytes": 2622,
+      "sha256": "ca9439ea28f18714c079f117bcc441ad1fbd00b8881570ea319d29a2fdb65470"
+    },
+    {
+      "path": "docs/h5_2/CP9550DW_SETUP.html",
+      "bytes": 21177,
+      "sha256": "3071391e970bf8212b398297aeb7f4946cb6e320e4fd35bafd0c6c93058a3eae"
+    },
+    {
+      "path": "docs/h5_2/CP9550DW_SETUP.md",
+      "bytes": 15878,
+      "sha256": "ba686d413579a72f32a8dd66098250b53cd27e6966477b2a8b66d7d42fd407b8"
+    },
+    {
+      "path": "docs/h5_2/CP9550_Profile_Panel.png",
+      "bytes": 140919,
+      "sha256": "002f79ce89f3ff736b5c32694152cf521c49544a90abe3dccef3772d21c8d8fe"
+    },
+    {
+      "path": "docs/h5_2/RELEASE_REPORT.html",
+      "bytes": 10392,
+      "sha256": "5ff6eaab561720acf65be911d4d5e116b570c2fbd56bfbf9bfe0df8a7d780ada"
+    },
+    {
+      "path": "docs/h5_2/RELEASE_REPORT.md",
+      "bytes": 6562,
+      "sha256": "b2f85a6404ebc66b81fb283440c32cdc856bb3e233c58049ef39a392e0ee4c92"
+    },
+    {
+      "path": "docs/h5_2/calibration/PHOTO_4x6_1200x1800.jpg",
+      "bytes": 247034,
+      "sha256": "e1b46cee1a0e598b67f28b9fa05162726c88be99e68efed61f01033fdebcc8d3"
+    },
+    {
+      "path": "docs/h5_2/calibration/STRIP_2x6_SINGLE_600x1800.jpg",
+      "bytes": 143686,
+      "sha256": "a70ed3f82fe4cd91d35e9ed1f8601dd24761e894452b1d5fc0fb41c260a9fc4b"
+    },
+    {
+      "path": "docs/h5_2/validation/android-ledger.log",
+      "bytes": 1899,
+      "sha256": "ddb7276afec9ca656c4cd54f0a7e8897010d04da316a14f2dc831c0c3dc68689"
+    },
+    {
+      "path": "docs/h5_2/validation/android-policy.log",
+      "bytes": 400,
+      "sha256": "7966eca1cfc27a2dae0e01f6ca86626f296d7c1b73b98a158d83549fedcafa16"
+    },
+    {
+      "path": "docs/h5_2/validation/android-print-policy.log",
+      "bytes": 2532,
+      "sha256": "1d7a71440360a2faceab66bfa8b562252a0316af4b50d147f0fc724cfe2855ff"
+    },
+    {
+      "path": "docs/h5_2/validation/android-profiles.log",
+      "bytes": 73,
+      "sha256": "dc2a6291a098dc7dcb75643cef81d046fb0462539737f2c669d6785eae4a09ed"
+    },
+    {
+      "path": "docs/h5_2/validation/cloud-build.log",
+      "bytes": 602,
+      "sha256": "a9309c627447fd17929ee060386ffa7cc6735792b3a12102d49366b2a0934ae2"
+    },
+    {
+      "path": "docs/h5_2/validation/cloud-tests.log",
+      "bytes": 27980,
+      "sha256": "63a79a89eb27ba88a5312c7b07dbfe816da9d6fb4d6a5efc983b72311664ed9a"
+    },
+    {
+      "path": "docs/h5_2/validation/desktop-tests.log",
+      "bytes": 590,
+      "sha256": "0811e5319fb122d5fd5d2b77391b046ed2f6bd68f577494488d0ba648bad2f98"
+    },
+    {
+      "path": "docs/h5_2/validation/document-qa.json",
+      "bytes": 629,
+      "sha256": "b2f8db7a240ef754cf2e8b76ee91bffc1fe647f3b88161b3524caed74938c2b0"
+    },
+    {
+      "path": "docs/h5_2/validation/java-syntax.log",
+      "bytes": 2035,
+      "sha256": "41ae098e96e52527027087b0488c75ee4a15ecdadcf12158469c4a236030ebdb"
+    },
+    {
+      "path": "docs/h5_2/validation/station-tests.log",
+      "bytes": 9542,
+      "sha256": "3a6710ea53d2970e30754cb9de6a9180a2f458d6c8be11cecf5cad54ed63f739"
+    },
+    {
+      "path": "docs/h5_2/validation/ui-tests.json",
+      "bytes": 713,
+      "sha256": "27a6a34806b84106c597b563ca89ec4a61796b771c91e7934fc956ab3aad99e4"
+    },
+    {
+      "path": "docs/h5_3/Evidence_Review.json",
+      "bytes": 1874,
+      "sha256": "b414aa4d03f06e7b145e766258bdc183d975f3ce26a7f5e975c30e61c82213bd"
+    },
+    {
+      "path": "docs/h5_3/Package_Validation.json",
+      "bytes": 2929,
+      "sha256": "5c9847d8486bb84d587ca3de686b77f561321a38c89f4b256a581d0d2898e25b"
+    },
+    {
+      "path": "docs/h5_3/Release_Report.md",
+      "bytes": 7563,
+      "sha256": "d403facd0b03608d33e8ee374291c077bd34bc2c705f40a92a621a11f4d0d6d6"
+    },
+    {
+      "path": "docs/h5_3/validation/java-syntax.log",
+      "bytes": 3446,
+      "sha256": "befa4350fcc672a3d991d5a97a0f3f087a93e64674b34b578e3cf9a8cac58851"
+    },
+    {
+      "path": "docs/h5_3/validation/print-policy.log",
+      "bytes": 2532,
+      "sha256": "666e8faf780d33c8739322a6248ef29f151d8fe73454ce5fe08f55f4c3057f96"
+    },
+    {
+      "path": "docs/h5_3/validation/print-profile.log",
+      "bytes": 73,
+      "sha256": "dc2a6291a098dc7dcb75643cef81d046fb0462539737f2c669d6785eae4a09ed"
+    },
+    {
+      "path": "docs/h5_3/validation/session-policy.log",
+      "bytes": 400,
+      "sha256": "7966eca1cfc27a2dae0e01f6ca86626f296d7c1b73b98a158d83549fedcafa16"
+    },
+    {
+      "path": "docs/h5_3/validation/structural-checks.json",
+      "bytes": 3111,
+      "sha256": "b047e59606e82f33a0758c5548d7a99dc368ce85911ded87640c07c477567c25"
+    },
+    {
+      "path": "docs/h5_3/validation/structural-checks.log",
+      "bytes": 1360,
+      "sha256": "28cf8bdeae6600b3e3330b96a5c2967168a8e6fe9b4c5c9cf6ce414edd8f83d6"
+    },
+    {
+      "path": "docs/h5_3/validation/ticket-tests.log",
+      "bytes": 2905,
+      "sha256": "9b355c5f1ab5021dd689d27cf9045c512a2d02f47bc51dcff35aec7a201690ff"
+    },
+    {
+      "path": "docs/h5_3/validation/watch-ledger-tests.log",
+      "bytes": 1899,
+      "sha256": "ddb7276afec9ca656c4cd54f0a7e8897010d04da316a14f2dc831c0c3dc68689"
+    },
+    {
+      "path": "docs/h5_4/CHANGES_FROM_H5_3.json",
+      "bytes": 18629,
+      "sha256": "b6be47b425b6a5060da73444018fcfe76d8763ca15ec6d8c305bcb0a8f19c424"
+    },
+    {
+      "path": "docs/h5_4/FINDING_STATUS.json",
+      "bytes": 9575,
+      "sha256": "a034d34c5c8f4894c2b4d8de1af44e319705ee3716c0a094288c43a6f4c455d6"
+    },
+    {
+      "path": "docs/h5_4/RELEASE_REPORT.html",
+      "bytes": 10253,
+      "sha256": "b0821cfe717c514f8d1a68ae4361a9ae3e5c094de19b481801d31d933e722027"
+    },
+    {
+      "path": "docs/h5_4/RELEASE_REPORT.md",
+      "bytes": 7429,
+      "sha256": "2716ad842d3a40985c95dedc32e7314437acb01718005e60d6a8dc482bce8893"
+    },
+    {
+      "path": "docs/h5_4/REVIEW_PLAN_BEFORE_REPAIR.md",
+      "bytes": 7660,
+      "sha256": "ade4d6ed40c2e82ac961d2c94c15631c152366a40d470508bc720aef53ec86ac"
+    },
+    {
+      "path": "docs/h5_4/SETUP_AND_TEST.html",
+      "bytes": 19994,
+      "sha256": "2cb70112c196d5f9b4a1e4b1198ecc0c66e160af53aebca1e33da486d7e7d605"
+    },
+    {
+      "path": "docs/h5_4/SETUP_AND_TEST.md",
+      "bytes": 15789,
+      "sha256": "8e18b9f2e1727e1422bc1090ecc7a008646a07f8b86103a81c35c1bb33646c8d"
+    },
+    {
+      "path": "docs/h5_4/screenshots/H5_4_Cloud_Staff_Pairing.png",
+      "bytes": 177224,
+      "sha256": "79066e2d6ee12bfa6cdb80f683437546a2d3e4f473d3c9ff9f7bf89ab7c82626"
+    },
+    {
+      "path": "docs/h5_4/screenshots/H5_4_Cloud_Staff_Pairing_Mobile.png",
+      "bytes": 160143,
+      "sha256": "482667a06bd97bd1db174a1efe8849067933a9c797e2d3625ec49ab30d9e343f"
+    },
+    {
+      "path": "docs/h5_4/screenshots/H5_4_Print_Station_Dashboard.png",
+      "bytes": 286553,
+      "sha256": "826e9d867d4ee354266a7b3704ca81d1fa3a185d0485a9407e934250069b8cd3"
+    },
+    {
+      "path": "docs/h5_4/verification/SUMMARY.json",
+      "bytes": 1108,
+      "sha256": "367ab52ea8b51316ca752b29b16f2705496efc0174a283f5863983b08f66633c"
+    },
+    {
+      "path": "docs/h5_4/verification/UNCHANGED_COMPONENTS.json",
+      "bytes": 1391,
+      "sha256": "e6e79a5c007f88306a4b1cb463e98c2f852cbda14c8c7b66a7fdc4a7b9ba1508"
+    },
+    {
+      "path": "docs/h5_4/verification/android-contract-final.log",
+      "bytes": 1891,
+      "sha256": "f834fb805ab68ec0304add7e2485e3d3ea4f2e74b1b3bb0a23e2cbaf454be62c"
+    },
+    {
+      "path": "docs/h5_4/verification/android-ledger-final.log",
+      "bytes": 1901,
+      "sha256": "f8801a80f56177f656df747d0f0d105d86c156f786dc8701dcdcc9e9081f14cd"
+    },
+    {
+      "path": "docs/h5_4/verification/android-print-final.log",
+      "bytes": 2532,
+      "sha256": "6dc820fb2166906730adce5d48664d9fe8e80f80f413085ea18b7312cfd96234"
+    },
+    {
+      "path": "docs/h5_4/verification/android-profile-final.log",
+      "bytes": 73,
+      "sha256": "dc2a6291a098dc7dcb75643cef81d046fb0462539737f2c669d6785eae4a09ed"
+    },
+    {
+      "path": "docs/h5_4/verification/android-reliability-final.log",
+      "bytes": 2935,
+      "sha256": "c64c24ac05e1deb5e7d68a975aefaaafdaf9655995c7e6c7ff178c7ee9308b16"
+    },
+    {
+      "path": "docs/h5_4/verification/android-session-final.log",
+      "bytes": 400,
+      "sha256": "7966eca1cfc27a2dae0e01f6ca86626f296d7c1b73b98a158d83549fedcafa16"
+    },
+    {
+      "path": "docs/h5_4/verification/android-ticket-final.log",
+      "bytes": 2896,
+      "sha256": "77883f2278509bc2872da5cf7d1fdf4e03af8e90f057a28315493fceabcb4292"
+    },
+    {
+      "path": "docs/h5_4/verification/cloud-final.log",
+      "bytes": 32400,
+      "sha256": "4be4c363145864051506ad6b561fe57e700edf6bcbafa7482c17a8e75dea4425"
+    },
+    {
+      "path": "docs/h5_4/verification/desktop-final.log",
+      "bytes": 3831,
+      "sha256": "10a8151abc65a6865ca0b2bd497a30bffc4d0ae8e5978a3c70ab5f974767a813"
+    },
+    {
+      "path": "docs/h5_4/verification/document-layout-checks.json",
+      "bytes": 943,
+      "sha256": "7c3b4590e166361db5c20cb7350e79a5e959f6cc8f1d9bdb1c206e203cd5808b"
+    },
+    {
+      "path": "docs/h5_4/verification/environment.txt",
+      "bytes": 294,
+      "sha256": "efa81e86ac8f5d75f334c0f54f1c5ac547bf665bb75e3d130fd04073e9aab779"
+    },
+    {
+      "path": "docs/h5_4/verification/extracted-android-reliability.log",
+      "bytes": 2935,
+      "sha256": "c64c24ac05e1deb5e7d68a975aefaaafdaf9655995c7e6c7ff178c7ee9308b16"
+    },
+    {
+      "path": "docs/h5_4/verification/extracted-android-ticket.log",
+      "bytes": 2896,
+      "sha256": "77883f2278509bc2872da5cf7d1fdf4e03af8e90f057a28315493fceabcb4292"
+    },
+    {
+      "path": "docs/h5_4/verification/extracted-cloud-build.log",
+      "bytes": 606,
+      "sha256": "7352ef187d1b824d860052e9106db5e85eb700099402b17b09363bcbf8501ee5"
+    },
+    {
+      "path": "docs/h5_4/verification/extracted-cloud-tests.log",
+      "bytes": 31781,
+      "sha256": "66523a6a2258a2e2af3f65d08b2dab4bb6f4af6cdc0944c5cd60ee7d60906a91"
+    },
+    {
+      "path": "docs/h5_4/verification/extracted-station-rerun-1.log",
+      "bytes": 11811,
+      "sha256": "cc2627762c7c53d77a90a82540f3f1be11ac18b35f3a0ad850b83c53d17001ec"
+    },
+    {
+      "path": "docs/h5_4/verification/extracted-station-rerun-2.log",
+      "bytes": 11806,
+      "sha256": "7671b17133b4498535742188e80d146e642ff0a16cbe43551efa9826fbcd5097"
+    },
+    {
+      "path": "docs/h5_4/verification/extracted-station-rerun-3.log",
+      "bytes": 11808,
+      "sha256": "16495627cf7c5fe61c2625e4a5d00faf6fde0643292f628b4758a619f18ec66f"
+    },
+    {
+      "path": "docs/h5_4/verification/extracted-station-tests.log",
+      "bytes": 9440,
+      "sha256": "fa56cb2f204e5cf18584d519a383bf390d620b8c002eb238fb495464535272b9"
+    },
+    {
+      "path": "docs/h5_4/verification/java-syntax.log",
+      "bytes": 2702,
+      "sha256": "a32bc86e88a7d438adbc9b806280857a24d55e275f2e646ae2fa35eed7b8b52a"
+    },
+    {
+      "path": "docs/h5_4/verification/station-final-retry.log",
+      "bytes": 11809,
+      "sha256": "8b5e6c99b55ea046001f89684a30d3734015cfa3742f74843bcb26eab4c9f2ea"
+    },
+    {
+      "path": "docs/h5_4/verification/ui-final.log",
+      "bytes": 820,
+      "sha256": "0b4cb74dd11938287eef63790a99ed7d3241f68f9ca27329972a4f56088ba56e"
+    },
+    {
+      "path": "docs/h5_5/API_REFERENCE.md",
+      "bytes": 4809,
+      "sha256": "d0d9786c30c48fd7ad7e436a58f269615b3249fa35bfa998f6c236ca48cec03d"
+    },
+    {
+      "path": "docs/h5_5/H55_Cloud_Admin_Staff_Desk.png",
+      "bytes": 127177,
+      "sha256": "ae0e68c2d2a2544993f5197e09574af484d2fb392eaf8a2d780672740036b4ca"
+    },
+    {
+      "path": "docs/h5_5/H55_Staff_Desk_Mobile.png",
+      "bytes": 134062,
+      "sha256": "0f6c52b34e3477669211e17fd258d54d300ec6e12f5406bea80af3fe2e3bfcc1"
+    },
+    {
+      "path": "docs/h5_5/H55_Windows_Staff_Desk.png",
+      "bytes": 102451,
+      "sha256": "b2026d5d5b5390cdf64a439117eae63da2e7190d2b54aed7138d6a88cb8a8797"
+    },
+    {
+      "path": "docs/h5_5/RELEASE_REPORT.md",
+      "bytes": 6444,
+      "sha256": "601a5ff8cd199f9b0479c572a9069875cf8f4c6b55c6d393d0a2ccb1259d9db2"
+    },
+    {
+      "path": "docs/h5_5/SETUP_AND_TEST.html",
+      "bytes": 22098,
+      "sha256": "f2eb2aee809c062772e6060fa4e415f5b0018f85ba1f01df3b7266abab9a37db"
+    },
+    {
+      "path": "docs/h5_5/SETUP_AND_TEST.md",
+      "bytes": 17824,
+      "sha256": "49c771b1be44f82b00ba1f4f19e8d2e82ccd28708088684791fc4e5487100c3c"
+    },
+    {
+      "path": "tools/github/android_ci.py",
+      "bytes": 9112,
+      "sha256": "513de09936a1b2d4605732474f59b287426b322fe91485f0e3cf891064321057"
+    },
+    {
+      "path": "tools/github/create_private_test_key.py",
+      "bytes": 2887,
+      "sha256": "568e43e7942b692b65137b17287aae58c020f1c003095d06a01c2d80ac000e91"
+    },
+    {
+      "path": "tools/github/windows_ci.py",
+      "bytes": 5303,
+      "sha256": "b23a0ec6da0fdc68395f253c87a6698962cd4ba478ce0c56d1b000e068d7fad3"
+    },
+    {
+      "path": "tools/testing/h5-ui-fixture.cjs",
+      "bytes": 1924,
+      "sha256": "c81a01c700da15793f833105d70eef487cb1e5e484051847f954229befe76f17"
+    },
+    {
+      "path": "tools/testing/h5-ui-harness.py",
+      "bytes": 6417,
+      "sha256": "1c125e52b37e04bf429be4194f9d93992ffaa29d8375a208bd5b523f9c3c6fbd"
+    },
+    {
+      "path": "tools/testing/h54-ui-harness.py",
+      "bytes": 6912,
+      "sha256": "02e09f7a48679aef011b4a82e3873cdd35174f2b372461bb04c38f5bf5958576"
+    },
+    {
+      "path": "tools/testing/h55-contract-checks.py",
+      "bytes": 3742,
+      "sha256": "162b81743896ee328aa1654f4523b2a94aa222273954f75dd9a2a2f9449f8d88"
+    },
+    {
+      "path": "tools/testing/h55-ui-fixture.cjs",
+      "bytes": 4256,
+      "sha256": "07bd9d78c58983cf5e5e315b80e256e3c85c7808e187ad7fa1f8092ba05ae2ea"
+    },
+    {
+      "path": "tools/testing/h55-ui-harness.py",
+      "bytes": 8356,
+      "sha256": "5de41239c8e15c3cffc969721624c0e162bb9653a34ca329e81e1e2184a587cd"
+    },
+    {
+      "path": "verification/h55/android-all.log",
+      "bytes": 6590,
+      "sha256": "844e25c5bfb60266f0a8148aa11f366512ff8055b81fdf23b7ddb1c474116942"
+    },
+    {
+      "path": "verification/h55/android-all2.log",
+      "bytes": 12878,
+      "sha256": "78158dda50b7572a6e0b7f2dfc17d46194970fde384bf112b04955a61560fb28"
+    },
+    {
+      "path": "verification/h55/android-final-focused.log",
+      "bytes": 7972,
+      "sha256": "f79fadc9153f128af471913055358412c8696a485a50d7c1ce9c82fe12470c7f"
+    },
+    {
+      "path": "verification/h55/android-initial.log",
+      "bytes": 3546,
+      "sha256": "3a2fdd7572c0c02079232dca57033c6628a991da813e755ff023082ca1b06a50"
+    },
+    {
+      "path": "verification/h55/android-reliability2.log",
+      "bytes": 2935,
+      "sha256": "1b93f4e38a9a136f397aef96a249899aff5fc81005961a8b3f66796dcf6994b2"
+    },
+    {
+      "path": "verification/h55/android-workflow1.log",
+      "bytes": 2141,
+      "sha256": "fcb1c4bcb8a706011355ed12608ee7f4c544eef4424a8766466cd06dc41ca707"
+    },
+    {
+      "path": "verification/h55/cloud-all2.log",
+      "bytes": 37479,
+      "sha256": "4b382d8e046a5fad93c1277da636aa1bc72b29c9bdf19eaf4523ccca2f8789ea"
+    },
+    {
+      "path": "verification/h55/cloud-all3.log",
+      "bytes": 37743,
+      "sha256": "2fc7cb3f674bbbf7bfe94e46da68769302eb06f3ac8c64eefe6fc0985a139fc1"
+    },
+    {
+      "path": "verification/h55/cloud-initial.log",
+      "bytes": 31644,
+      "sha256": "444f9a30db0721478c01334c070e600cfeb676d05b73869a3c0eddaf3e257fc5"
+    },
+    {
+      "path": "verification/h55/cloud-new-final.log",
+      "bytes": 6155,
+      "sha256": "a98f67f765e13b43441e39211a3b1250b28f7e86462f6ced210999aca074a3ba"
+    },
+    {
+      "path": "verification/h55/cloud-new.log",
+      "bytes": 8213,
+      "sha256": "463773d9523916bb21d792cf9b8a5ff75cc8df5057f272cd0dd4478648cac35f"
+    },
+    {
+      "path": "verification/h55/cloud-new2.log",
+      "bytes": 5927,
+      "sha256": "cdf0f38fa2373d7d1a04f38eef8b5d6bc97ff493334b89382aa3814ae73cf3d8"
+    },
+    {
+      "path": "verification/h55/cloud-new3.log",
+      "bytes": 6159,
+      "sha256": "58c421930f358cbc9b13da2e46e7902bef9d1dc6b72c9d63060bab3180350d85"
+    },
+    {
+      "path": "verification/h55/contracts-final.log",
+      "bytes": 1290,
+      "sha256": "29fad3bb7f64a298d8a24a576bc23e05226c88dc105bbdd04ee6d98db46096e6"
+    },
+    {
+      "path": "verification/h55/contracts.log",
+      "bytes": 2423,
+      "sha256": "c5e1cc8c9c87066ae9de51dff5bf5b50267ada69f63d7b8f285164230ee1cb4e"
+    },
+    {
+      "path": "verification/h55/contracts2.log",
+      "bytes": 2501,
+      "sha256": "de71bae1642cec85ae7da26990bb5f56d2e0613a1f985819781c438534dfbfd4"
+    },
+    {
+      "path": "verification/h55/contracts3.log",
+      "bytes": 1290,
+      "sha256": "29fad3bb7f64a298d8a24a576bc23e05226c88dc105bbdd04ee6d98db46096e6"
+    },
+    {
+      "path": "verification/h55/desktop-full.log",
+      "bytes": 3859,
+      "sha256": "765cf9507eac2a030909f866ab0ecabfd36fbd19903055fb37c008c407a86afd"
+    },
+    {
+      "path": "verification/h55/desktop.log",
+      "bytes": 3859,
+      "sha256": "f514b80b5e5d55087446ed83ee16ce6a30e84930b12f310ba5a545a15696ba59"
+    },
+    {
+      "path": "verification/h55/environment.txt",
+      "bytes": 131,
+      "sha256": "83559bd865d50078c98633b535317546b9eb3452e1298672c0b82f5c893fbd2b"
+    },
+    {
+      "path": "verification/h55/java-parse-final.log",
+      "bytes": 2785,
+      "sha256": "5fc4c7f6f42608b552a164571ed39664254f6813747ed654fd7e9275d75d6a9c"
+    },
+    {
+      "path": "verification/h55/java-parse.log",
+      "bytes": 2785,
+      "sha256": "5fc4c7f6f42608b552a164571ed39664254f6813747ed654fd7e9275d75d6a9c"
+    },
+    {
+      "path": "verification/h55/sdk-network-check.log",
+      "bytes": 285,
+      "sha256": "496e0f68a6911a4b6f0ff03c01fe16519c55b4e585e0aeb5a960d427fc461e73"
+    },
+    {
+      "path": "verification/h55/station-all1.log",
+      "bytes": 13014,
+      "sha256": "ce3db8f8e53af5ec3c2a327b64f545f57d1db9e5aed445e29656e8d85293a919"
+    },
+    {
+      "path": "verification/h55/station-all2.log",
+      "bytes": 13021,
+      "sha256": "38b19cec7b77613704da35d198563c8d29b7fbad56f5d1eb7d467532e9426a2a"
+    },
+    {
+      "path": "verification/h55/ui-checks.log",
+      "bytes": 2174,
+      "sha256": "ccb33659e216189ba5c5c8b5614d6d14228f232ab7d047047c693a5da03dcc03"
+    },
+    {
+      "path": "verification/h55/ui-checks2.log",
+      "bytes": 888,
+      "sha256": "d6bf09a16706659f0cbed58118e7de891e18d8d52b6efad2a675707eb500846c"
+    },
+    {
+      "path": "verification/h55/ui-final.log",
+      "bytes": 888,
+      "sha256": "d6bf09a16706659f0cbed58118e7de891e18d8d52b6efad2a675707eb500846c"
+    },
+    {
+      "path": "verification/h55/ui-fixture-final.log",
+      "bytes": 214,
+      "sha256": "01b8d589a5acc370680fa248cd5496c1615fa20c7185f852fdadccba7a299614"
+    },
+    {
+      "path": "verification/h55/ui-fixture.log",
+      "bytes": 214,
+      "sha256": "ab41638d070019c567d62a97d2c7d129586a01329feecf393ea598a4415512d1"
+    },
+    {
+      "path": "verification/h55/ui-results.json",
+      "bytes": 1147,
+      "sha256": "37e0d7301e9b7c86fd23ce90336a301ead72b932d6705a7784bfc4ce7d5309b7"
+    }
+  ]
+}

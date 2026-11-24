@@ -1,0 +1,208 @@
+PASS first pairing
+PASS resume original destination
+PASS pending old work blocks switch
+PASS same source blocked across events
+PASS existing source cannot be repointed
+PASS drained event with distinct source
+PASS known error retained
+PASS raw secret cannot enter diagnostics
+PASS unknown error excluded
+PASS null error safe
+10 pure-Java policy assertions passed. NOT an Android build or device test.
+PASS Simulation is terminal without a physical claim
+PASS Operator-confirmed output is terminal
+PASS Driver submission remains unconfirmed
+PASS Uncertain output is not auto-reprinted
+PASS Partial LAN upload can continue
+PASS Cloud fallback can accept bytes
+PASS Accepted complete jobs do not reupload
+PASS Exact receipt accepted
+PASS Different job rejected
+PASS Different image rejected
+PASS Different byte count rejected
+PASS Different destination rejected
+PASS First worker acquires transfer lane
+PASS Other worker cannot race into same lane
+PASS Lane released after checkpoint
+15 H5 pure-Java assertions passed. Not an Android SDK build.
+test_01_directory_success_keeps_sync_order (__main__.BuildFixTests.test_01_directory_success_keeps_sync_order) ... ok
+test_02_open_failure_propagates_without_close (__main__.BuildFixTests.test_02_open_failure_propagates_without_close) ... ok
+test_03_stat_failure_closes_descriptor (__main__.BuildFixTests.test_03_stat_failure_closes_descriptor) ... ok
+test_04_regular_file_is_rejected (__main__.BuildFixTests.test_04_regular_file_is_rejected) ... ok
+test_05_fsync_failure_is_not_ignored (__main__.BuildFixTests.test_05_fsync_failure_is_not_ignored) ... ok
+test_06_close_failure_is_not_ignored (__main__.BuildFixTests.test_06_close_failure_is_not_ignored) ... ok
+test_07_hidden_constant_negative_control (__main__.BuildFixTests.test_07_hidden_constant_negative_control) ... ok
+test_08_new_pairing_callback_compiles_against_activity (__main__.BuildFixTests.test_08_new_pairing_callback_compiles_against_activity) ... ok
+test_09_original_finish_collision_negative_control (__main__.BuildFixTests.test_09_original_finish_collision_negative_control) ... ok
+test_10_button_invokes_pairing_not_activity_finish (__main__.BuildFixTests.test_10_button_invokes_pairing_not_activity_finish) ... ok
+test_11_pairing_still_waits_for_admin_approval (__main__.BuildFixTests.test_11_pairing_still_waits_for_admin_approval) ... ok
+test_12_upload_records_only_after_directory_sync (__main__.BuildFixTests.test_12_upload_records_only_after_directory_sync) ... ok
+test_13_no_hidden_android_flags_in_production (__main__.BuildFixTests.test_13_no_hidden_android_flags_in_production) ... ok
+test_14_version_and_app_identity (__main__.BuildFixTests.test_14_version_and_app_identity) ... ok
+test_15_sync_errors_reach_existing_upload_retry (__main__.BuildFixTests.test_15_sync_errors_reach_existing_upload_retry) ... ok
+
+----------------------------------------------------------------------
+Ran 15 tests in 2.526s
+
+OK
+PASS: 31 H5.2 profile/geometry assertions; no Android device or printer.
+PASS Existing 10,000 accessible identities excluded persistently without jobs
+PASS Old file edits and repeated notifications remain excluded
+PASS Newly arrived old capture timestamp is a candidate, not rejected by date
+PASS Source needs stable size and completed pending flag before job
+PASS Repeated discovery produces exactly one job
+PASS Failed baseline transaction is rolled back, not marked ready
+PASS Existing baseline cannot be silently reset
+PASS Reopen preserves baseline and discovers missed arrivals as candidates
+PASS Group assignment does not occur by default without operator confirmation
+PASS Opt-in ordered source binds first observation before a subsequent group change
+PASS Recovered arrivals do not use trusted auto assignment
+PASS History Show QR changes display only, not receiving group
+PASS Explicit resume changes receiving group but never old job destinations
+PASS Undo empty Next restores prior group and retires accidental QR
+PASS Used group rejects quick Undo; explicit Resume keeps all assignments
+PASS Undo sees observed but still-writing source assignment, not only ready jobs
+PASS Single selected photo creates one immutable QR; other candidates remain unqueued
+PASS Mode switch preserves previously assigned group and queued jobs
+PASS History and immutable single selection survive reopen
+PASS Changed imported file is flagged, not a fresh candidate or replacement QR
+PASS Pending and unselected candidates prevent a misleading completed wrapup
+PASS Prepared QR pool remains bounded, and cancelled QR cannot be shown
+PASS H2 queue migration keeps legacy jobs while adding separate baseline and delivery fields
+PASS Explicit skip preserves originals/identity and does not upload unselected files
+RESULT: 24 exact WatchLedger/QueueDb JVM + SQLite bridge tests passed.
+Not an Android SDK build, Android instrumentation test, ContentResolver test, or hardware validation.
+PASS Prepared HTTPS URL is preserved byte-for-byte
+PASS Model2/M/4 commands identical to independently retained Lab protocol
+PASS 32-byte fixture command equality (does not claim physical scan)
+PASS Long host guest-link command equality
+PASS Max URL boundary accepted
+PASS Overlong guest URL blocked, never silently shortened
+PASS HTTP origin blocked
+PASS User credentials blocked
+PASS Origin path blocked
+PASS Origin trailing slash blocked rather than normalized after signing
+PASS Query token origin blocked
+PASS Fragment origin blocked
+PASS Staff QR cannot become guest ticket
+PASS Guest query/fragment additions blocked
+PASS Cross-origin guest URL blocked
+PASS Missing or malformed session rejected
+PASS Control-character URL blocked
+PASS Unicode labels not sent to unknown printer font
+PASS Command injection labels blocked
+PASS Normal Group and single Photo labels accepted
+PASS Only explicit address-shaped device target accepted
+PASS Malformed snapshot UUID rejected
+PASS Ticket contains exact URL and bounded ASCII framing
+PASS No cutter/status/nonvolatile commands in generated framing
+PASS Native QR limit applies independently
+PASS Outcome allowlist separates write result from observation
+PASS Exact lab chunking constants preserved
+Ticket protocol checks passed: 27. No Android transport or hardware tested.
+PASS New queue schema6 and empty ticket journal
+PASS Snapshot binds shown link without changing receiver
+PASS Repeated preview-confirm identity inserts only once
+PASS Same ticket ID with different printer is rejected
+PASS Cannot print a group from another scope
+PASS Cannot print a retired empty group
+PASS Open single-photo QR can produce a ticket
+PASS First claim only; duplicate send claim rejected
+PASS Sent is explicitly unconfirmed until operator observation
+PASS Reconnect/reopen cannot re-claim sent ticket
+PASS Crash during sending becomes outcome_unknown, never queued
+PASS Prepared but undispatched attempt is cancelled on reopen
+PASS Explicit reprint gets new ID but same guest URL
+PASS Cannot reprint a sending attempt
+PASS Cannot use different group as reprint parent
+PASS Issuing even empty group protects guest QR from Undo
+PASS Old empty-group Undo behavior retained when no ticket exists
+PASS Group changes do not mutate saved QR or printer
+PASS Database rejects direct snapshot mutation
+PASS Other event cannot see or claim ticket
+PASS Operator scan observation does not rewrite send state
+PASS Observations do not mark pending jobs done
+PASS Unsafe states and raw error strings rejected
+PASS Diagnostics omit guest URL and printer identity
+PASS History pages keep all attempts; no pending eviction
+PASS V3 to V6 migration preserves original jobs and settings
+PASS A missing prepared guest path cannot create a ticket
+PASS Claim for unknown ID is harmless
+Ticket ledger checks passed: 28 against actual SQLite via JVM bridge. Not Android instrumentation.
+PASS Real baseline JPEG framing accepted
+PASS Real progressive multi-scan JPEG framing accepted
+PASS Trailer-bearing real JPEG accepted without changing original bytes
+PASS Large appended payload does not require a full-image decode
+PASS EOI inside metadata is skipped, not interpreted as image end
+PASS Metadata EOI cannot rescue a truncated image
+PASS Truncated progressive image blocks as incomplete
+PASS SOI followed by EOI without frame/scan rejected
+PASS Non-JPEG header rejected
+PASS Invalid segment length rejected
+PASS Incomplete metadata segment rejected
+PASS Oversized dimensions bounded before decoding
+PASS Unsupported precision is explicit
+PASS Unsupported lossless frame is explicit
+PASS Byte-size guard fires without reading payload
+PASS Source byte stream is bounded even when declared length is longer
+PASS File-local readiness retries stop at fifth failure
+PASS File errors never impose network cooldown
+PASS Malformed files block immediately even on first failure
+PASS Network backpressure retains shared cooldown without per-file retry exhaustion
+PASS User pause is not a network outage
+PASSED 21 JPEG/retry checks
+PASS Blocked assigned upload may be retired, retaining its guest and original IDs
+PASS Retirement does not delete source/staged file and survives restart
+PASS Late worker state writes cannot resurrect retired upload
+PASS In-flight upload retirement rejected until checkpoint
+PASS Wrong scope cannot retire a job
+PASS Retirement idempotence never invents extra audit actions
+PASS Completed upload not relabeled as retired
+PASS Changed file requires deliberate retirement before candidate creation
+PASS Replacement permits same URI/size/mtime but new content revision without guest inheritance
+PASS Unselected changed candidate never enters upload queue
+PASS Replacement source notifications cannot duplicate or move its destination
+PASS Identical content is not relabeled as a new replacement
+PASS Repeated replacement with same bytes rejected even from an older record
+PASS Late single-photo replacement does not mutate issued single QR
+PASS Retired uploads are counted separately from uploaded/candidate/skipped
+PASS Healthy queued file stays due while bad file has local backoff
+PASS Five exhausted file retries block only that file
+PASS Showing old QR remains unchanged when candidate is assigned to current receiver
+PASS Quick Undo deadline does not redirect receiver; explicit Resume remains
+PASS Retired print preserves remote uncertainty and blocks late local reactivation
+PASS Print retirement is scoped and does not relabel a finished request
+PASS Previous print history paginates beyond a global newest-100 boundary
+PASS Print schema1 upgrades additively and keeps remote job state
+PASS Audit exports decisions but not paths, photos or credentials
+PASS Exact H5.3 schema4 source upgrades to schema6, preserves records, and allows reviewed revision
+PASSED 25 recovery/identity/ledger cases
+PASS Enable archive-all promotes existing NEW candidates without guest assignment
+PASS Old baseline files stay excluded when archive-all enabled
+PASS New completed arrival archives even with no active guest
+PASS Recovered arrival archives without guessing a guest
+PASS Archive selection during upload does not reset byte offset or upload state
+PASS Archived receipt remains uploaded when selected after completion
+PASS History QR stays visible while a different guest receives archived selection
+PASS Single-photo QR receives only selected archive while other photos still upload
+PASS Hide from selection does not skip or cancel archive
+PASS Hide all unassigned selections retains all upload jobs
+PASS Explicit earlier skips are NOT promoted by archive-all
+PASS Turning archive-all off changes future arrivals not existing queued work
+PASS Unassigned complete archives permit event turnover without deleting them
+PASS Guest link pending blocks event replacement until synced or explicitly retired
+PASS Guest-sync error retry is explicit and scoped
+PASS Assigned archive identity survives reboot and cannot rebind
+PASS Malformed source can block its archive while other new photos remain due
+PASS Staged edited revision has no guest but archives under archive-all
+PASS Receipt and unassigned/archive counts remain separate
+PASS Preflight job does not become private event archive
+PASS Print capture first commits an independent exact cloud archive
+PASS Identical confirmed JPEG reuses private archive instead of duplicate upload
+PASS Print snapshot checksum mismatch creates no archive or guest assignment
+PASS Print photo guest binding is explicit and preserves other assigned guest
+PASS Legacy exact-photo assignment also blocks a different guest on new print
+PASS PrintQueue saves archive correlation atomically with immutable print request
+PASS Exact H5.4 photo schema5 migrates to6 without auto-archiving existing candidates
+PASS Exact H5.4 print schema2 migration preserves pending route and no fake archive
+PASSED 28 archive / selection / print-correlation cases. JVM + SQLite bridge, not Android SDK, ContentResolver or device tests.

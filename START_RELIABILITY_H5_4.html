@@ -1,0 +1,43 @@
+<!doctype html><html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>LensDrop H5.4 - Start here</title><style>*{box-sizing:border-box}body{margin:0;background:#f3f6f7;color:#183341;font:16px/1.65 system-ui,-apple-system,Segoe UI,sans-serif}header{background:#163d4a;color:#fff;padding:35px max(22px,calc((100% - 1040px)/2))}header p{margin:0;color:#c5e5e6;font-size:14px}main{max-width:1040px;margin:25px auto;padding:32px 42px;background:#fff;border-radius:14px;border:1px solid #dce5e9;overflow-wrap:anywhere}h1{font-size:32px;line-height:1.2;margin:10px 0 24px}h2{font-size:24px;margin-top:36px;color:#175a66;scroll-margin-top:20px}h3{font-size:19px;margin-top:28px}a{color:#0a6879}nav{padding:14px;background:#ecf6f5;border-radius:9px;margin-bottom:24px}nav ul{padding-left:22px}table{border-collapse:collapse;width:100%;table-layout:fixed;margin:20px 0;font-size:14px}th,td{padding:10px;vertical-align:top;border:1px solid #dae4e8}th{text-align:left;background:#edf4f6}pre{padding:18px;background:#112e3b;color:#e4f7ff;border-radius:8px;white-space:pre-wrap;overflow-wrap:anywhere}code{font:13px/1.6 ui-monospace,Consolas,monospace}.notice{padding:18px;background:#fff3d8;border-left:4px solid #c58b16;border-radius:6px}li{margin:7px 0}@media(max-width:680px){header{padding:22px 18px}main{padding:22px 18px;margin:0;border:0;border-radius:0}h1{font-size:28px}h2{font-size:22px}td,th{padding:8px 6px;font-size:12px}}</style><header><p>LUCE STUDIO / LENSDROP H5.4 / RELIABILITY REPAIR PILOT</p></header><main><h1>LensDrop H5.4 - Start here</h1>
+<p><strong>Reliability repair source package. No live deployment or compiled APK/EXE is supplied.</strong></p>
+<p><a href="docs/h5_4/SETUP_AND_TEST.html">Open the setup / upgrade / test guide</a> | <a href="docs/h5_4/RELEASE_REPORT.html">Release / verification report</a> | <a href="docs/h5_4/FINDING_STATUS.json">22-finding status</a></p>
+<h2 id="section-1">Essential sequence</h2>
+<p>Build both updated clients on GitHub first. Back up consistent stopped data. Upgrade <strong>cloud -&gt; Windows -&gt; Android</strong>. Preserve all credentials, storage identity, signing identity and source photos. <code>LENSDROP_INITIALIZE_STORAGE</code> stays <code>0</code>.</p>
+<p>The new cloud version is <code>0.2.0-alpha.7-hostinger.5.4</code> / schema6. Windows is <code>0.1.2-alpha.h5.4</code>. Android is <code>0.2.0-alpha.6-h5.4</code> / code9, local queue5/print2.</p>
+<h2 id="section-2">Where each package goes</h2>
+<table>
+<thead>
+<tr>
+<th>Location</th>
+<th>Use</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>This complete extracted folder</td>
+<td>Main private <strong>LensDrop</strong> GitHub repository, contents at root including <code>.github</code></td>
+</tr>
+<tr>
+<td><code>deploy/LensDrop_Hostinger_Cloud_H5_4_Reliability.zip</code></td>
+<td>Existing Hostinger Node.js Web App; <strong>not</strong> this outer repository ZIP</td>
+</tr>
+<tr>
+<td><code>clients/android/</code></td>
+<td>Android source and tests; retain existing signing secret</td>
+</tr>
+<tr>
+<td><code>clients/print-station/</code></td>
+<td>Windows tray/native source + Node station worker; start paused in Simulation</td>
+</tr>
+<tr>
+<td><code>docs/h5_4/</code></td>
+<td>Current instructions, review status and actual test evidence</td>
+</tr>
+</tbody>
+</table>
+<p>The older deployment filename is an identical H5.4 alias. Earlier H4/H5/H5.1/H5.2/H5.3 guides and manifests are retained as history; they do not override H5.4 migration instructions. The separate Printer Lab application and hardware configuration are unchanged.</p>
+<h2 id="section-3">Repairs included</h2>
+<p>Expired-job isolation; receipt retry separation; private-print-cache reservations/retention; JPEG trailer framing; file-local retry; explicit local retirement and changed-source candidates; safe Undo and stable shown QR; blind pairing-code approval; bounded native print-call wait.</p>
+<h2 id="section-4">Not yet qualified</h2>
+<p>No new native builds/lint/device runs were completed here. No independent slideshow publication flag, provider-epoch reconciliation, new camera adapter, automated ticket printing or ticket-scanning kiosk was added. Local simulation/JVM tests do not prove Windows paper output or Android background reliability. Start with disposable data, not a real event.</p>
+</main></html>

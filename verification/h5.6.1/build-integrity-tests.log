@@ -1,0 +1,28 @@
+test_fixed_import_compiles_all_three_extracted_calls (__main__.ExtractedIntentCompilationTests.test_fixed_import_compiles_all_three_extracted_calls) ... ok
+test_original_missing_import_reproduces_compiler_failure (__main__.ExtractedIntentCompilationTests.test_original_missing_import_reproduces_compiler_failure) ... ok
+test_build_outputs_and_private_local_files_ignored (__main__.SourceSnapshotTests.test_build_outputs_and_private_local_files_ignored) ... ok
+test_cli_nonzero_and_json_on_failure (__main__.SourceSnapshotTests.test_cli_nonzero_and_json_on_failure) ... ok
+test_complete_reference_accepts (__main__.SourceSnapshotTests.test_complete_reference_accepts) ... ok
+test_crlf_checkout_accepted (__main__.SourceSnapshotTests.test_crlf_checkout_accepted) ... ok
+test_manifest_cannot_omit_critical_file (__main__.SourceSnapshotTests.test_manifest_cannot_omit_critical_file) ... ok
+test_manifest_traversal_rejected (__main__.SourceSnapshotTests.test_manifest_traversal_rejected) ... ok
+test_missing_archive_staging_rejected (__main__.SourceSnapshotTests.test_missing_archive_staging_rejected) ... ok
+test_missing_import_rejected (__main__.SourceSnapshotTests.test_missing_import_rejected) ... ok
+test_missing_jpeg_validator_rejected (__main__.SourceSnapshotTests.test_missing_jpeg_validator_rejected) ... ok
+test_missing_manifest_rejected (__main__.SourceSnapshotTests.test_missing_manifest_rejected) ... ok
+test_missing_profile_policy_rejected (__main__.SourceSnapshotTests.test_missing_profile_policy_rejected) ... ok
+test_missing_recovery_activity_rejected (__main__.SourceSnapshotTests.test_missing_recovery_activity_rejected) ... ok
+test_old_workflow_rejected (__main__.SourceSnapshotTests.test_old_workflow_rejected) ... ok
+test_report_does_not_dump_source (__main__.SourceSnapshotTests.test_report_does_not_dump_source) ... ok
+test_source_symlink_rejected (__main__.SourceSnapshotTests.test_source_symlink_rejected) ... ok
+test_stale_cloud_api_rejected (__main__.SourceSnapshotTests.test_stale_cloud_api_rejected) ... ok
+test_stale_print_queue_rejected (__main__.SourceSnapshotTests.test_stale_print_queue_rejected) ... ok
+test_stale_queue_db_rejected (__main__.SourceSnapshotTests.test_stale_queue_db_rejected) ... ok
+test_untracked_library_rejected (__main__.SourceSnapshotTests.test_untracked_library_rejected) ... ok
+test_untracked_runtime_class_rejected (__main__.SourceSnapshotTests.test_untracked_runtime_class_rejected) ... ok
+test_wrong_version_rejected (__main__.SourceSnapshotTests.test_wrong_version_rejected) ... ok
+
+----------------------------------------------------------------------
+Ran 23 tests in 1.646s
+
+OK

@@ -1,0 +1,25 @@
+{
+  "mode": true,
+  "consent": true,
+  "restore_signing": true,
+  "cleanup": true,
+  "android_permission_manifest_unchanged": true,
+  "java_runtime_changes_only_DeliveryActivity": true,
+  "intent_import_only": true,
+  "cloud": {
+    "count": 212,
+    "all_byte_identical": true
+  },
+  "clients/print-station": {
+    "count": 26,
+    "all_byte_identical": true
+  },
+  "clients/desktop": {
+    "count": 6,
+    "all_byte_identical": true
+  },
+  "deploy": {
+    "count": 4,
+    "all_byte_identical": true
+  }
+}

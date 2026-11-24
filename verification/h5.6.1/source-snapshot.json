@@ -1,0 +1,13 @@
+{
+  "schema": "luce.android.source-check/1",
+  "release": "lensdrop-android-h5.6.1-code12",
+  "expected_version_name": "0.2.0-alpha.6-h5.6.1",
+  "expected_version_code": 12,
+  "git_commit": "local",
+  "checked_at_utc": "2026-11-23T13:22:15.725578+00:00",
+  "ok": true,
+  "checked_files": 91,
+  "problems": [],
+  "scope": "Source snapshot only. Not Android compilation, lint or runtime validation.",
+  "manifest_sha256": "bfb1c27fe4b7c722a45b127ec6f736a3ad14d5f56b770986f7ba12c302eb77c4"
+}

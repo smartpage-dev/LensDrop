@@ -1,0 +1,54 @@
+PASS Real baseline JPEG framing accepted
+PASS Real progressive multi-scan JPEG framing accepted
+PASS Trailer-bearing real JPEG accepted without changing original bytes
+PASS Large appended payload does not require a full-image decode
+PASS EOI inside metadata is skipped, not interpreted as image end
+PASS Metadata EOI cannot rescue a truncated image
+PASS Truncated progressive image blocks as incomplete
+PASS SOI followed by EOI without frame/scan rejected
+PASS Non-JPEG header rejected
+PASS Invalid segment length rejected
+PASS Incomplete metadata segment rejected
+PASS Oversized dimensions bounded before decoding
+PASS Unsupported precision is explicit
+PASS Unsupported lossless frame is explicit
+PASS Byte-size guard fires without reading payload
+PASS Source byte stream is bounded even when declared length is longer
+PASS File-local readiness retries stop at fifth failure
+PASS File errors never impose network cooldown
+PASS Malformed files block immediately even on first failure
+PASS Network backpressure retains shared cooldown without per-file retry exhaustion
+PASS User pause is not a network outage
+PASSED 21 JPEG/retry checks
+PASS Blocked assigned upload may be retired, retaining its guest and original IDs
+PASS Retirement does not delete source/staged file and survives restart
+PASS Late worker state writes cannot resurrect retired upload
+PASS In-flight upload retirement rejected until checkpoint
+PASS Wrong scope cannot retire a job
+PASS Retirement idempotence never invents extra audit actions
+PASS Completed upload not relabeled as retired
+PASS Changed file requires deliberate retirement before candidate creation
+PASS Replacement permits same URI/size/mtime but new content revision without guest inheritance
+PASS Unselected changed candidate never enters upload queue
+PASS Replacement source notifications cannot duplicate or move its destination
+PASS Identical content is not relabeled as a new replacement
+PASS Repeated replacement with same bytes rejected even from an older record
+PASS Late single-photo replacement does not mutate issued single QR
+PASS Retired uploads are counted separately from uploaded/candidate/skipped
+PASS Healthy queued file stays due while bad file has local backoff
+PASS Five exhausted file retries block only that file
+PASS Showing old QR remains unchanged when candidate is assigned to current receiver
+PASS Quick Undo deadline does not redirect receiver; explicit Resume remains
+PASS Retired print preserves remote uncertainty and blocks late local reactivation
+PASS Print retirement is scoped and does not relabel a finished request
+PASS Previous print history paginates beyond a global newest-100 boundary
+Exception in thread "main" java.lang.IllegalStateException: duplicate column name: archive_job_id SQL=ALTER TABLE jobs ADD COLUMN archive_job_id TEXT
+	at android.database.sqlite.SQLiteDatabase.request(SQLiteDatabase.java:9)
+	at android.database.sqlite.SQLiteDatabase.execSQL(SQLiteDatabase.java:10)
+	at app.lensdrop.transfer.PrintQueue.onUpgrade(PrintQueue.java:9)
+	at android.database.sqlite.SQLiteOpenHelper.getWritableDatabase(SQLiteOpenHelper.java:1)
+	at android.database.sqlite.SQLiteOpenHelper.getReadableDatabase(SQLiteOpenHelper.java:1)
+	at app.lensdrop.transfer.PrintQueue.history(PrintQueue.java:17)
+	at app.lensdrop.transfer.RecoveryReliabilityTest.lambda$main$32(RecoveryReliabilityTest.java:33)
+	at app.lensdrop.transfer.RecoveryReliabilityTest.check(RecoveryReliabilityTest.java:5)
+	at app.lensdrop.transfer.RecoveryReliabilityTest.main(RecoveryReliabilityTest.java:33)
