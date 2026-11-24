@@ -50,6 +50,7 @@ async function route(c){
   let m;
   if(p==='/v1/device/deliveries'&&method==='POST'){
     const dev=device(req),b=await readJSON(req);
+    require('./event-management.cjs').active(s,dev.event_id);
     requireValue(Object.keys(b).every(k=>['id','kind','label'].includes(k)),400,'unknown_delivery_field');
     requireValue(typeof b.id==='string'&&UUID.test(b.id),400,'delivery_id_must_be_uuid');
     requireValue(['group','single'].includes(b.kind),400,'invalid_delivery_kind');

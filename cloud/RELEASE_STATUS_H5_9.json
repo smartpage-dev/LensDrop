@@ -1,0 +1,7 @@
+{
+  "release": "H5.9 event lifecycle and slideshow QR",
+  "version": "0.2.0-alpha.9-hostinger.5.9",
+  "schema": 8,
+  "status": "engineering pilot; not deployed",
+  "note": "Back up stopped persistent data and preserve keys/storage identity; do not initialize storage"
+}

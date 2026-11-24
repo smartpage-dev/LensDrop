@@ -5,7 +5,7 @@ const { requireValue } = require('./store.cjs');
 const DEFAULTS = Object.freeze({
   style: 'fade', interval_seconds: 8, poll_seconds: 10, fit: 'contain',
   background: 'black', logo_background:'dark', order: 'newest', brand_mode: 'both',
-  brand_position: 'bottom-right', show_gallery_qr: false, pool_limit: 200
+  brand_position: 'bottom-right', show_gallery_qr: false, auto_projector_new: false, pool_limit: 200
 });
 function migrate(s) {
   s.tx(() => {
@@ -42,7 +42,7 @@ function validate(input) {
     else if (k === 'interval_seconds') requireValue(Number.isInteger(v) && v >= 3 && v <= 30, 400, 'invalid_interval_seconds');
     else if (k === 'poll_seconds') requireValue([5,10,15].includes(v), 400, 'invalid_poll_seconds');
     else if (k === 'pool_limit') requireValue([50,100,200,500].includes(v), 400, 'invalid_pool_limit');
-    else if (k === 'show_gallery_qr') requireValue(typeof v === 'boolean', 400, 'invalid_show_gallery_qr');
+    else if (k === 'show_gallery_qr'||k==='auto_projector_new') requireValue(typeof v === 'boolean', 400, 'invalid_'+k);
   }
   return input;
 }
@@ -63,11 +63,11 @@ function byToken(s, token) {
 }
 function feed(s, token) {
   const p = byToken(s,token), config = settings(p);
-  const photos = s.all("SELECT seq,id,width,height,created FROM photos WHERE event_id=? AND status='live' AND is_test=0 ORDER BY seq DESC LIMIT ?",p.event_id,config.pool_limit);
+  const photos = s.all("SELECT seq,id,width,height,created FROM photos WHERE event_id=? AND status<>'hidden' AND projector_visible=1 AND is_test=0 ORDER BY seq DESC LIMIT ?",p.event_id,config.pool_limit);
   // Never expose the guest capability unless an administrator opts into an audience QR.
   return { name:p.name, settings:config, revision:p.revision, branding:publicBrand(p,`/v1/s/${token}`),
     gallery_path:config.show_gallery_qr ? `/g/${p.slug}` : null,
-    total:s.one("SELECT count(*) n FROM photos WHERE event_id=? AND status='live' AND is_test=0",p.event_id).n,
+    total:s.one("SELECT count(*) n FROM photos WHERE event_id=? AND status<>'hidden' AND projector_visible=1 AND is_test=0",p.event_id).n,
     window_count:photos.length, window_scope:'latest-uploaded-live-photos',
     lease_seconds:30, generated_at:Date.now(), photos };
 }

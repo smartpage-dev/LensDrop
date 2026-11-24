@@ -15,6 +15,7 @@ const presentation = require('./presentation.cjs');
 const deliveries = require('./deliveries.cjs');
 const onboarding = require('./onboarding-print.cjs');
 const workflow = require('./event-workflow.cjs');
+const eventManagement = require('./event-management.cjs');
 sharp.cache({ memory: 16, files: 0, items: 16 });
 sharp.concurrency(1);
 const CHUNK = 1024 * 1024;
@@ -181,11 +182,28 @@ function createApp(options = {}) {
       return json(res, 201, { id: eventId, slug, gallery_path: `/g/${slug}`, policy });
     }
     if (p === '/v1/events' && method === 'GET') { admin(req); return json(res, 200, store.all('SELECT * FROM events ORDER BY created DESC')); }
+    let em = /^\/v1\/events\/([0-9a-f-]+)\/(lifecycle|visibility-summary)$/.exec(p);
+    if(em && method==='GET'){admin(req);return json(res,200,em[2]==='lifecycle'?eventManagement.event(store,em[1]):eventManagement.counts(store,em[1]));}
+    if(em && em[2]==='lifecycle' && method==='POST'){
+      admin(req);const b=await readJSON(req);
+      requireValue(Object.keys(b).length===2&&typeof b.confirm_name==='string'&&typeof b.lifecycle==='string',400,'lifecycle_confirmation_required');
+      const e=eventManagement.event(store,em[1]);requireValue(b.confirm_name===e.name,409,'event_name_confirmation_mismatch');
+      return json(res,200,eventManagement.transition(store,e.id,b.lifecycle));
+    }
+    em=/^\/v1\/events\/([0-9a-f-]+)\/delete-empty$/.exec(p);
+    if(em&&method==='POST'){admin(req);const b=await readJSON(req);requireValue(Object.keys(b).length===2&&b.confirm_id===em[1]&&typeof b.confirm_name==='string',400,'delete_confirmation_required');return json(res,200,eventManagement.deleteEmpty(store,em[1],b.confirm_name));}
+    em=/^\/v1\/photos\/([0-9a-f-]+)\/projector$/.exec(p);
+    if(em && method==='POST'){admin(req);const b=await readJSON(req);requireValue(Object.keys(b).length===1,400,'invalid_projector_request');const photo=store.one('SELECT event_id FROM photos WHERE id=?',em[1]);requireValue(photo,404,'photo_not_found');if(b.visible===true)eventManagement.active(store,photo.event_id);return json(res,200,eventManagement.visibility(store,em[1],b.visible));}
+    if(p==='/v1/device/slideshow' && method==='GET'){
+      const d=device(req),e=eventManagement.event(store,d.event_id),pr=presentation.describe(store,d.event_id);
+      return json(res,200,{event_id:e.id,event_name:e.name,lifecycle:e.lifecycle,enabled:pr.enabled,slideshow_path:pr.enabled?pr.slideshow_path:null,revision:pr.revision,projector_photos:eventManagement.counts(store,e.id).projector});
+    }
     // H3 projection and shared branding. Admin credentials never appear in share URLs.
     let pm = /^\/v1\/events\/([0-9a-f-]+)\/presentation$/.exec(p);
     if (pm && method === 'GET') { admin(req); return json(res,200,presentation.describe(store,pm[1])); }
     if (pm && method === 'POST') {
       admin(req); const eventId=pm[1], b=await readJSON(req), before=presentation.ensure(store,eventId);
+      if(eventManagement.event(store,eventId).lifecycle!=='active')requireValue(b.enabled===false&&Object.keys(b).every(k=>['enabled','revision'].includes(k)),409,'event_not_active_except_disable_slideshow');
       requireValue(Object.keys(b).every(k=>['enabled','settings','name','policy','revision'].includes(k)),400,'unknown_presentation_field');
       requireValue(b.revision === undefined || b.revision === before.revision,409,'presentation_changed_reload');
       requireValue(b.enabled === undefined || typeof b.enabled === 'boolean',400,'invalid_enabled');
@@ -256,12 +274,12 @@ function createApp(options = {}) {
     pm = /^\/v1\/s\/([a-f0-9]{32})\/photos\/([0-9a-f-]+)\/delivery$/.exec(p);
     if(pm&&method==='GET'){
       const config=presentation.byToken(store,pm[1]);
-      const photo=store.one("SELECT id FROM photos WHERE event_id=? AND id=? AND status='live' AND is_test=0",config.event_id,pm[2]);
+      const photo=store.one("SELECT id FROM photos WHERE event_id=? AND id=? AND status<>'hidden' AND projector_visible=1 AND is_test=0",config.event_id,pm[2]);
       requireValue(photo,404,'photo_not_found');return serveFile(res,store.file('delivery',photo.id+'.jpg'),'image/jpeg');
     }
     let m = /^\/v1\/events\/([0-9a-f-]+)\/devices$/.exec(p);
     if (m && method === 'POST') {
-      admin(req); requireValue(store.one('SELECT id FROM events WHERE id=?', m[1]), 404, 'event_not_found');
+      admin(req); eventManagement.active(store,m[1]);
       const body = await readJSON(req), deviceId = id(), secret = crypto.randomBytes(32).toString('base64url');
       store.run('INSERT INTO devices(id,event_id,label,token_hash) VALUES(?,?,?,?)', deviceId, m[1], text(body.label), digest(secret));
       return json(res, 201, { device_id: deviceId, event_id: m[1], token: secret, note: 'Save this device token now; it is not stored in plaintext.' });
@@ -282,15 +300,17 @@ function createApp(options = {}) {
       requireValue(store.one('SELECT id FROM events WHERE id=?', m[1]), 404, 'event_not_found');
       const before = Number(url.searchParams.get('before') || Number.MAX_SAFE_INTEGER);
       requireValue(Number.isSafeInteger(before) && before > 0, 400, 'invalid_cursor');
-      const photos = store.all('SELECT seq,id,filename,device_id,status,size,created,is_test FROM photos WHERE event_id=? AND seq<? ORDER BY seq DESC LIMIT 200', m[1], before);
+      const photos = store.all('SELECT seq,id,filename,device_id,status,projector_visible,size,created,is_test FROM photos WHERE event_id=? AND seq<? ORDER BY seq DESC LIMIT 200', m[1], before);
       return json(res, 200, {
         devices: store.all('SELECT id FROM devices WHERE event_id=? AND is_service=0', m[1]).map(d => operations.deviceSummary(store,d.id)),
         photos, next_before: photos.length === 200 ? photos.at(-1).seq : null,
         counts: store.all('SELECT status,count(*) AS count FROM photos WHERE event_id=? AND is_test=0 GROUP BY status', m[1]),
-        test_count: store.one('SELECT count(*) n FROM photos WHERE event_id=? AND is_test=1', m[1]).n });
+        test_count: store.one('SELECT count(*) n FROM photos WHERE event_id=? AND is_test=1', m[1]).n,
+        visibility: eventManagement.counts(store,m[1]) });
     }
     if (p === '/v1/uploads' && method === 'POST') {
       const dev = device(req), b = await readJSON(req);
+      eventManagement.active(store,dev.event_id);
       requireValue(VALID_ID.test(b.client_id || ''), 400, 'client_id_must_be_uuid');
       requireValue(shaOK(b.sha256), 400, 'sha256_required');
       requireValue(Number.isSafeInteger(b.size) && b.size > 0 && b.size <= MAX_FILE, 413, 'file_size_out_of_range');
@@ -415,10 +435,11 @@ function createApp(options = {}) {
           await atomicRename(store.file('temp', `${photoId}.thumb`), store.file('thumbs', `${photoId}.jpg`));
           options.faultHook?.('originals_renamed');
           const policy = u.is_test ? 'hidden' : u.delivery_id || u.archive_private ? 'review' : store.one('SELECT policy FROM events WHERE id=?', dev.event_id).policy;
+          const projectorAuto = !u.is_test && presentation.settings(presentation.ensure(store,dev.event_id)).auto_projector_new ? 1 : 0;
           store.tx(() => {
             requireValue(store.one('SELECT revoked FROM devices WHERE id=?', dev.id).revoked === 0, 401, 'device_revoked');
-            store.run('INSERT INTO photos(id,event_id,device_id,filename,size,sha256,status,width,height,created,is_test) VALUES(?,?,?,?,?,?,?,?,?,?,?)',
-              photoId, dev.event_id, dev.id, u.filename, u.size, u.sha256, policy, meta.width, meta.height, now(), u.is_test);
+            store.run('INSERT INTO photos(id,event_id,device_id,filename,size,sha256,status,width,height,created,is_test,projector_visible) VALUES(?,?,?,?,?,?,?,?,?,?,?,?)',
+              photoId, dev.event_id, dev.id, u.filename, u.size, u.sha256, policy, meta.width, meta.height, now(), u.is_test, projectorAuto);
             deliveries.bindPhoto(store,u,photoId);
             workflow.linkPrintsForPhoto(store,photoId);
             store.run("UPDATE uploads SET state='complete',photo_id=?,updated=? WHERE id=?", photoId, now(), uploadId);
@@ -436,13 +457,14 @@ function createApp(options = {}) {
     m = /^\/v1\/photos\/([0-9a-f-]+)\/status$/.exec(p);
     if (m && method === 'POST') {
       admin(req); const b = await readJSON(req);
+      const photoOwner=store.one('SELECT event_id FROM photos WHERE id=?',m[1]);requireValue(photoOwner,404,'photo_not_found');eventManagement.active(store,photoOwner.event_id);
       requireValue(['review','live','hidden'].includes(b.status), 400, 'invalid_status');
       const target = store.one('SELECT is_test FROM photos WHERE id=?', m[1]);
       requireValue(target,404,'photo_not_found');
       requireValue(!target.is_test || b.status === 'hidden',409,'test_photo_cannot_publish');
       store.tx(()=>{
         requireValue(store.run('UPDATE photos SET status=? WHERE id=?', b.status, m[1]).changes > 0, 404, 'photo_not_found');
-        if(b.status==='hidden')store.run('UPDATE delivery_items SET released=0 WHERE photo_id=?',m[1]);
+        if(b.status==='hidden'){store.run('UPDATE delivery_items SET released=0 WHERE photo_id=?',m[1]);store.run('UPDATE photos SET projector_visible=0 WHERE id=?',m[1]);}
       });
       return json(res, 200, { ok: true });
     }

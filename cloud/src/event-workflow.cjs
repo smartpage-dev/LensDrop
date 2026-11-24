@@ -16,7 +16,8 @@ function migrate(s){s.tx(()=>{
  CREATE INDEX IF NOT EXISTS print_origin_image ON print_jobs(event_id,device_id,json_extract(spec,'$.sha256'),json_extract(spec,'$.bytes'));
  CREATE TABLE IF NOT EXISTS staff_orders(job_id TEXT PRIMARY KEY REFERENCES print_jobs(id),photo_id TEXT NOT NULL REFERENCES photos(id),request_hash TEXT NOT NULL,actor TEXT NOT NULL,delivery_id TEXT REFERENCES deliveries(id),reprint_of TEXT REFERENCES print_jobs(id),created INTEGER NOT NULL);
  CREATE TABLE IF NOT EXISTS print_collection(job_id TEXT PRIMARY KEY REFERENCES print_jobs(id),actor TEXT NOT NULL,collected_at INTEGER NOT NULL);
- PRAGMA user_version=7;`);
+ `);
+ if(s.one('PRAGMA user_version').user_version<7)s.db.exec('PRAGMA user_version=7');
  });}
 function settings(s,event){const r=s.one('SELECT * FROM event_workflows WHERE event_id=?',event);return {print_route:r?.print_route||'hybrid',revision:r?.revision||1,archive_policy:'all_new_eligible_private',station_upload_hub:false};}
 function linkPrint(s,jobId){
@@ -72,6 +73,7 @@ async function createOrder(c,scope,b){const s=c.store;
   const st=s.one('SELECT * FROM print_stations WHERE id=? AND event_id=? AND revoked=0',b.station_id,scope.event);need(st,404,'station_not_found');
   const saved=s.one('SELECT * FROM staff_orders WHERE job_id=?',b.id);
   if(saved){need(saved.request_hash===key&&saved.actor===scope.actor,409,'staff_order_identity_conflict');const job=s.one('SELECT * FROM print_jobs WHERE id=?',b.id);if(!['awaiting_file','receiving'].includes(job.state))return {job:OP.describeJob(job),created:false};}
+  else require('./event-management.cjs').active(s,scope.event);
   const p=s.one('SELECT * FROM photos WHERE id=? AND event_id=? AND is_test=0 AND status<>?',b.photo_id,scope.event,'hidden');need(p,404,'photo_not_available');
   need(p.size<=P.MAX_FILE,413,'print_jpeg_maximum_32_mib');
   const binding=s.one('SELECT delivery_id FROM delivery_items WHERE photo_id=?',p.id);
@@ -141,7 +143,7 @@ async function routeInner(c){const {store:s,p,method,url,req,res,admin,device,re
   const rows=s.all("SELECT p.*,dev.label AS device_label FROM delivery_items i JOIN photos p ON p.id=i.photo_id JOIN devices dev ON dev.id=p.device_id WHERE i.delivery_id=? AND p.is_test=0 AND p.status<>'hidden' AND p.seq<? ORDER BY p.seq DESC LIMIT 50",d.id,before);
   json(res,200,{collection:{id:d.id,label:d.label,kind:d.kind},photos:rows.map(p=>photoRecord(s,p)),next_before:rows.length===50?rows.at(-1).seq:null,orders:orders(s,scope.event,d.id,scope.station),note:'Lookup only. Review the collection and photo before confirming any print.'});return true;
  }
- if(action==='assign'&&method==='POST'){const b=await readJSON(req);need(P.UUID.test(b.photo_id||'')&&P.UUID.test(b.delivery_id||'')&&Object.keys(b).length===2,400,'invalid_assignment');need(s.one('SELECT id FROM photos WHERE id=? AND event_id=?',b.photo_id,scope.event),404,'photo_not_found');json(res,200,bind(s,b.photo_id,b.delivery_id));return true;}
+ if(action==='assign'&&method==='POST'){require('./event-management.cjs').active(s,scope.event);const b=await readJSON(req);need(P.UUID.test(b.photo_id||'')&&P.UUID.test(b.delivery_id||'')&&Object.keys(b).length===2,400,'invalid_assignment');need(s.one('SELECT id FROM photos WHERE id=? AND event_id=?',b.photo_id,scope.event),404,'photo_not_found');json(res,200,bind(s,b.photo_id,b.delivery_id));return true;}
  if(action==='orders'&&method==='GET'){json(res,200,{orders:orders(s,scope.event,null,scope.station)});return true;}
  if(action==='orders'&&method==='POST'){json(res,201,await createOrder(c,scope,await readJSON(req)));return true;}
  if(action==='cancel-prepared'&&method==='POST'){const b=await readJSON(req);need(Object.keys(b).length===1&&P.UUID.test(b.job_id||''),400,'invalid_order_identity');await c.locked('print:'+b.job_id,async()=>{const row=s.one('SELECT j.*,o.actor FROM print_jobs j JOIN staff_orders o ON o.job_id=j.id WHERE j.id=? AND j.event_id=?',b.job_id,scope.event);need(row&&(!scope.station||row.station_id===scope.station)&&row.actor===scope.actor,404,'print_job_not_found');need(['awaiting_file','receiving','cancelled'].includes(row.state)&&row.report_revision===0&&!row.asset_ready,409,'station_may_have_job_cancel_at_station');s.run("UPDATE print_jobs SET state='cancelled',terminal_at=CASE WHEN terminal_at=0 THEN ? ELSE terminal_at END,updated=? WHERE id=?",Date.now(),Date.now(),row.id);});json(res,200,{ok:true,note:'Only unexecutable staff preparation cancelled. No station job was recalled.'});return true;}

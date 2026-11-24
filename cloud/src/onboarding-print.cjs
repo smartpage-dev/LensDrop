@@ -59,6 +59,7 @@ try{
 if((m=/^\/v1\/events\/([0-9a-f-]+)\/pairings$/.exec(p))&&['GET','POST'].includes(method)){
  admin(req);need(s.one('SELECT id FROM events WHERE id=?',m[1]),404,'event_not_found');
  if(method==='GET'){json(res,200,s.all('SELECT id,kind,label,state,expires,entity_id,created,approval_failures FROM pairing_invites WHERE event_id=? ORDER BY created DESC LIMIT 100',m[1]));return true;}
+ require('./event-management.cjs').active(s,m[1]);
  const b=await readJSON(req),kind=b.kind||'phone';need(['phone','station'].includes(kind),400,'invalid_pairing_kind');const perm=permissions(b.permissions),name=label(b.label),base=origin(b.origin);
  if(perm.station_id)need(s.one('SELECT id FROM print_stations WHERE id=? AND event_id=? AND revoked=0',perm.station_id,m[1]),400,'station_not_in_event');
  need(s.one("SELECT count(*) n FROM pairing_invites WHERE event_id=? AND state IN ('open','claimed') AND expires>?",m[1],now()).n<32,429,'too_many_open_invitations');
@@ -107,6 +108,7 @@ if((m=/^\/v1\/devices\/([0-9a-f-]+)\/print-permissions$/.exec(p))&&method==='POS
 if((m=/^\/v1\/stations\/([0-9a-f-]+)\/revoke$/.exec(p))&&method==='POST'){admin(req);await readJSON(req);s.run('UPDATE print_stations SET revoked=1 WHERE id=?',m[1]);json(res,200,{ok:true});return true;}
 if(p==='/v1/station/phone-invite'&&method==='POST'){
  const st=station(s,req),b=await readJSON(req),base=origin(b.origin),name=label(b.label);
+ require('./event-management.cjs').active(s,st.event_id);
  need(s.one("SELECT count(*) n FROM pairing_invites WHERE station_id=? AND state IN ('open','claimed') AND expires>?",st.id,now()).n<16,429,'too_many_open_invitations');
  const identifier=id(),secret=crypto.randomBytes(32).toString('hex'),expires=now()+300000,perm=permissions({print:true,station_id:st.id,max_copies:1});
  s.run('INSERT INTO pairing_invites(id,event_id,kind,label,secret_hash,expires,permissions,station_id,created) VALUES(?,?,?,?,?,?,?,?,?)',identifier,st.event_id,'phone',name,digest(secret),expires,JSON.stringify(perm),st.id,now());

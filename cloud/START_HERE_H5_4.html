@@ -1,0 +1,149 @@
+<!doctype html><html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>LensDrop H5.4 cloud upgrade</title><style>*{box-sizing:border-box}body{margin:0;background:#f3f6f7;color:#183341;font:16px/1.65 system-ui,-apple-system,Segoe UI,sans-serif}header{background:#163d4a;color:#fff;padding:35px max(22px,calc((100% - 1040px)/2))}header p{margin:0;color:#c5e5e6;font-size:14px}main{max-width:1040px;margin:25px auto;padding:32px 42px;background:#fff;border-radius:14px;border:1px solid #dce5e9;overflow-wrap:anywhere}h1{font-size:32px;line-height:1.2;margin:10px 0 24px}h2{font-size:24px;margin-top:36px;color:#175a66;scroll-margin-top:20px}h3{font-size:19px;margin-top:28px}a{color:#0a6879}nav{padding:14px;background:#ecf6f5;border-radius:9px;margin-bottom:24px}nav ul{padding-left:22px}table{border-collapse:collapse;width:100%;table-layout:fixed;margin:20px 0;font-size:14px}th,td{padding:10px;vertical-align:top;border:1px solid #dae4e8}th{text-align:left;background:#edf4f6}pre{padding:18px;background:#112e3b;color:#e4f7ff;border-radius:8px;white-space:pre-wrap;overflow-wrap:anywhere}code{font:13px/1.6 ui-monospace,Consolas,monospace}.notice{padding:18px;background:#fff3d8;border-left:4px solid #c58b16;border-radius:6px}li{margin:7px 0}@media(max-width:680px){header{padding:22px 18px}main{padding:22px 18px;margin:0;border:0;border-radius:0}h1{font-size:28px}h2{font-size:22px}td,th{padding:8px 6px;font-size:12px}}</style><header><p>LUCE STUDIO / LENSDROP H5.4 / RELIABILITY REPAIR PILOT</p></header><main><h1>LensDrop H5.4 - Reliability repair pilot</h1>
+<p><strong>23 November 2026 | Source release for controlled testing.</strong> This is the first repair increment following the H5.3 independent review. It is not production certification and does not deploy your live system.</p>
+<h2 id="section-1">1. What to install, and in what order</h2>
+<table>
+<thead>
+<tr>
+<th>Component</th>
+<th>H5.4 requirement</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Hostinger cloud</td>
+<td><code>0.2.0-alpha.7-hostinger.5.4</code>, database schema <strong>6</strong></td>
+</tr>
+<tr>
+<td>Windows Print Station</td>
+<td><code>0.1.2-alpha.h5.4</code>, native assembly <code>0.1.2</code></td>
+</tr>
+<tr>
+<td>Android LensDrop</td>
+<td><code>0.2.0-alpha.6-h5.4</code>, versionCode <strong>9</strong>, application ID <code>app.lensdrop.transfer</code></td>
+</tr>
+<tr>
+<td>Phone storage</td>
+<td>Photo queue schema <strong>5</strong>, print queue schema <strong>2</strong>; additive records plus transactional jobs-table rebuild</td>
+</tr>
+<tr>
+<td>Printer Lab</td>
+<td>Unchanged; separate application/repository</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Upgrade cloud first, then Windows, then Android.</strong> The cloud must understand the new station state and retention fields before the new station begins reporting. Historical H5.2/H5.3 instructions saying “no cloud deployment needed” do not apply to this release.</p>
+<p>The complete GitHub archive contains all applications, tests, historical documentation and the new deployment ZIP. The separate Cloud ZIP is the only archive to upload to Hostinger. A patch is supplied only for the exact delivered H5.3 source, not an arbitrary modified fork. There is no new APK/EXE in these archives.</p>
+<h2 id="section-2">2. Back up before changing anything</h2>
+<p>Pause photo intake, phone uploads and print execution. Stop the cloud and Windows station, and take consistent backups of their <strong>complete persistent data directories</strong>, including databases, WAL files if present, originals, unfinished files, driver snapshots, private configuration, storage identity and <code>print-signing-key.pem</code>. Retain all camera/phone originals. Export relevant phone diagnostics and the new recovery audit after it becomes available. A diagnostics export is not a full restore backup.</p>
+<p>Record and reconcile every uncertain physical print before replacing or restoring a ledger. Preserve your existing Android signing key, device/station credentials and printer mappings. Do not clear phone data, uninstall to overcome a signing mismatch, regenerate storage identity or reinitialize an existing cloud directory.</p>
+<p>For the existing Hostinger installation retain:</p>
+<pre><code class="language-text">LENSDROP_ADMIN_KEY=&lt;your existing private value&gt;
+LENSDROP_DATA_DIR=&lt;your existing persistent private directory&gt;
+LENSDROP_STORAGE_ID=&lt;your existing storage identity&gt;
+LENSDROP_INITIALIZE_STORAGE=0
+</code></pre>
+<p>No real key or invented server path is included here. Backups must be kept privately outside the source repository.</p>
+<h2 id="section-3">3. Build and deploy</h2>
+<ol>
+<li>Merge the patch contents into the root of the <strong>LensDrop</strong> repository, or use the full source tree. Include <code>.github</code>, preserve <code>.git</code>, private signing secrets and unrelated work. Do not use the Printer Lab repository.</li>
+<li>Commit and push. Start new runs of <strong>LensDrop Android APK</strong> and <strong>LensDrop Windows Print Station</strong> on that commit. Do not rerun an old job expecting a new commit.</li>
+<li>Android now runs the repair tests and <strong><code>assembleDebug</code> plus mandatory <code>lintDebug</code></strong>. No lint suppression or baseline has been added. A lint failure is a gate to fix, not an invitation to disable the check. Signing mode remains unchanged: preserve <code>LENSDROP_TEST_KEYSTORE_BASE64</code> for ongoing installations.</li>
+<li>Download the program artifacts, not only the logs. Android's filename still says <code>LensDrop-H5-debug.apk</code>; inspect <code>BUILD_INFO.json</code> for H5.4/code9. Extract the complete Windows portable archive and keep its runtime files together. It is not an installer.</li>
+<li>After successful native builds, deploy <code>LensDrop_Hostinger_Cloud_H5_4_Reliability.zip</code> through your existing Node.js Web App. Build remains <code>npm run build</code>; entry file <code>server.js</code>; root/output <code>.</code>; keep the previously validated Node 22 version family and storage arrangement.</li>
+<li>Verify <code>/health</code>, the H5.4 cloud version, existing activities, guest links, photographs and settings. Then update Windows from the full portable output while it is stopped. Update Android in place with the same signer.</li>
+<li>Keep the Windows queue paused and in Simulation during setup. Resume only the controlled simulation tests below.</li>
+</ol>
+<p>The older <code>deploy/LensDrop_Hostinger_Cloud_H5_QR_Pairing_Print.zip</code> filename is retained as an <strong>identical H5.4 alias</strong>, not an old schema-5 deployment. The H5.4 manifest is authoritative; old manifests are historical.</p>
+<h2 id="section-4">4. Print queue recovery</h2>
+<p>An expired ready job is now shown as <strong><code>authorization_expired</code></strong> rather than remaining at the front of the executable queue. Later eligible jobs can continue. Permission/profile failures are isolated as <code>failed_before_submit</code> with a reason.</p>
+<p>Refreshing the station online or receiving a new authorized grant may refresh permission evidence, but an expired job does <strong>not</strong> automatically return to printing. Inspect it and explicitly choose Retry after the station confirms current permission, matching profile revision and unexpired authority. Cancellation is allowed only before submission. The destination and original job ID do not change.</p>
+<p>A failed individual cloud receipt is retained with its own retry delay, and does not prevent retrieval of unrelated cloud jobs. Invalid station credentials or a changed cloud identity still stop/pause the station; they are not ignored as ordinary per-job errors.</p>
+<p>The native print call has a <strong>180-second watchdog</strong>. A timeout requests termination of its local helper process, records <code>outcome_unknown</code>, and pauses the queue. This does not recall paper or cancel an accepted Windows spooler job. Late callback completion cannot overwrite the unknown decision. Inspect paper and the Windows queue; never blindly retry uncertain output.</p>
+<h2 id="section-5">5. Private print-cache accounting and cleanup</h2>
+<p>Cloud image quota now counts <strong>reserved or retained cloud print bytes</strong>, including partial/unuploaded reservations. A LAN-only metadata receipt costs zero image bytes. Limits are 2 GiB per event, 512 MiB per device and 8 GiB globally for this private print cache. These limits do not describe your total event-gallery or hosting storage allowance.</p>
+<p>Only <code>simulated</code>, <code>operator_confirmed</code> and <code>cancelled</code> job caches become eligible, after <strong>24 hours</strong>. <code>receiving</code>, <code>ready</code>, <code>authorization_expired</code>, <code>submitting</code>, <code>submitted_unconfirmed</code>, <code>outcome_unknown</code> and other unfinished/uncertain assets are retained. Job identity, specification, revision and dedup history remain after image removal.</p>
+<p>Cleanup is request-driven, not an always-running Hostinger background worker. Station configuration refreshes and new cloud print requests trigger a small bounded batch. Admin also provides <strong>Clean eligible completed-job cache (24h+)</strong>. Each invocation handles at most eight eligible records; further requests can continue. A durable pending marker precedes file deletion; reserved bytes are released only after unlink and directory sync. A restart safely resumes an interrupted cleanup.</p>
+<p>This is cleanup of <strong>private print-cache copies</strong>, not event originals, guest gallery images, phone photos or ticket history. It does not delete uncertain work to bypass a quota. Abandoned incomplete reservations still need an authorized, explicit resolution. Retained local phone files may continue to consume staging space after retirement; no automatic destructive reclamation was added.</p>
+<h2 id="section-6">6. Android JPEG handling and per-file retry</h2>
+<p>The photo uploader no longer requires the last two bytes of the whole file to be JPEG EOI. A bounded marker/framing validator accepts supported 8-bit baseline/extended/progressive DCT JPEGs with trailing bytes, while preserving the <strong>complete original byte stream and checksum</strong>. It skips segment payloads rather than looking for any <code>FFD9</code> pair, and enforces 64 MiB file and approximately 60-million-pixel bounds.</p>
+<p>This is not a full entropy decoder or universal image/container support. Unsupported frames, malformed markers and oversized dimensions are actionable file errors. Cloud decoding and exact receipts remain required. Real camera/editor and Motion Photo samples still need qualification; only desktop-generated JPEG/trailer cases were exercised here.</p>
+<p>Transient source/JPEG readiness errors receive per-file backoff and block after the fifth failure instead of indefinitely imposing a global network cooldown. Unrelated good jobs remain eligible. Shared network/server and storage-pressure conditions retain shared backpressure. Retry blocked files remains an explicit operator action after fixing the cause.</p>
+<h2 id="section-7">7. Recovery / previous events on Android</h2>
+<p>Open <strong>Recovery / previous events</strong> from main setup or the guest QR screen.</p>
+<p>First choose <strong>Pause photo and print workers</strong> and wait for the current transfer checkpoint. Every mutation checks pause state and the shared transfer lane. Active uploads cannot be retired mid-checkpoint.</p>
+<h3>Stop local retries / polling</h3>
+<p>Review the relevant upload or print. Choose <strong>Retire locally</strong> only after reading its status. This writes an audit decision and stops local retries/polling. It keeps the original file, staged bytes, job ID, remote identifier/outcome and guest assignment.</p>
+<p><strong>Local retirement does not cancel a remote print, revoke a cloud upload, refund a print allowance or prove no photograph was printed.</strong> A station may still finish an already accepted job. Reconcile there. Late local worker writes cannot silently reactivate a retired row.</p>
+<p>Once remaining candidates are selected or skipped and unresolved assigned work is deliberately retired, the old event no longer blocks pairing to a new event. Choose a new source folder for the new event; existing folder bindings are not silently reassigned. The old event's credentials are archived using the existing encrypted secret storage, not exported in plaintext. Previous-event records are available for inspection; automatic restoration of old pairing or remote polling is not implemented.</p>
+<h3>Review an overwritten source as a new candidate</h3>
+<p>For the currently paired event, retire the old unresolved work first (uploaded/skipped work already has a local outcome). Choose <strong>Review changed source as NEW unassigned candidate</strong>. The app copies the accessible completed JPEG into its own bounded staging area, checks source metadata, reads/hashes it twice, checks provider/scope stability, validates framing, and stores a new content revision. If any check fails, it creates no new candidate.</p>
+<p>The old record and its issued QR never change. The new version inherits <strong>no guest destination</strong>. Open Candidates, inspect the staged preview, and explicitly select the intended guest. Identical previously recorded content is rejected as a duplicate revision. This cannot recover a source that the camera/editor has already deleted. Provider-epoch rebuild reconciliation remains a separate unresolved feature, not a filename-based guess.</p>
+<h3>Audit export</h3>
+<p>Export PRIVATE recovery audit creates a JSON decision log with scope/job identifiers, prior states, timestamps and actions. It intentionally includes private identifiers for reconciliation, but no tokens, paths, filenames, guest URLs or image bytes. Store it with the event backup, not in a public repository. The normal redacted diagnostics are a separate export.</p>
+<h2 id="section-8">8. Guest identity and pairing</h2>
+<p>Quick Undo is limited to the most recent unused group within <strong>120 seconds</strong>. A group with assigned/observed photos or any saved ticket attempt is not quick-undoable. Use <strong>History -&gt; Resume this group</strong> intentionally; the confirmation names the target. Existing assignments and issued links stay unchanged, and trusted-order automatic assignment stays off.</p>
+<p>When Group B is receiving while History shows Group A's QR, candidate confirmation explicitly says <strong>Assign to B</strong> and preserves the displayed A QR. Single-photo confirmation deliberately creates and displays its new single link. A changed destination during preview requires reconfirmation.</p>
+<p>Admin no longer displays the six-digit pairing code. Read it from the actual intended phone or station and enter it into authenticated Admin. Five wrong attempts permanently lock that invitation, including across server restart. Revoke it and generate a new invitation; do not reuse a screenshot or approve from a code copied from an Admin list. Existing paired identities remain valid unless explicitly revoked.</p>
+<h2 id="section-9">9. Controlled acceptance sequence</h2>
+<table>
+<thead>
+<tr>
+<th>Test</th>
+<th>Required result</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Upgrade</td>
+<td>Existing event, photos, group links, station profile snapshots and job IDs remain; cloud schema 6; phone schemas 5/2.</td>
+</tr>
+<tr>
+<td>Expired head + valid job</td>
+<td>Expired request is visible and not submitted; valid request simulates once; expired work needs explicit permitted Retry.</td>
+</tr>
+<tr>
+<td>Failed receipt</td>
+<td>One recorded receipt error does not prevent another cloud job reaching the station; wrong station credentials still pause.</td>
+</tr>
+<tr>
+<td>Retention</td>
+<td>Completed cache under 24h retained; eligible older cache removed; ledger kept; unknown/submitted cache not deleted.</td>
+</tr>
+<tr>
+<td>Source errors</td>
+<td>Invalid/incomplete source blocks only itself after its retry budget; a supported trailer JPEG is preserved byte-for-byte.</td>
+</tr>
+<tr>
+<td>Event turnover</td>
+<td>Pause, inspect, retire locally, export audit, then pair event B without clearing data; inspect event A afterward.</td>
+</tr>
+<tr>
+<td>Edited revision</td>
+<td>Same URI can become a new unassigned staged candidate after explicit review; old single-photo QR unchanged.</td>
+</tr>
+<tr>
+<td>History / Undo</td>
+<td>Showing A while receiving B stays stable; used/expired quick Undo refused; intentional Resume remains.</td>
+</tr>
+<tr>
+<td>Pairing</td>
+<td>Admin has no code to copy; intended device code approves; wrong-code budget survives restart.</td>
+</tr>
+<tr>
+<td>Hanging native call</td>
+<td>In simulation/test callback, timeout records unknown and pauses; late success cannot mark completion.</td>
+</tr>
+<tr>
+<td>Native / hardware</td>
+<td>New Android build including lint, new Windows build, real phone lifecycle, CP9550 calibration and full-length 58B3 paper QR scan are still gates.</td>
+</tr>
+</tbody>
+</table>
+<p>Start with one test event, one phone, one station and synthetic JPEGs. Camera intake and real printing come only after the controlled flow works. New photos arriving during initial baseline are still excluded: pause capture/export while baselining and start only after Watching is confirmed. This wording is not a generation-boundary fix.</p>
+<h2 id="section-10">10. What remains deliberately outside this repair</h2>
+<p>No new camera FTP/SDK adapter, QR floating overlay, automated ticket printing, station ticket-scan selection/collection, payment/quota redemption or self-service kiosk. Gallery and slideshow still share <code>live</code> eligibility; personal delivery approval is separate. There is no independent per-photo projector permission yet.</p>
+<p>Provider-epoch recovery, baseline-generation races, measured large-folder optimization, phone thermal/background longevity, ticket rotation behavior, robust stale-lock ownership and clean dependency lockfile validation remain open. The persisted recovery job still needs <code>RECEIVE_BOOT_COMPLETED</code>; this permission was not removed. Same-PID process locks are not automatically discarded.</p>
+<h2 id="section-11">11. Rollback and evidence</h2>
+<p>Schema compatibility changed. Do not replace only an APK, server ZIP or executable with an older version and expect safe downgrade. Restore matching pre-upgrade code plus complete data <strong>only after accounting for physical output since the snapshot</strong>, otherwise a restored old ledger could print a completed job again. Preserve signing identity. Phone application data needs a tested platform-specific backup/restore process; diagnostics alone cannot reconstruct it.</p>
+<p>See <code>RELEASE_REPORT.md</code>, <code>FINDING_STATUS.json</code>, <code>verification/</code>, and the H5.4 source manifest. Historical tests/build logs remain labeled by their original versions. H5.1 build success is not an H5.4 build. No live system was accessed or changed for this release.</p>
+</main></html>

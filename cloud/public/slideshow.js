@@ -32,7 +32,7 @@
       void layer.offsetWidth;layer.classList.add('on');if(previous!==-1)layers[previous].classList.remove('on');$('emptyState').hidden=true;
       setTimeout(()=>{if(active!==previous&&previous!==-1&&!layers[previous].classList.contains('on')){layers[previous].querySelector('img').removeAttribute('src');layers[previous].removeAttribute('data-photo');}},800);
       schedule();return true;
-    }catch{if(ticket===renderTicket){img.removeAttribute('src');notice('Photo could not load. Retrying another published photo.',true);}return false;}
+    }catch{if(ticket===renderTicket){img.removeAttribute('src');notice('Photo could not load. Retrying another projector-approved photo.',true);}return false;}
     finally{if(ticket===renderTicket)showing=false;}
   }
   async function advance(){if(showing||!fresh()||document.hidden)return;clearTimeout(slideTimer);for(let attempt=0;attempt<Math.min(3,playlist.photos.size);attempt++){const candidate=playlist.next(currentId);if(await display(candidate))return;}schedule();}
@@ -43,10 +43,10 @@
       if(!r.ok){if(r.status===404){lastVerified=0;feed=null;clearPhotos('Slideshow is disabled or this link has been replaced. Ask the event operator for an active projector link.',true);concealBrand();notice('Link inactive / \u9023\u7d50\u672a\u958b\u555f');}throw Error('feed_unavailable');}
       const data=await r.json();lastVerified=performance.now();feed=data;const previousInterval=config.interval_seconds;config=data.settings;playlist.update(data.photos,config.order);
       setStyle();applyBrand(data);document.title=data.name+' | LensDrop Slideshow';$('emptyTitle').textContent=data.name;
-      $('detailName').textContent=data.name;$('detailCounts').textContent=`${data.window_count} photos in playback window / ${data.total} live photos. New publications join at the next slide boundary. Order is upload order, not camera capture time.`;
+      $('detailName').textContent=data.name;$('detailCounts').textContent=`${data.window_count} photos in playback window / ${data.total} projector-approved photos. New approvals join at the next slide boundary. Order is upload order, not camera capture time.`;
       $('detailConnection').textContent='Feed verified: '+new Date().toLocaleTimeString()+' / checking every '+config.poll_seconds+'s';
       notice('');
-      if(currentId&&!playlist.photos.has(currentId))clearPhotos('Updating published photographs...');
+      if(currentId&&!playlist.photos.has(currentId))clearPhotos('Updating projector-approved photographs...');
       history=history.filter(id=>playlist.photos.has(id));
       if(!playlist.photos.size)clearPhotos('Waiting for the photographer to publish photographs. / \u7b49\u5f85\u651d\u5f71\u5e2b\u516c\u958b\u7167\u7247');
       else if(!currentId&&!paused&&!showing)advance();
