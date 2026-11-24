@@ -25,7 +25,7 @@ function migrate(s){
 function settings(s,event){return {auto_release:!!s.one('SELECT auto_release FROM personal_settings WHERE event_id=?',event)?.auto_release};}
 function owned(s,dev,id){const d=s.one('SELECT * FROM deliveries WHERE id=? AND device_id=? AND event_id=?',id,dev.id,dev.event_id);requireValue(d,404,'delivery_not_found');return d;}
 function describe(s,d){return {device_label:s.one('SELECT label FROM devices WHERE id=?',d.device_id)?.label||'',id:d.id,kind:d.kind,label:d.label,state:d.state,created:d.created,guest_path:'/p/'+d.token,
-  received:s.one('SELECT count(*) n FROM uploads WHERE delivery_id=?',d.id).n,
+  received:s.one('SELECT count(*) n FROM uploads WHERE delivery_id=? OR photo_id IN (SELECT photo_id FROM delivery_items WHERE delivery_id=?)',d.id,d.id).n,
   verified:s.one('SELECT count(*) n FROM delivery_items WHERE delivery_id=?',d.id).n,
   available:d.state==='open'?s.one("SELECT count(*) n FROM delivery_items i JOIN photos p ON p.id=i.photo_id WHERE i.delivery_id=? AND i.released=1 AND p.is_test=0 AND p.status<>'hidden'",d.id).n:0};}
 function validateUpload(s,dev,b,isTest){
@@ -65,7 +65,7 @@ async function route(c){
   m=/^\/v1\/device\/deliveries\/([0-9a-f-]+)(\/cancel)?$/.exec(p);
   if(m&&((method==='GET'&&!m[2])||(method==='POST'&&m[2]))){
     const d=owned(s,device(req),m[1]);
-    if(m[2]){await readJSON(req);requireValue(!s.one('SELECT id FROM uploads WHERE delivery_id=? LIMIT 1',d.id),409,'delivery_has_assigned_photos');s.run("UPDATE deliveries SET state='cancelled' WHERE id=?",d.id);d.state='cancelled';}
+    if(m[2]){await readJSON(req);requireValue(!s.one('SELECT id FROM uploads WHERE delivery_id=? LIMIT 1',d.id)&&!s.one('SELECT photo_id FROM delivery_items WHERE delivery_id=? LIMIT 1',d.id),409,'delivery_has_assigned_photos');s.run("UPDATE deliveries SET state='cancelled' WHERE id=?",d.id);d.state='cancelled';}
     json(res,200,describe(s,d));return true;
   }
   m=/^\/v1\/events\/([0-9a-f-]+)\/personal-settings$/.exec(p);

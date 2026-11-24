@@ -25,7 +25,8 @@ def main() -> None:
     run(['dotnet','publish',str(STATION/'native'/'LensDropStation.csproj'),'-c','Release','-r','win-x64','--self-contained','true','-p:PublishSingleFile=false','-o',str(staging)], 'windows-build.log')
     exe = staging/'LensDropStation.exe'
     if not exe.is_file(): raise RuntimeError('Native build produced no LensDropStation.exe')
-    # Smoke only crypto/serialization. No printer or UI launch on the runner.
+    # Pure native geometry plus crypto only. No printer/driver capture or UI launch.
+    run([str(exe),'--layout-self-test'],'native-layout-tests.log')
     sample = secrets.token_hex(32)
     protected = run([str(exe),'--protect'],'native-protect.log',input=sample).stdout.strip()
     restored = run([str(exe),'--unprotect'],'native-unprotect.log',input=protected).stdout.strip()
@@ -45,11 +46,14 @@ def main() -> None:
     license_file = node.parent/'LICENSE'
     if not license_file.is_file(): raise RuntimeError('Node redistribution LICENSE missing from runtime distribution')
     shutil.copy2(license_file,runtime/'NODE_LICENSE.txt')
-    shutil.copy2(ROOT/'docs'/'h5'/'LensDrop_H5_Setup_Guide.html',staging/'START_HERE.html')
+    shutil.copy2(ROOT/'docs'/'h5_2'/'CP9550DW_SETUP.html',staging/'START_HERE.html')
+    for name in ['CP9550DW_SETUP.html','RELEASE_REPORT.html','CP9550_Profile_Panel.png']:
+        shutil.copy2(ROOT/'docs'/'h5_2'/name,staging/name)
+    shutil.copytree(ROOT/'docs'/'h5_2'/'calibration',staging/'calibration')
     run([str(runtime/'node.exe'),'--check',str(staging/'src'/'main.cjs')],'node-entry-check.log')
     node_version = subprocess.check_output([str(node),'--version'],text=True).strip()
     dotnet_version = subprocess.check_output(['dotnet','--version'],text=True).strip()
-    info = {'product':'LensDrop Print Station H5','architecture':'win-x64','native_target':'net10.0-windows','dotnet_sdk':dotnet_version,'node':node_version,'created_utc':datetime.now(timezone.utc).isoformat(),'commit':os.environ.get('GITHUB_SHA'),'run_id':os.environ.get('GITHUB_RUN_ID'),'native_compiled':True,'dpapi_roundtrip_passed':True,'hardware_print_tested':False,'signed_windows_binary':False,'production_approved':False}
+    info = {'product':'LensDrop Print Station H5.2 CP9550DW','version':'0.1.1-alpha.h5.2','geometry_smoke_passed':True,'architecture':'win-x64','native_target':'net10.0-windows','dotnet_sdk':dotnet_version,'node':node_version,'created_utc':datetime.now(timezone.utc).isoformat(),'commit':os.environ.get('GITHUB_SHA'),'run_id':os.environ.get('GITHUB_RUN_ID'),'native_compiled':True,'dpapi_roundtrip_passed':True,'hardware_print_tested':False,'signed_windows_binary':False,'production_approved':False}
     (staging/'BUILD_INFO.json').write_text(json.dumps(info,indent=2)+'\n',encoding='utf-8')
     archive = OUT/'LensDrop-PrintStation-H5-win-x64.zip'
     with zipfile.ZipFile(archive,'w',zipfile.ZIP_DEFLATED) as z:
@@ -60,7 +64,7 @@ def main() -> None:
     (OUT/'WINDOWS_SHA256SUMS.txt').write_text(sha+'  '+archive.name+'\n',encoding='utf-8')
     if os.environ.get('GITHUB_STEP_SUMMARY'):
         with open(os.environ['GITHUB_STEP_SUMMARY'],'a',encoding='utf-8') as f:
-            f.write('## LensDrop H5 Windows build\nNative compilation and DPAPI smoke test passed. No paper was printed. Download the Windows artifact, extract its inner ZIP fully, then run LensDropStation.exe. It starts paused in simulation. Physical printer and LAN validation remain required.\n')
+            f.write('## LensDrop H5.2 CP9550DW Windows build\nNative compilation, geometry assertions and DPAPI smoke test passed. No paper was printed. Download the Windows artifact, extract its inner ZIP fully, then run LensDropStation.exe. It starts paused in simulation. Physical printer and LAN validation remain required.\n')
     print('Compiled Windows package ready; no printer tests performed.')
 if __name__ == '__main__':
     try: main()

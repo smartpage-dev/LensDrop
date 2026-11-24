@@ -1,6 +1,6 @@
 {
   "name": "lensdrop-reliability-core",
-  "version": "0.2.0-alpha.6-hostinger.5",
+  "version": "0.2.0-alpha.8-hostinger.5.5",
   "private": true,
   "description": "LensDrop single-instance, recovery-first upload engineering alpha",
   "engines": {

@@ -75,6 +75,7 @@ class Store {
     require('./presentation.cjs').migrate(this);
     require('./deliveries.cjs').migrate(this);
     require('./onboarding-print.cjs').migrate(this);
+    require('./event-workflow.cjs').migrate(this);
   }
   one(sql, ...args) { return this.db.prepare(sql).get(...args); }
   all(sql, ...args) { return this.db.prepare(sql).all(...args); }
