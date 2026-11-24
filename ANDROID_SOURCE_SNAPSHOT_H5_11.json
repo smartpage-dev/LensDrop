@@ -299,7 +299,7 @@
       "encoding": "utf8-lf"
     },
     "clients/android/reliability-tests/RecoveryReliabilityTest.java": {
-      "sha256": "cdf6e325e3099dd0c72a7b1158b09f2ce5e1a5902eef669f61f864af66f5d8dd",
+      "sha256": "5d697af2466260bb2f2899f7cb3921e3a9cd165bde308e7a56fb0ce2fc4d3dba",
       "encoding": "utf8-lf"
     },
     "clients/android/settings.gradle": {

@@ -122,7 +122,7 @@ class WindowsPackagingTests(unittest.TestCase):
         self.assertIn('complete: portable Windows ZIP', (self.out/'windows-package-steps.log').read_text())
 
     def test_source_manifest_detects_missing_and_stale(self):
-        manifest = ROOT/'CLOUD_STATION_SOURCE_SNAPSHOT_H5_7.json'
+        manifest = source.MANIFEST  # use the same current-release snapshot as the build gate
         count, issues=source.verify(ROOT,manifest)
         self.assertGreaterEqual(count,100)
         self.assertFalse(issues,issues)
