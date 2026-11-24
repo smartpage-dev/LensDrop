@@ -1,0 +1,11 @@
+.............../usr/lib/python3.13/tkinter/__init__.py:3190: ResourceWarning: unclosed database in <sqlite3.Connection object at 0x7fb010147100>
+  class Checkbutton(Widget):
+ResourceWarning: Enable tracemalloc to get the object allocation traceback
+/usr/lib/python3.13/tkinter/__init__.py:3190: ResourceWarning: unclosed database in <sqlite3.Connection object at 0x7fb010147010>
+  class Checkbutton(Widget):
+ResourceWarning: Enable tracemalloc to get the object allocation traceback
+........
+----------------------------------------------------------------------
+Ran 23 tests in 5.728s
+
+OK

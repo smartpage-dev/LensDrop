@@ -1,0 +1,25 @@
+PARSED clients/android/app/src/main/java/app/lensdrop/transfer/CloudApi.java
+PARSED clients/android/app/src/main/java/app/lensdrop/transfer/Config.java
+PARSED clients/android/app/src/main/java/app/lensdrop/transfer/DeliveryActivity.java
+PARSED clients/android/app/src/main/java/app/lensdrop/transfer/DeliveryCoordinator.java
+PARSED clients/android/app/src/main/java/app/lensdrop/transfer/DirectorySync.java
+PARSED clients/android/app/src/main/java/app/lensdrop/transfer/EventService.java
+PARSED clients/android/app/src/main/java/app/lensdrop/transfer/LanPrintApi.java
+PARSED clients/android/app/src/main/java/app/lensdrop/transfer/MainActivity.java
+PARSED clients/android/app/src/main/java/app/lensdrop/transfer/MediaScanner.java
+PARSED clients/android/app/src/main/java/app/lensdrop/transfer/PrintActivity.java
+PARSED clients/android/app/src/main/java/app/lensdrop/transfer/PrintEngine.java
+PARSED clients/android/app/src/main/java/app/lensdrop/transfer/PrintProfilePolicy.java
+PARSED clients/android/app/src/main/java/app/lensdrop/transfer/PrintQueue.java
+PARSED clients/android/app/src/main/java/app/lensdrop/transfer/PrintRules.java
+PARSED clients/android/app/src/main/java/app/lensdrop/transfer/PrintService.java
+PARSED clients/android/app/src/main/java/app/lensdrop/transfer/QueueDb.java
+PARSED clients/android/app/src/main/java/app/lensdrop/transfer/RecoveryJob.java
+PARSED clients/android/app/src/main/java/app/lensdrop/transfer/SessionRules.java
+PARSED clients/android/app/src/main/java/app/lensdrop/transfer/StaffSetupActivity.java
+PARSED clients/android/app/src/main/java/app/lensdrop/transfer/TransferLane.java
+PARSED clients/android/app/src/main/java/app/lensdrop/transfer/UploadEngine.java
+PARSED clients/android/app/src/main/java/app/lensdrop/transfer/WatchLedger.java
+PARSED clients/android/app/src/main/java/app/lensdrop/transfer/WatchRules.java
+warning: [options] system modules path not set in conjunction with -source 17
+Java syntax parse passed only. Android types, resources, manifest and packaging NOT compiled.

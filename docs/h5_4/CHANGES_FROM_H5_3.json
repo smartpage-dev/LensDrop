@@ -1,0 +1,436 @@
+{
+  "baseline_zip_sha256": "24497103ce96360b0efd21249e24c0681a3fa7d3939ab439d9cf94dd68033c9c",
+  "deletions": [],
+  "changes": {
+    ".github/workflows/android-debug.yml": {
+      "before": "dc4fd52b19a5dc4ce2b79c138b725f070ddff816cb9e98f141e406c0761997aa",
+      "after": "4ae16e5bed0b2fd53d147f3f00603849c353ba3ba3522be2ba1e58d460d750c3",
+      "kind": "modified"
+    },
+    "README.md": {
+      "before": "c2ad0fad7a5189b9386b12485826bda693e84e9eb1cf6e9ad7a681328f51a656",
+      "after": "ed5ba87b5e66442efd87185445d4403c571a37f99ed19016002b08cef4a13b24",
+      "kind": "modified"
+    },
+    "START_HERE.html": {
+      "before": "2caa85b7a13640d943b37b52f22c24b364e2cd0bdaa7b51a0188276f4a02f2a5",
+      "after": "4ab91a5c8e223387a317786840e1e4d947d6ae241b70a932ca714cd741ef4d75",
+      "kind": "modified"
+    },
+    "START_RELIABILITY_H5_4.html": {
+      "before": null,
+      "after": "4ab91a5c8e223387a317786840e1e4d947d6ae241b70a932ca714cd741ef4d75",
+      "kind": "added"
+    },
+    "clients/android/RUN_RELIABILITY_TESTS.sh": {
+      "before": null,
+      "after": "11407d1e70b7b6128515685f711203a58c7d22d8965cf54464962d80a41c21a1",
+      "kind": "added"
+    },
+    "clients/android/app/build.gradle": {
+      "before": "2a9fa64bd72e08e84d34afc89b43160a08ffbe80c76982a639c16e6224fe81c3",
+      "after": "5cca5592ebe99cc0e724ff116b973e821bafadfcabc3db032519f25397191168",
+      "kind": "modified"
+    },
+    "clients/android/app/src/main/AndroidManifest.xml": {
+      "before": "c4fdb494d25d67ce3faea8cd8ea87dc2060bd8b718537ee914cddabdbab0b268",
+      "after": "ddb97f3be9153d2d80491a8ce76f01313291983c1b9fb970916ac02098a05e27",
+      "kind": "modified"
+    },
+    "clients/android/app/src/main/java/app/lensdrop/transfer/Config.java": {
+      "before": "6291fcb5dcf5ff463c8d425689faf01af016c1176854ddcb951dbf9326bfe4f6",
+      "after": "ddf24ca09dc2fd6f62887d7786da9f623d660d8c56bd2c6c0cba0067d0f13e26",
+      "kind": "modified"
+    },
+    "clients/android/app/src/main/java/app/lensdrop/transfer/DeliveryActivity.java": {
+      "before": "4ef951bedb497d4903fcec1ff939e7b38a345ecb3e0b7d1e1d48f5664189ba93",
+      "after": "8b0e61bf46fffe44d84a9d1264160dbd0e84bab08a70ece14a5459d97edf6b95",
+      "kind": "modified"
+    },
+    "clients/android/app/src/main/java/app/lensdrop/transfer/JpegStructure.java": {
+      "before": null,
+      "after": "b1de406d316f51a5fbdf0b481d61f47a809d648684c62df68c72384d6c68fc48",
+      "kind": "added"
+    },
+    "clients/android/app/src/main/java/app/lensdrop/transfer/MainActivity.java": {
+      "before": "aa8ff21ff1a14cb5f38df2719ed3f5ee99631f380ba3822f6c30219787dd1f0c",
+      "after": "7d5c6abf17d9af645936ccb6a0503937bcfbcdeadad6cc69027ef345cdfa9c06",
+      "kind": "modified"
+    },
+    "clients/android/app/src/main/java/app/lensdrop/transfer/MediaScanner.java": {
+      "before": "708c21d7f8024e8ff0746ae685d184c2fcae16738f46b0927fdf4b07f30f7d07",
+      "after": "82f79237cb13e6cc5330defd28e788d336719f23325e16445477be34d7eadd60",
+      "kind": "modified"
+    },
+    "clients/android/app/src/main/java/app/lensdrop/transfer/PrintQueue.java": {
+      "before": "5fed98ca81e47770c77cac203b2cfcd6b338a4a13634354abe5382039c005cc6",
+      "after": "a2374af16f79e5597857200992235e813e3772a8cab148a11e21b70a6a5b79e6",
+      "kind": "modified"
+    },
+    "clients/android/app/src/main/java/app/lensdrop/transfer/QueueDb.java": {
+      "before": "0bf5bb6e462bfa7983394a2ae72c126bcae9a461ebc219463340aeee517c2e90",
+      "after": "2d5b7e3fadd39e0a46bc145e1c18fc8e322514f32a42eb133863e76af531f95a",
+      "kind": "modified"
+    },
+    "clients/android/app/src/main/java/app/lensdrop/transfer/RecoveryActivity.java": {
+      "before": null,
+      "after": "63f22ed1067c5a789d7c834b18d17cff63e581f371284229e38e6df2ac3e5e64",
+      "kind": "added"
+    },
+    "clients/android/app/src/main/java/app/lensdrop/transfer/RecoveryLedger.java": {
+      "before": null,
+      "after": "06d4e944b791b50283475688637f77559ff3a431b048d27b9a4a1482574e26a8",
+      "kind": "added"
+    },
+    "clients/android/app/src/main/java/app/lensdrop/transfer/SessionRules.java": {
+      "before": "7eb52bf172ae05c3a0abdc0a74211b006d785879301cf2a6de47e2eafa09c56c",
+      "after": "1b5760db0af37d7c2eaa84abec7ba2d1af8d384f932b9f15d170931c177c01ba",
+      "kind": "modified"
+    },
+    "clients/android/app/src/main/java/app/lensdrop/transfer/StaffSetupActivity.java": {
+      "before": "c47365c53fdec665c175ed296866828168a27757fa1a5c7ec4cd118d524af54a",
+      "after": "704e4cd1b815054b8b352b1ad069e2d8cb95dfa283401accd7c7a12c06ac4ab2",
+      "kind": "modified"
+    },
+    "clients/android/app/src/main/java/app/lensdrop/transfer/UploadEngine.java": {
+      "before": "b05ab3ece51279a4c60169e62683aee350e5d0d158bb904216d628b0f3778995",
+      "after": "1022442699f120545fbe56c09143b5c7996132f50133c132795795191424231b",
+      "kind": "modified"
+    },
+    "clients/android/app/src/main/java/app/lensdrop/transfer/UploadRetryPolicy.java": {
+      "before": null,
+      "after": "7b4287e8c29ad613a4454708d009f66253030e089ec76efe1432d26c0c243c0f",
+      "kind": "added"
+    },
+    "clients/android/app/src/main/java/app/lensdrop/transfer/WatchLedger.java": {
+      "before": "ce8ef32a6256ee771eb13c98d63d7d83b99a6e51007a261b4f579f401f3a78e8",
+      "after": "d3507a679766e81f9e2c82cfd32a3bfa1a0930db87e5cbd262523d7ceb05f3f1",
+      "kind": "modified"
+    },
+    "clients/android/buildfix-tests/run_buildfix_tests.py": {
+      "before": "0888d6b0016af994fab5042a6919ab26028382a9dabc65207076008da44e25fc",
+      "after": "eb302aa6374bbdf887b2684ed9b3209f9ce9f88a2e84cea2f7fe5623cf3f5a2f",
+      "kind": "modified"
+    },
+    "clients/android/ledger-tests/WatchLedgerIntegrationTest.java": {
+      "before": "117285a59fc0711961d5674d4f4ce00cedff0a6280926b803cbbd8fc679e96d8",
+      "after": "b9f26974c9ac49c12ad0f47d568c5a28050694275cb771ab313b509808ae8a07",
+      "kind": "modified"
+    },
+    "clients/android/ledger-tests/org/json/JSONObject.java": {
+      "before": "dba55b22142a94b4c484fcac73245d60fe722bc549b90bdf7f68e1cf9da52879",
+      "after": "08d7451d4dd2354c2f3031b8d43b904cb4401ade842683320d770775bfffb280",
+      "kind": "modified"
+    },
+    "clients/android/reliability-tests/FrozenH53QueueDb.java": {
+      "before": null,
+      "after": "74ecb75aea6eb1651d06e736071fadbcc027a686ec683bc884e6a8c7697bcf48",
+      "kind": "added"
+    },
+    "clients/android/reliability-tests/JpegReliabilityTest.java": {
+      "before": null,
+      "after": "94bf28d86952ae507059b5638a178af0268b1c56e83b37c008e754c8ce05130d",
+      "kind": "added"
+    },
+    "clients/android/reliability-tests/RecoveryReliabilityTest.java": {
+      "before": null,
+      "after": "5da369f03aed624fe9572d912cbe30dd4d47e996308f78664874ba6f1284e400",
+      "kind": "added"
+    },
+    "clients/android/ticket-tests/TicketLedgerTest.java": {
+      "before": "41bf5a13e412bbce54f43615cbc6246b76903e120eb92f855b5fa4bf0d87b6a2",
+      "after": "a1dc772ef3094930f1b911910ebd88b2adbcee2bc53872097c8604246510406b",
+      "kind": "modified"
+    },
+    "clients/print-station/native/LensDropStation.csproj": {
+      "before": "60645f0b0c781f2af3813b33e23c66e8a80d4f95fcb3375df317e0c798c0de41",
+      "after": "1cd46c3e20db049c3b8177af09682d6ccf256763b037a5b0523bcefe7dd729bf",
+      "kind": "modified"
+    },
+    "clients/print-station/package.json": {
+      "before": "0bce94f55c072f02af286f8b3ce7e072871402c3e1342fe4d879e6e5229d4139",
+      "after": "99f81deaaca6fa789859517d5656f69887a3573d24306a6ef9e5a46e779d5e62",
+      "kind": "modified"
+    },
+    "clients/print-station/public/app.js": {
+      "before": "d7517eb29e7495df752d4bc579f3d9a5897cdd49ffa45b8878f721a171e60ead",
+      "after": "738e45864768ff869bdee792b0899799969a760cfa836d5de4b649da4857ec36",
+      "kind": "modified"
+    },
+    "clients/print-station/src/ledger.cjs": {
+      "before": "f63d658058613f3c64e27b4564cddc09578fea2121b2eacb8048b8ac81690390",
+      "after": "d8c248440d717958c575a323172c89c3c10f10a52dc7ec37a3b9ab825a038697",
+      "kind": "modified"
+    },
+    "clients/print-station/src/station.cjs": {
+      "before": "2d3548d97e2d4ca3c8ee069d6070f225580cca45e9a2ca479e97e4ca731ffd55",
+      "after": "073330ca7369df10593e1168b54b1a8044d8e7b59feb7b1c6f88c8f69bc8a659",
+      "kind": "modified"
+    },
+    "clients/print-station/src/submission-watchdog.cjs": {
+      "before": null,
+      "after": "da8693b67cc7a71d8275c39acb4fe56757e51ed43c3b1e67ea64d1de772276f1",
+      "kind": "added"
+    },
+    "clients/print-station/tests/station.test.cjs": {
+      "before": "2a8bd3c4af31c9a77870898a786c29c970044785e62b56ca00e148e944145d2d",
+      "after": "971bdd29072484bed974899476baffabf5a55f21691749ccd4f45194377a67b7",
+      "kind": "modified"
+    },
+    "cloud/H5_4_CLOUD_SHA256SUMS.txt": {
+      "before": null,
+      "after": "89cf528f4274617eade70ffb5dfcb8e99f82e77d39e1c51bab5f5b14b1341777",
+      "kind": "added"
+    },
+    "cloud/START_HERE_H5_4.html": {
+      "before": null,
+      "after": "8c0ee896468e0fc27ce66cb5d411f4a206845e7ba2c77e6aed3715fda7e986e6",
+      "kind": "added"
+    },
+    "cloud/docs/h5_4/FINDING_STATUS.json": {
+      "before": null,
+      "after": "a034d34c5c8f4894c2b4d8de1af44e319705ee3716c0a094288c43a6f4c455d6",
+      "kind": "added"
+    },
+    "cloud/docs/h5_4/RELEASE_REPORT.md": {
+      "before": null,
+      "after": "2716ad842d3a40985c95dedc32e7314437acb01718005e60d6a8dc482bce8893",
+      "kind": "added"
+    },
+    "cloud/docs/h5_4/SETUP_AND_TEST.html": {
+      "before": null,
+      "after": "2cb70112c196d5f9b4a1e4b1198ecc0c66e160af53aebca1e33da486d7e7d605",
+      "kind": "added"
+    },
+    "cloud/docs/h5_4/SETUP_AND_TEST.md": {
+      "before": null,
+      "after": "8e18b9f2e1727e1422bc1090ecc7a008646a07f8b86103a81c35c1bb33646c8d",
+      "kind": "added"
+    },
+    "cloud/package.json": {
+      "before": "3d5131f2e4bb64772cf99a52f14edd85571a0a391c8304f5e6c890566857746c",
+      "after": "bc8b8aa9761e284c8f14174a642a82b66562c3a0a9a911f9aec5bef3b2172e99",
+      "kind": "modified"
+    },
+    "cloud/public/onboarding-admin.js": {
+      "before": "0d7f160853947c2d9d741efc20ae6965df12efc5c615b90703aa00c12e6edcd1",
+      "after": "ad306fe2a85055dd1c887afa0fb4e6781692d75c5a16e698f70d62680aec0692",
+      "kind": "modified"
+    },
+    "cloud/src/onboarding-print.cjs": {
+      "before": "217f384a53bca6182707f3c90796d66a4352937e8b8e0b5d0a2ce249605f818d",
+      "after": "76a295ba6e2f46532b3b592cde20709ada4ad21ccfe79052627e8cb4fc7b7907",
+      "kind": "modified"
+    },
+    "cloud/src/operations.cjs": {
+      "before": "6aed109effd823ff0f8410c92e05b30a3f6a0af88712048782aea0ad994b0850",
+      "after": "1806cfff0360b5dc090d3331252625cf3fb826b13cc82aad9c570bcec2ee2fa4",
+      "kind": "modified"
+    },
+    "cloud/src/print-assets.cjs": {
+      "before": null,
+      "after": "e1c272c116eb0e0b2b02927fd35cd75c5931c33ce75c4d54468cefb7aec9b56b",
+      "kind": "added"
+    },
+    "cloud/tests/deliveries.test.cjs": {
+      "before": "af8607175ce0fdb08be8d4f4ed027dd70f2ff4bf1b935edb9dfa0e79e66a152c",
+      "after": "db14f7a970ae7e3e1a4a7537e2958cfd0589499bd77edeecd8e014bde2004e20",
+      "kind": "modified"
+    },
+    "cloud/tests/h5-onboarding-print.test.cjs": {
+      "before": "4590655cc57e4e307e0fff07c05bc2cd44858d1326b5f526089416736f14af33",
+      "after": "ecad724e93e15d7f7a2a8507c2721248bff5365a69468a7914c018527a7d9390",
+      "kind": "modified"
+    },
+    "cloud/tests/h54-reliability.test.cjs": {
+      "before": null,
+      "after": "8f4610ff39b25a093cae23c128744d9abd331d1c8ea35eae921e45e8cfbbf926",
+      "kind": "added"
+    },
+    "cloud/tests/presentation.test.cjs": {
+      "before": "7f5bfd3010a4125dfb34ee210eafe8c9081311ed302735dd768adbf3b2f421aa",
+      "after": "9e704dde36abb7176b3a62d42ef2381f227572a5131d2c8417a0fa03c4394422",
+      "kind": "modified"
+    },
+    "deploy/LensDrop_Hostinger_Cloud_H5_4_Reliability.zip": {
+      "before": null,
+      "after": "5031290b45d1ceb8255ef0e2a9a8c54559f3a9e8ba5188f3fc1250d46d2096a3",
+      "kind": "added"
+    },
+    "deploy/LensDrop_Hostinger_Cloud_H5_QR_Pairing_Print.zip": {
+      "before": "18dfaec1606b3b172656168fcd4b2bfc58b121abc66ce6ee2f6f86f33a469005",
+      "after": "5031290b45d1ceb8255ef0e2a9a8c54559f3a9e8ba5188f3fc1250d46d2096a3",
+      "kind": "modified"
+    },
+    "docs/h5_4/FINDING_STATUS.json": {
+      "before": null,
+      "after": "a034d34c5c8f4894c2b4d8de1af44e319705ee3716c0a094288c43a6f4c455d6",
+      "kind": "added"
+    },
+    "docs/h5_4/RELEASE_REPORT.html": {
+      "before": null,
+      "after": "b0821cfe717c514f8d1a68ae4361a9ae3e5c094de19b481801d31d933e722027",
+      "kind": "added"
+    },
+    "docs/h5_4/RELEASE_REPORT.md": {
+      "before": null,
+      "after": "2716ad842d3a40985c95dedc32e7314437acb01718005e60d6a8dc482bce8893",
+      "kind": "added"
+    },
+    "docs/h5_4/REVIEW_PLAN_BEFORE_REPAIR.md": {
+      "before": null,
+      "after": "ade4d6ed40c2e82ac961d2c94c15631c152366a40d470508bc720aef53ec86ac",
+      "kind": "added"
+    },
+    "docs/h5_4/SETUP_AND_TEST.html": {
+      "before": null,
+      "after": "2cb70112c196d5f9b4a1e4b1198ecc0c66e160af53aebca1e33da486d7e7d605",
+      "kind": "added"
+    },
+    "docs/h5_4/SETUP_AND_TEST.md": {
+      "before": null,
+      "after": "8e18b9f2e1727e1422bc1090ecc7a008646a07f8b86103a81c35c1bb33646c8d",
+      "kind": "added"
+    },
+    "docs/h5_4/screenshots/H5_4_Cloud_Staff_Pairing.png": {
+      "before": null,
+      "after": "79066e2d6ee12bfa6cdb80f683437546a2d3e4f473d3c9ff9f7bf89ab7c82626",
+      "kind": "added"
+    },
+    "docs/h5_4/screenshots/H5_4_Cloud_Staff_Pairing_Mobile.png": {
+      "before": null,
+      "after": "482667a06bd97bd1db174a1efe8849067933a9c797e2d3625ec49ab30d9e343f",
+      "kind": "added"
+    },
+    "docs/h5_4/screenshots/H5_4_Print_Station_Dashboard.png": {
+      "before": null,
+      "after": "826e9d867d4ee354266a7b3704ca81d1fa3a185d0485a9407e934250069b8cd3",
+      "kind": "added"
+    },
+    "docs/h5_4/verification/SUMMARY.json": {
+      "before": null,
+      "after": "367ab52ea8b51316ca752b29b16f2705496efc0174a283f5863983b08f66633c",
+      "kind": "added"
+    },
+    "docs/h5_4/verification/UNCHANGED_COMPONENTS.json": {
+      "before": null,
+      "after": "e6e79a5c007f88306a4b1cb463e98c2f852cbda14c8c7b66a7fdc4a7b9ba1508",
+      "kind": "added"
+    },
+    "docs/h5_4/verification/android-contract-final.log": {
+      "before": null,
+      "after": "f834fb805ab68ec0304add7e2485e3d3ea4f2e74b1b3bb0a23e2cbaf454be62c",
+      "kind": "added"
+    },
+    "docs/h5_4/verification/android-ledger-final.log": {
+      "before": null,
+      "after": "f8801a80f56177f656df747d0f0d105d86c156f786dc8701dcdcc9e9081f14cd",
+      "kind": "added"
+    },
+    "docs/h5_4/verification/android-print-final.log": {
+      "before": null,
+      "after": "6dc820fb2166906730adce5d48664d9fe8e80f80f413085ea18b7312cfd96234",
+      "kind": "added"
+    },
+    "docs/h5_4/verification/android-profile-final.log": {
+      "before": null,
+      "after": "dc2a6291a098dc7dcb75643cef81d046fb0462539737f2c669d6785eae4a09ed",
+      "kind": "added"
+    },
+    "docs/h5_4/verification/android-reliability-final.log": {
+      "before": null,
+      "after": "c64c24ac05e1deb5e7d68a975aefaaafdaf9655995c7e6c7ff178c7ee9308b16",
+      "kind": "added"
+    },
+    "docs/h5_4/verification/android-session-final.log": {
+      "before": null,
+      "after": "7966eca1cfc27a2dae0e01f6ca86626f296d7c1b73b98a158d83549fedcafa16",
+      "kind": "added"
+    },
+    "docs/h5_4/verification/android-ticket-final.log": {
+      "before": null,
+      "after": "77883f2278509bc2872da5cf7d1fdf4e03af8e90f057a28315493fceabcb4292",
+      "kind": "added"
+    },
+    "docs/h5_4/verification/cloud-final.log": {
+      "before": null,
+      "after": "4be4c363145864051506ad6b561fe57e700edf6bcbafa7482c17a8e75dea4425",
+      "kind": "added"
+    },
+    "docs/h5_4/verification/desktop-final.log": {
+      "before": null,
+      "after": "10a8151abc65a6865ca0b2bd497a30bffc4d0ae8e5978a3c70ab5f974767a813",
+      "kind": "added"
+    },
+    "docs/h5_4/verification/document-layout-checks.json": {
+      "before": null,
+      "after": "7c3b4590e166361db5c20cb7350e79a5e959f6cc8f1d9bdb1c206e203cd5808b",
+      "kind": "added"
+    },
+    "docs/h5_4/verification/environment.txt": {
+      "before": null,
+      "after": "efa81e86ac8f5d75f334c0f54f1c5ac547bf665bb75e3d130fd04073e9aab779",
+      "kind": "added"
+    },
+    "docs/h5_4/verification/extracted-android-reliability.log": {
+      "before": null,
+      "after": "c64c24ac05e1deb5e7d68a975aefaaafdaf9655995c7e6c7ff178c7ee9308b16",
+      "kind": "added"
+    },
+    "docs/h5_4/verification/extracted-android-ticket.log": {
+      "before": null,
+      "after": "77883f2278509bc2872da5cf7d1fdf4e03af8e90f057a28315493fceabcb4292",
+      "kind": "added"
+    },
+    "docs/h5_4/verification/extracted-cloud-build.log": {
+      "before": null,
+      "after": "7352ef187d1b824d860052e9106db5e85eb700099402b17b09363bcbf8501ee5",
+      "kind": "added"
+    },
+    "docs/h5_4/verification/extracted-cloud-tests.log": {
+      "before": null,
+      "after": "66523a6a2258a2e2af3f65d08b2dab4bb6f4af6cdc0944c5cd60ee7d60906a91",
+      "kind": "added"
+    },
+    "docs/h5_4/verification/extracted-station-rerun-1.log": {
+      "before": null,
+      "after": "cc2627762c7c53d77a90a82540f3f1be11ac18b35f3a0ad850b83c53d17001ec",
+      "kind": "added"
+    },
+    "docs/h5_4/verification/extracted-station-rerun-2.log": {
+      "before": null,
+      "after": "7671b17133b4498535742188e80d146e642ff0a16cbe43551efa9826fbcd5097",
+      "kind": "added"
+    },
+    "docs/h5_4/verification/extracted-station-rerun-3.log": {
+      "before": null,
+      "after": "16495627cf7c5fe61c2625e4a5d00faf6fde0643292f628b4758a619f18ec66f",
+      "kind": "added"
+    },
+    "docs/h5_4/verification/extracted-station-tests.log": {
+      "before": null,
+      "after": "fa56cb2f204e5cf18584d519a383bf390d620b8c002eb238fb495464535272b9",
+      "kind": "added"
+    },
+    "docs/h5_4/verification/java-syntax.log": {
+      "before": null,
+      "after": "a32bc86e88a7d438adbc9b806280857a24d55e275f2e646ae2fa35eed7b8b52a",
+      "kind": "added"
+    },
+    "docs/h5_4/verification/station-final-retry.log": {
+      "before": null,
+      "after": "8b5e6c99b55ea046001f89684a30d3734015cfa3742f74843bcb26eab4c9f2ea",
+      "kind": "added"
+    },
+    "docs/h5_4/verification/ui-final.log": {
+      "before": null,
+      "after": "0b4cb74dd11938287eef63790a99ed7d3241f68f9ca27329972a4f56088ba56e",
+      "kind": "added"
+    },
+    "tools/testing/h54-ui-harness.py": {
+      "before": null,
+      "after": "02e09f7a48679aef011b4a82e3873cdd35174f2b372461bb04c38f5bf5958576",
+      "kind": "added"
+    }
+  }
+}

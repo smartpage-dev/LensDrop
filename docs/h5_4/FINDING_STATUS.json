@@ -1,0 +1,183 @@
+{
+  "release": "H5.4",
+  "date": "2026-11-23",
+  "not_all_findings_closed": true,
+  "findings": [
+    {
+      "id": "LD-REV-001",
+      "reviewer_title": "一張過期的 ready job 會令 station 佇列「塞車」，之後所有有效 job 都唔會執行",
+      "reviewer_severity": "high",
+      "h54_disposition": "Source repair + expired/eligible regression; physical authority/retry tests still required.",
+      "source_implemented": true,
+      "hardware_qualified": false
+    },
+    {
+      "id": "LD-REV-002",
+      "reviewer_title": "Cloud 列印 quota 按活動累計、print-assets 永不刪除；一旦超額，station 回報 LAN job 失敗並卡住整個 sync，cloud job 永遠拿不到",
+      "reviewer_severity": "high",
+      "h54_disposition": "Source repair + reservation, terminal retention, restart, receipt-isolation regressions; no unfinished/uncertain cache deletion.",
+      "source_implemented": true,
+      "hardware_qualified": false
+    },
+    {
+      "id": "LD-REV-003",
+      "reviewer_title": "Android 只接受「檔案最後兩 byte 是 FFD9」的 JPEG；帶 trailer 的有效 JPEG 會被無限重試，並拖慢所有上傳",
+      "reviewer_severity": "high",
+      "h54_disposition": "Source repair + bounded framing and per-file retry; real camera/editor formats and ContentResolver staging remain open.",
+      "source_implemented": true,
+      "hardware_qualified": false
+    },
+    {
+      "id": "LD-REV-004",
+      "reviewer_title": "Job 建立後，如果來源檔被原地覆寫，該相片會變成死路：舊 identity 永遠 blocked，新版本亦不會成為 candidate",
+      "reviewer_severity": "medium",
+      "h54_disposition": "Explicit reviewed new staged revision, unassigned, retaining old records; provider-epoch recovery is not included.",
+      "source_implemented": true,
+      "hardware_qualified": false
+    },
+    {
+      "id": "LD-REV-005",
+      "reviewer_title": "未選 candidate、blocked／retry job 或 blocked 列印 job 會令手機無法配對下一場活動，而 blocked job 在 app 內冇任何解決方法",
+      "reviewer_severity": "high",
+      "h54_disposition": "Explicit local retirement/audit + event gate release; no remote cancellation; previous pairing automatically restoring is not included.",
+      "source_implemented": true,
+      "hardware_qualified": false
+    },
+    {
+      "id": "LD-REV-006",
+      "reviewer_title": "Undo Next Group 一直有效直到被使用：新群組已收到大量相片後誤按 Undo，接收者會靜默變回上一位客人",
+      "reviewer_severity": "medium",
+      "h54_disposition": "Quick Undo limited to unused120s; explicit Resume preserves assignments and issued tickets.",
+      "source_implemented": true,
+      "hardware_qualified": false
+    },
+    {
+      "id": "LD-REV-007",
+      "reviewer_title": "Admin 畫面直接顯示 6 位配對碼，管理員可以照抄畫面上的號碼批准，比對碼形同虛設",
+      "reviewer_severity": "medium",
+      "h54_disposition": "Admin code no longer exposed; five durable wrong attempts; existing staff authorization retained.",
+      "source_implemented": true,
+      "hardware_qualified": false
+    },
+    {
+      "id": "LD-REV-008",
+      "reviewer_title": "確認 candidate 的對話框冇顯示目標群組；正在顯示 History 舊 QR 時確認，相片會進入另一個（receiving）群組",
+      "reviewer_severity": "medium",
+      "h54_disposition": "Named destination and stable historical shown QR in Group mode; recheck target on confirmation.",
+      "source_implemented": true,
+      "hardware_qualified": false
+    },
+    {
+      "id": "LD-REV-009",
+      "reviewer_title": "Baseline 期間新到的相片可能被靜默排除；MediaStore.getVersion() 不會因新增檔案而改變",
+      "reviewer_severity": "low",
+      "h54_disposition": "Baseline wording corrected only; generation-boundary/race engineering and device tests deferred.",
+      "source_implemented": false,
+      "hardware_qualified": false
+    },
+    {
+      "id": "LD-REV-010",
+      "reviewer_title": "MediaStore 版本改變後，session 永久暫停，同一 scope／folder 冇任何恢復路徑",
+      "reviewer_severity": "medium",
+      "h54_disposition": "Deferred; current provider mismatch remains fail-closed. No metadata-only source rebinding.",
+      "source_implemented": false,
+      "hardware_qualified": false
+    },
+    {
+      "id": "LD-REV-011",
+      "reviewer_title": "任何相片變動都觸發每 5 秒一次全資料夾掃描，連 baseline 檔案都逐一開 exclusive transaction；大資料夾的 CPU／電池消耗未量度",
+      "reviewer_severity": "medium",
+      "h54_disposition": "Deferred measurement/optimization; current full-scan behavior retained.",
+      "source_implemented": false,
+      "hardware_qualified": false
+    },
+    {
+      "id": "LD-REV-012",
+      "reviewer_title": "Android 15 的 dataSync 前景服務時間上限，可能令長時間婚禮中途靜默停止上傳；開啟 QR 畫面不會自動恢復",
+      "reviewer_severity": "medium",
+      "h54_disposition": "Deferred real background timeout/lifecycle/endurance qualification; no foreground-service-type bypass.",
+      "source_implemented": false,
+      "hardware_qualified": false
+    },
+    {
+      "id": "LD-REV-013",
+      "reviewer_title": "Lock 檔只用 PID 是否存活判斷；斷電後 PID 被重用時，station 或 cloud 可能拒絕啟動",
+      "reviewer_severity": "low",
+      "h54_disposition": "Unsafe same-PID lock removal rejected; active lock protection unchanged. Broader stale-lock redesign deferred.",
+      "source_implemented": false,
+      "hardware_qualified": false
+    },
+    {
+      "id": "LD-REV-014",
+      "reviewer_title": "QR 連結同步遇到第一筆失敗即中止；一筆永久失敗的記錄可能令新的 prepared QR 無法建立",
+      "reviewer_severity": "low",
+      "h54_disposition": "Deferred per-link synchronization failure isolation; existing fail-closed coordinator remains.",
+      "source_implemented": false,
+      "hardware_qualified": false
+    },
+    {
+      "id": "LD-REV-015",
+      "reviewer_title": "需求要求『gallery 公開』與『slideshow 資格』分開決定，但程式碼中 slideshow 等同於所有 status='live' 的相片",
+      "reviewer_severity": "medium",
+      "h54_disposition": "Current docs explicitly correct gallery/slideshow shared live eligibility. Independent projector flag deferred.",
+      "source_implemented": false,
+      "hardware_qualified": false
+    },
+    {
+      "id": "LD-REV-016",
+      "reviewer_title": "允許流動數據時，整個 session 期間都持有 requestNetwork，可能令流動數據一直保持連線",
+      "reviewer_severity": "low",
+      "h54_disposition": "Deferred radio/thermal/performance qualification; transfer lane retained.",
+      "source_implemented": false,
+      "hardware_qualified": false
+    },
+    {
+      "id": "LD-REV-017",
+      "reviewer_title": "tick() 內任何 IllegalStateException（包括暫時性的 null cursor）都會把整個 session 設為暫停",
+      "reviewer_severity": "low",
+      "h54_disposition": "Deferred provider failure classification/epoch recovery; no unsupported silent rebind.",
+      "source_implemented": false,
+      "hardware_qualified": false
+    },
+    {
+      "id": "LD-REV-018",
+      "reviewer_title": "傳送票券期間，onPause（包括螢幕旋轉或關屏）會取消連線，令結果變成 outcome_unknown",
+      "reviewer_severity": "low",
+      "h54_disposition": "Manual ticket foreground cancellation remains; rotation-specific continuation deferred.",
+      "source_implemented": false,
+      "hardware_qualified": false
+    },
+    {
+      "id": "LD-REV-019",
+      "reviewer_title": "Native 列印子程序冇 watchdog；驅動彈出視窗或卡住時，spooling 永遠為 true，close() 亦會一直等待",
+      "reviewer_severity": "low",
+      "h54_disposition": "Source watchdog180s; timeout unknown+pause, no late success overwrite; Windows native kill/paper validation open.",
+      "source_implemented": true,
+      "hardware_qualified": false
+    },
+    {
+      "id": "LD-REV-020",
+      "reviewer_title": "Release 衛生：預設 temporary 簽署、GitHub Actions 只鎖定 major tag、cloud 冇 lockfile、主 app 冇 lint gate、build preflight 依賴 sharp/package.json",
+      "reviewer_severity": "low",
+      "h54_disposition": "Partial: new regression runner and mandatory lint gate added. Signing identities/pins preserved; no lockfile/fresh-install attestation.",
+      "source_implemented": true,
+      "hardware_qualified": false
+    },
+    {
+      "id": "LD-REV-021",
+      "reviewer_title": "小型不一致：baseline 錯誤訊息聲稱可偵測新增、diagnostics 版本字串過時、宣告了未使用的權限",
+      "reviewer_severity": "informational",
+      "h54_disposition": "Updated diagnostic version/baseline wording; RECEIVE_BOOT_COMPLETED retained for persisted recovery.",
+      "source_implemented": true,
+      "hardware_qualified": false
+    },
+    {
+      "id": "LD-REV-022",
+      "reviewer_title": "本次無法驗證的部分：H5.3 APK 建置／lint／instrumentation、H5.2 Windows 原生建置、CP9550 DEVMODE 及裁切、58B3 長 URL 實紙掃描",
+      "reviewer_severity": "informational",
+      "h54_disposition": "Open release gates: new builds/lint/devices/printers/endurance/restore; not closed by local logic tests.",
+      "source_implemented": false,
+      "hardware_qualified": false
+    }
+  ]
+}

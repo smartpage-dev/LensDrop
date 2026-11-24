@@ -1,0 +1,17 @@
+{
+  "files": {
+    "clients/android/app/src/main/java/app/lensdrop/transfer/TicketProtocol.java": "d84f4f4de2e51f1dcf3d7da58e865d22a2a282bd7859f0edbfe042f93be63d73",
+    "clients/android/app/src/main/java/app/lensdrop/transfer/TicketTransport.java": "7353359c4202f1063539f71455bf52d881cce6712805f26c0c141f7d25df7a15",
+    "clients/android/app/src/main/java/app/lensdrop/transfer/TicketLedger.java": "9aa4558861987047c03e45a625d46a798b77d66f37e9aecd041a8a27d3726a6a",
+    "clients/print-station/native/DriverSnapshot.cs": "d56d707e340d12da853f01044a10c858a2394e9850fdcd3de904010da68cbc45",
+    "clients/print-station/native/PhotoLayout.cs": "8673ad06a1a9a65904ea7fe591996d770b711d6fa55a3b92af700543ffed299d",
+    "clients/print-station/native/Program.cs": "e7084e3dc971530dcf38c7833f491c10cb61aef7230170da4152726579414736",
+    "cloud/shared/print-protocol.cjs": "9b50bcf0c25c40494cbcc43355428358e1d2b3757899a79e4982ed23320e77e9",
+    "tools/github/android_ci.py": "513de09936a1b2d4605732474f59b287426b322fe91485f0e3cf891064321057",
+    "tools/github/windows_ci.py": "b23a0ec6da0fdc68395f253c87a6698962cd4ba478ce0c56d1b000e068d7fad3",
+    "tools/github/create_private_test_key.py": "568e43e7942b692b65137b17287aae58c020f1c003095d06a01c2d80ac000e91"
+  },
+  "desktop_source_unchanged": true,
+  "native_version_marker_changed": true,
+  "scope": "Byte equality only; not hardware qualification"
+}

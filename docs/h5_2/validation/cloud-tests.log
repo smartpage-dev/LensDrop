@@ -1,0 +1,728 @@
+
+> lensdrop-reliability-core@0.2.0-alpha.6-hostinger.5 test
+> node --test --test-concurrency=1 tests/*.test.cjs
+
+TAP version 13
+# (node:3738) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: review-first, exact private original, hidden access denial and idempotent finalization
+ok 1 - review-first, exact private original, hidden access denial and idempotent finalization
+  ---
+  duration_ms: 238.772023
+  type: 'test'
+  ...
+# Subtest: committed chunk replay, checksum rejection, future offset and process restart recovery
+ok 2 - committed chunk replay, checksum rejection, future offset and process restart recovery
+  ---
+  duration_ms: 442.160559
+  type: 'test'
+  ...
+# Subtest: same filename from different devices is safe; reimport by one device is deduplicated
+ok 3 - same filename from different devices is safe; reimport by one device is deduplicated
+  ---
+  duration_ms: 76.30404
+  type: 'test'
+  ...
+# Subtest: event/device authorization, revocation and client ID misuse
+ok 4 - event/device authorization, revocation and client ID misuse
+  ---
+  duration_ms: 37.20776
+  type: 'test'
+  ...
+# Subtest: 1,000 pending upload sessions retained without a 400-item eviction cap
+ok 5 - 1,000 pending upload sessions retained without a 400-item eviction cap
+  ---
+  duration_ms: 2297.171393
+  type: 'test'
+  ...
+# Subtest: invalid JPEG, wrong file checksum and incomplete completion never publish
+ok 6 - invalid JPEG, wrong file checksum and incomplete completion never publish
+  ---
+  duration_ms: 51.131235
+  type: 'test'
+  ...
+# Subtest: one process per data directory enforced
+ok 7 - one process per data directory enforced
+  ---
+  duration_ms: 16.396507
+  type: 'test'
+  ...
+# Subtest: SIGKILL at chunk_renamed: restart reconciles without lost or duplicate photo
+ok 8 - SIGKILL at chunk_renamed: restart reconciles without lost or duplicate photo
+  ---
+  duration_ms: 280.365385
+  type: 'test'
+  ...
+# Subtest: SIGKILL at originals_renamed: restart reconciles without lost or duplicate photo
+ok 9 - SIGKILL at originals_renamed: restart reconciles without lost or duplicate photo
+  ---
+  duration_ms: 247.600338
+  type: 'test'
+  ...
+# Subtest: SIGKILL at photo_committed: restart reconciles without lost or duplicate photo
+ok 10 - SIGKILL at photo_committed: restart reconciles without lost or duplicate photo
+  ---
+  duration_ms: 228.453706
+  type: 'test'
+  ...
+# (node:3845) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: H4 reserve QR before upload; pending guest page reveals no credential or camera filename
+ok 11 - H4 reserve QR before upload; pending guest page reveals no credential or camera filename
+  ---
+  duration_ms: 3156.295293
+  type: 'test'
+  ...
+# Subtest: H4 creation retries preserve original QR and cancelled IDs never become another guest
+ok 12 - H4 creation retries preserve original QR and cancelled IDs never become another guest
+  ---
+  duration_ms: 42.220537
+  type: 'test'
+  ...
+# Subtest: H4 device cannot access, cancel, or attach to another device group
+ok 13 - H4 device cannot access, cancel, or attach to another device group
+  ---
+  duration_ms: 46.24742
+  type: 'test'
+  ...
+# Subtest: H4 personal photos remain review even in a public live event; explicit personal approval does not publish gallery
+ok 14 - H4 personal photos remain review even in a public live event; explicit personal approval does not publish gallery
+  ---
+  duration_ms: 61.401889
+  type: 'test'
+  ...
+# Subtest: H4 one group contains multiple distinct photos without changing its QR
+ok 15 - H4 one group contains multiple distinct photos without changing its QR
+  ---
+  duration_ms: 97.603989
+  type: 'test'
+  ...
+# Subtest: H4 single-photo link binds at upload creation, not completion, and rejects another photo
+ok 16 - H4 single-photo link binds at upload creation, not completion, and rejects another photo
+  ---
+  duration_ms: 50.467363
+  type: 'test'
+  ...
+# Subtest: H4 upload identity includes delivery ID, so retry cannot reassign a photo
+ok 17 - H4 upload identity includes delivery ID, so retry cannot reassign a photo
+  ---
+  duration_ms: 32.294886
+  type: 'test'
+  ...
+# Subtest: H4 identical image bytes cannot silently be delivered to two different groups
+ok 18 - H4 identical image bytes cannot silently be delivered to two different groups
+  ---
+  duration_ms: 44.493213
+  type: 'test'
+  ...
+# Subtest: H4 hidden and withdrawn photos become inaccessible through both personal feed and asset URLs
+ok 19 - H4 hidden and withdrawn photos become inaccessible through both personal feed and asset URLs
+  ---
+  duration_ms: 51.860948
+  type: 'test'
+  ...
+# Subtest: H4 cancelled empty delivery rejects later uploads; filled undo cannot silently cancel
+ok 20 - H4 cancelled empty delivery rejects later uploads; filled undo cannot silently cancel
+  ---
+  duration_ms: 35.691212
+  type: 'test'
+  ...
+# Subtest: H4 public URL cannot fetch another group photo or the camera original
+ok 21 - H4 public URL cannot fetch another group photo or the camera original
+  ---
+  duration_ms: 53.397356
+  type: 'test'
+  ...
+# Subtest: H4 admin revoke blocks feed and image after a photo was released
+ok 22 - H4 admin revoke blocks feed and image after a photo was released
+  ---
+  duration_ms: 56.899181
+  type: 'test'
+  ...
+# Subtest: H4 device tokens cannot change personal publication policy or release/revoke
+ok 23 - H4 device tokens cannot change personal publication policy or release/revoke
+  ---
+  duration_ms: 48.654427
+  type: 'test'
+  ...
+# Subtest: H4 preflight isolation cannot be bypassed with a personal QR
+ok 24 - H4 preflight isolation cannot be bypassed with a personal QR
+  ---
+  duration_ms: 30.008318
+  type: 'test'
+  ...
+# Subtest: H4 auto release applies to later completion, does not release older photos or change event publication
+ok 25 - H4 auto release applies to later completion, does not release older photos or change event publication
+  ---
+  duration_ms: 106.720458
+  type: 'test'
+  ...
+# Subtest: H4 restart retains immutable QR, pending upload binding, release policy and schema version
+ok 26 - H4 restart retains immutable QR, pending upload binding, release policy and schema version
+  ---
+  duration_ms: 60.344019
+  type: 'test'
+  ...
+# Subtest: H4 malformed request bodies, unknown fields and invalid cursors are rejected
+ok 27 - H4 malformed request bodies, unknown fields and invalid cursors are rejected
+  ---
+  duration_ms: 29.967487
+  type: 'test'
+  ...
+# Subtest: H4 admin history paginates without leaking tokens into event status or diagnostic output
+ok 28 - H4 admin history paginates without leaking tokens into event status or diagnostic output
+  ---
+  duration_ms: 24.925658
+  type: 'test'
+  ...
+# Subtest: H4 hidden withdrawal is sticky: moving back to review does not silently restore personal approval
+ok 29 - H4 hidden withdrawal is sticky: moving back to review does not silently restore personal approval
+  ---
+  duration_ms: 60.265672
+  type: 'test'
+  ...
+# Subtest: H4 intentional skips are accounted for separately and never reported as all photos uploaded
+ok 30 - H4 intentional skips are accounted for separately and never reported as all photos uploaded
+  ---
+  duration_ms: 64.155339
+  type: 'test'
+  ...
+# Subtest: H4 bundled rehearsal tool uploads and reruns without a new QR or duplicate photo
+ok 31 - H4 bundled rehearsal tool uploads and reruns without a new QR or duplicate photo
+  ---
+  duration_ms: 360.58375
+  type: 'test'
+  ...
+# Subtest: entry: missing admin key rejects the host loader without undefined.listen
+ok 32 - entry: missing admin key rejects the host loader without undefined.listen
+  ---
+  duration_ms: 63.503688
+  type: 'test'
+  ...
+# Subtest: entry: empty admin key rejects without opening storage
+ok 33 - entry: empty admin key rejects without opening storage
+  ---
+  duration_ms: 70.432299
+  type: 'test'
+  ...
+# Subtest: entry: short admin key rejects without printing the key
+ok 34 - entry: short admin key rejects without printing the key
+  ---
+  duration_ms: 70.004231
+  type: 'test'
+  ...
+# Subtest: entry: example admin key is not accepted as a real secret
+ok 35 - entry: example admin key is not accepted as a real secret
+  ---
+  duration_ms: 66.077127
+  type: 'test'
+  ...
+# Subtest: entry: direct node invocation fails cleanly on missing admin key
+ok 36 - entry: direct node invocation fails cleanly on missing admin key
+  ---
+  duration_ms: 63.289066
+  type: 'test'
+  ...
+# Subtest: entry: correct key does not bypass private-storage configuration
+ok 37 - entry: correct key does not bypass private-storage configuration
+  ---
+  duration_ms: 65.994198
+  type: 'test'
+  ...
+# Subtest: entry: correct key does not bypass saved storage identity
+ok 38 - entry: correct key does not bypass saved storage identity
+  ---
+  duration_ms: 63.930315
+  type: 'test'
+  ...
+# Subtest: entry: restart mode never initializes a missing data directory
+ok 39 - entry: restart mode never initializes a missing data directory
+  ---
+  duration_ms: 66.48844
+  type: 'test'
+  ...
+# Subtest: entry: invalid TCP port fails before event storage opens
+ok 40 - entry: invalid TCP port fails before event storage opens
+  ---
+  duration_ms: 66.141875
+  type: 'test'
+  ...
+# Subtest: entry: managed socket address string binds once and serves real HTTP
+ok 41 - entry: managed socket address string binds once and serves real HTTP
+  ---
+  duration_ms: 110.23402
+  type: 'test'
+  ...
+# Subtest: entry: managed socket address undefined binds once and serves real HTTP
+ok 42 - entry: managed socket address undefined binds once and serves real HTTP
+  ---
+  duration_ms: 90.542679
+  type: 'test'
+  ...
+# Subtest: entry: managed socket address null binds once and serves real HTTP
+ok 43 - entry: managed socket address null binds once and serves real HTTP
+  ---
+  duration_ms: 97.707213
+  type: 'test'
+  ...
+# Subtest: entry: direct TCP startup retains ready port and clean shutdown
+ok 44 - entry: direct TCP startup retains ready port and clean shutdown
+  ---
+  duration_ms: 126.882981
+  type: 'test'
+  ...
+# Subtest: secrets: admin-only command generates a private 64-hex value without storage identity
+ok 45 - secrets: admin-only command generates a private 64-hex value without storage identity
+  ---
+  duration_ms: 54.113133
+  type: 'test'
+  ...
+# Subtest: secrets: original new-install command remains available; invalid switches fail closed
+ok 46 - secrets: original new-install command remains available; invalid switches fail closed
+  ---
+  duration_ms: 60.262797
+  type: 'test'
+  ...
+# Subtest: helper: admin-only generation requires no data path and changes no storage configuration
+ok 47 - helper: admin-only generation requires no data path and changes no storage configuration
+  ---
+  duration_ms: 3.601103
+  type: 'test'
+  ...
+# Subtest: helper: cancelled key regeneration preserves the selected key
+ok 48 - helper: cancelled key regeneration preserves the selected key
+  ---
+  duration_ms: 0.954494
+  type: 'test'
+  ...
+# (node:4061) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: H5 invitation contains no administrator key or permanent device credential
+ok 49 - H5 invitation contains no administrator key or permanent device credential
+  ---
+  duration_ms: 76.920247
+  type: 'test'
+  ...
+# Subtest: H5 single invitation has idempotent claim and cannot enroll a second phone
+ok 50 - H5 single invitation has idempotent claim and cannot enroll a second phone
+  ---
+  duration_ms: 57.201906
+  type: 'test'
+  ...
+# Subtest: H5 claim alone is not authorization; approval requires matching confirmation code
+ok 51 - H5 claim alone is not authorization; approval requires matching confirmation code
+  ---
+  duration_ms: 49.013819
+  type: 'test'
+  ...
+# Subtest: H5 expired and revoked invitation cannot claim or approve
+ok 52 - H5 expired and revoked invitation cannot claim or approve
+  ---
+  duration_ms: 52.023381
+  type: 'test'
+  ...
+# Subtest: H5 approved device can recover enrollment result after server restart without a new identity
+ok 53 - H5 approved device can recover enrollment result after server restart without a new identity
+  ---
+  duration_ms: 43.964438
+  type: 'test'
+  ...
+# Subtest: H5 revoking invitation also revokes its enrolled identity
+ok 54 - H5 revoking invitation also revokes its enrolled identity
+  ---
+  duration_ms: 39.059339
+  type: 'test'
+  ...
+# Subtest: H5 station token cannot use administrator or photographer upload permissions
+ok 55 - H5 station token cannot use administrator or photographer upload permissions
+  ---
+  duration_ms: 56.609521
+  type: 'test'
+  ...
+# Subtest: H5 station can create a scoped phone invitation but cannot approve it
+ok 56 - H5 station can create a scoped phone invitation but cannot approve it
+  ---
+  duration_ms: 34.878149
+  type: 'test'
+  ...
+# Subtest: H5 printing defaults off for legacy and QR-enrolled phones
+ok 57 - H5 printing defaults off for legacy and QR-enrolled phones
+  ---
+  duration_ms: 34.052692
+  type: 'test'
+  ...
+# Subtest: H5 grant binds phone, station, event, image policy and copy ceiling and fails tampering
+ok 58 - H5 grant binds phone, station, event, image policy and copy ceiling and fails tampering
+  ---
+  duration_ms: 37.175883
+  type: 'test'
+  ...
+# Subtest: H5 station settings have revision checks and reject nonlocal endpoints
+ok 59 - H5 station settings have revision checks and reject nonlocal endpoints
+  ---
+  duration_ms: 34.969887
+  type: 'test'
+  ...
+# Subtest: H5 cross-event station and excessive copies cannot be granted or printed
+ok 60 - H5 cross-event station and excessive copies cannot be granted or printed
+  ---
+  duration_ms: 40.325487
+  type: 'test'
+  ...
+# Subtest: H5 print job ID is immutable and identical creation retry returns the same job
+ok 61 - H5 print job ID is immutable and identical creation retry returns the same job
+  ---
+  duration_ms: 38.58117
+  type: 'test'
+  ...
+# Subtest: H5 private print image stays separate from gallery and personal delivery
+ok 62 - H5 private print image stays separate from gallery and personal delivery
+  ---
+  duration_ms: 3059.346682
+  type: 'test'
+  ...
+# Subtest: H5 checksum error does not advance cloud print offset
+ok 63 - H5 checksum error does not advance cloud print offset
+  ---
+  duration_ms: 37.822196
+  type: 'test'
+  ...
+# Subtest: H5 accepted offsets survive restart and uncommitted trailing bytes are discarded
+ok 64 - H5 accepted offsets survive restart and uncommitted trailing bytes are discarded
+  ---
+  duration_ms: 47.383858
+  type: 'test'
+  ...
+# Subtest: H5 LAN receiving report does not block a later cloud fallback asset upload
+ok 65 - H5 LAN receiving report does not block a later cloud fallback asset upload
+  ---
+  duration_ms: 39.495784
+  type: 'test'
+  ...
+# Subtest: H5 station outcome revisions never regress when a report is retried out of order
+ok 66 - H5 station outcome revisions never regress when a report is retried out of order
+  ---
+  duration_ms: 32.861077
+  type: 'test'
+  ...
+# Subtest: H5 one station cannot download or report another station job
+ok 67 - H5 one station cannot download or report another station job
+  ---
+  duration_ms: 46.764897
+  type: 'test'
+  ...
+# Subtest: H5 old devices cannot grant themselves print permission or approve enrollment
+ok 68 - H5 old devices cannot grant themselves print permission or approve enrollment
+  ---
+  duration_ms: 22.868997
+  type: 'test'
+  ...
+# Subtest: H5 revoked station cannot poll or continue receiving cloud credentials
+ok 69 - H5 revoked station cannot poll or continue receiving cloud credentials
+  ---
+  duration_ms: 29.69707
+  type: 'test'
+  ...
+# Subtest: H5 oversized and non-JPEG print images are rejected before ready state
+ok 70 - H5 oversized and non-JPEG print images are rejected before ready state
+  ---
+  duration_ms: 43.690846
+  type: 'test'
+  ...
+# (node:4076) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: hosting: rejects relative paths, release paths, and overlapping app storage
+ok 71 - hosting: rejects relative paths, release paths, and overlapping app storage
+  ---
+  duration_ms: 1.679285
+  type: 'test'
+  ...
+# Subtest: hosting: symlink aliases cannot disguise deployment-directory storage
+ok 72 - hosting: symlink aliases cannot disguise deployment-directory storage
+  ---
+  duration_ms: 1.245373
+  type: 'test'
+  ...
+# Subtest: hosting: placeholder administrator keys and invalid identities are rejected
+ok 73 - hosting: placeholder administrator keys and invalid identities are rejected
+  ---
+  duration_ms: 0.974946
+  type: 'test'
+  ...
+# Subtest: hosting: missing storage fails closed without creating a new directory
+ok 74 - hosting: missing storage fails closed without creating a new directory
+  ---
+  duration_ms: 0.422075
+  type: 'test'
+  ...
+# Subtest: hosting: existing unmarked data is never automatically adopted or erased
+ok 75 - hosting: existing unmarked data is never automatically adopted or erased
+  ---
+  duration_ms: 0.705581
+  type: 'test'
+  ...
+# Subtest: hosting: first initialization and subsequent safe boot preserve identity and database
+ok 76 - hosting: first initialization and subsequent safe boot preserve identity and database
+  ---
+  duration_ms: 23.484636
+  type: 'test'
+  ...
+# Subtest: hosting: wrong storage identity fails without rewriting the marker
+ok 77 - hosting: wrong storage identity fails without rewriting the marker
+  ---
+  duration_ms: 2.546748
+  type: 'test'
+  ...
+# Subtest: hosting: missing database cannot be mistaken for an empty healthy gallery
+ok 78 - hosting: missing database cannot be mistaken for an empty healthy gallery
+  ---
+  duration_ms: 2.405255
+  type: 'test'
+  ...
+# Subtest: hosting: invalid quotas and initialization flags fail before data creation
+ok 79 - hosting: invalid quotas and initialization flags fail before data creation
+  ---
+  duration_ms: 1.457801
+  type: 'test'
+  ...
+# Subtest: hosting: CommonJS host entry, private diagnostics and release replacement preserve an interrupted upload
+ok 80 - hosting: CommonJS host entry, private diagnostics and release replacement preserve an interrupted upload
+  ---
+  duration_ms: 505.466429
+  type: 'test'
+  ...
+# Subtest: legacy prototype patch never evicts pending or failed imports
+ok 81 - legacy prototype patch never evicts pending or failed imports
+  ---
+  duration_ms: 17.814499
+  type: 'test'
+  ...
+# Subtest: legacy edited returns respect review-first policy and preserve hidden status
+ok 82 - legacy edited returns respect review-first policy and preserve hidden status
+  ---
+  duration_ms: 2.865227
+  type: 'test'
+  ...
+# (node:4122) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: H2 preflight is isolated on live events and cannot be published by an administrator
+ok 83 - H2 preflight is isolated on live events and cannot be published by an administrator
+  ---
+  duration_ms: 108.737874
+  type: 'test'
+  ...
+# Subtest: test type is immutable and must be a boolean; test and production bytes cannot cross categories
+ok 84 - test type is immutable and must be a boolean; test and production bytes cannot cross categories
+  ---
+  duration_ms: 34.632669
+  type: 'test'
+  ...
+# Subtest: production cannot become a preflight by reimporting identical bytes
+ok 85 - production cannot become a preflight by reimporting identical bytes
+  ---
+  duration_ms: 45.08421
+  type: 'test'
+  ...
+# Subtest: source jobs, unique cloud photos and public photos remain separate, excluding tests
+ok 86 - source jobs, unique cloud photos and public photos remain separate, excluding tests
+  ---
+  duration_ms: 81.642294
+  type: 'test'
+  ...
+# Subtest: fresh zero backlog can reconcile observed files but never claims camera-card completeness or deletion safety
+ok 87 - fresh zero backlog can reconcile observed files but never claims camera-card completeness or deletion safety
+  ---
+  duration_ms: 23.963141
+  type: 'test'
+  ...
+# Subtest: stale heartbeat is not made fresh by a device GET or last_seen update
+ok 88 - stale heartbeat is not made fresh by a device GET or last_seen update
+  ---
+  duration_ms: 25.474163
+  type: 'test'
+  ...
+# Subtest: legacy or missing counts and revoked credentials do not yield a green wrap-up
+ok 89 - legacy or missing counts and revoked credentials do not yield a green wrap-up
+  ---
+  duration_ms: 26.286083
+  type: 'test'
+  ...
+# Subtest: backlog and unknown server sessions prevent false reconciliation
+ok 90 - backlog and unknown server sessions prevent false reconciliation
+  ---
+  duration_ms: 27.257183
+  type: 'test'
+  ...
+# Subtest: diagnostics use an allowlist and exclude names, paths, tokens, hashes and public gallery links
+ok 91 - diagnostics use an allowlist and exclude names, paths, tokens, hashes and public gallery links
+  ---
+  duration_ms: 43.553339
+  type: 'test'
+  ...
+# Subtest: admin pagination returns all 205 seeded photo records and keeps full-event counts
+ok 92 - admin pagination returns all 205 seeded photo records and keeps full-event counts
+  ---
+  duration_ms: 33.022404
+  type: 'test'
+  ...
+# Subtest: gallery visibility check drops withdrawn and test files and validates the bounded request
+ok 93 - gallery visibility check drops withdrawn and test files and validates the bounded request
+  ---
+  duration_ms: 59.12435
+  type: 'test'
+  ...
+# Subtest: additive migration can adopt H1 columns with default production flags and preserves uploaded metadata
+ok 94 - additive migration can adopt H1 columns with default production flags and preserves uploaded metadata
+  ---
+  duration_ms: 42.644979
+  type: 'test'
+  ...
+# Subtest: heartbeat sanitization rejects negative, fractional and free-text payloads
+ok 95 - heartbeat sanitization rejects negative, fractional and free-text payloads
+  ---
+  duration_ms: 0.165349
+  type: 'test'
+  ...
+# (node:4136) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: H3 new and migrated events get disabled independent projector capabilities
+ok 96 - H3 new and migrated events get disabled independent projector capabilities
+  ---
+  duration_ms: 85.819133
+  type: 'test'
+  ...
+# Subtest: presentation settings, token rotation and logo writes require admin, not device or guest
+ok 97 - presentation settings, token rotation and logo writes require admin, not device or guest
+  ---
+  duration_ms: 46.283843
+  type: 'test'
+  ...
+# Subtest: slideshow feed and assets exclude review, hidden, preflight and foreign-event photos
+ok 98 - slideshow feed and assets exclude review, hidden, preflight and foreign-event photos
+  ---
+  duration_ms: 166.534584
+  type: 'test'
+  ...
+# Subtest: hide and disable revoke new projection fetches; guest gallery stays available
+ok 99 - hide and disable revoke new projection fetches; guest gallery stays available
+  ---
+  duration_ms: 53.6255
+  type: 'test'
+  ...
+# Subtest: rotation invalidates old feed and assets but not guest links or device credentials
+ok 100 - rotation invalidates old feed and assets but not guest links or device credentials
+  ---
+  duration_ms: 42.086253
+  type: 'test'
+  ...
+# Subtest: settings enforce enums, integer limits, strict booleans and optimistic revisions
+ok 101 - settings enforce enums, integer limits, strict booleans and optimistic revisions
+  ---
+  duration_ms: 28.045187
+  type: 'test'
+  ...
+# Subtest: transparent logo is re-encoded, shared with gallery and projector, persisted and removable
+ok 102 - transparent logo is re-encoded, shared with gallery and projector, persisted and removable
+  ---
+  duration_ms: 92.479094
+  type: 'test'
+  ...
+# Subtest: logo rejects SVG, disguised SVG, invalid images and oversize requests without replacing the existing logo
+ok 103 - logo rejects SVG, disguised SVG, invalid images and oversize requests without replacing the existing logo
+  ---
+  duration_ms: 63.718662
+  type: 'test'
+  ...
+# Subtest: latest-N projection window is bounded, has full totals and excludes test rows even if corruptly marked live
+ok 104 - latest-N projection window is bounded, has full totals and excludes test rows even if corruptly marked live
+  ---
+  duration_ms: 58.0626
+  type: 'test'
+  ...
+# Subtest: audience QR capability is opt-in and name changes are shared, without publishing pending photos
+ok 105 - audience QR capability is opt-in and name changes are shared, without publishing pending photos
+  ---
+  duration_ms: 21.718737
+  type: 'test'
+  ...
+# Subtest: static assets have CSP and previews require admin without changing publication state
+ok 106 - static assets have CSP and previews require admin without changing publication state
+  ---
+  duration_ms: 3062.784989
+  type: 'test'
+  ...
+# Subtest: H2 schema upgrade creates disabled presentation records and restart retains existing event and photos
+ok 107 - H2 schema upgrade creates disabled presentation records and restart retains existing event and photos
+  ---
+  duration_ms: 52.8141
+  type: 'test'
+  ...
+# Subtest: release fixture provides the exact installed sharp dependency without NODE_PATH
+ok 108 - release fixture provides the exact installed sharp dependency without NODE_PATH
+  ---
+  duration_ms: 68.370655
+  type: 'test'
+  ...
+# Subtest: negative control: a copied release without its dependency link cannot load sharp
+ok 109 - negative control: a copied release without its dependency link cannot load sharp
+  ---
+  duration_ms: 30.715541
+  type: 'test'
+  ...
+# Subtest: release fixture refuses an uninstalled source instead of silently using global dependencies
+ok 110 - release fixture refuses an uninstalled source instead of silently using global dependencies
+  ---
+  duration_ms: 1.191722
+  type: 'test'
+  ...
+# Subtest: playlist polls do not rewind a running cycle and new published items get the next boundary
+ok 111 - playlist polls do not rewind a running cycle and new published items get the next boundary
+  ---
+  duration_ms: 0.852913
+  type: 'test'
+  ...
+# Subtest: withdrawn queued photos are removed and a single photo can repeat without an infinite loop
+ok 112 - withdrawn queued photos are removed and a single photo can repeat without an infinite loop
+  ---
+  duration_ms: 0.124076
+  type: 'test'
+  ...
+# Subtest: oldest and shuffle modes yield each item within a cycle without immediate repeat
+ok 113 - oldest and shuffle modes yield each item within a cycle without immediate repeat
+  ---
+  duration_ms: 0.229535
+  type: 'test'
+  ...
+# Subtest: many feed updates bound metadata and discard withdrawn history from the queue
+ok 114 - many feed updates bound metadata and discard withdrawn history from the queue
+  ---
+  duration_ms: 14.377001
+  type: 'test'
+  ...
+# Subtest: QR renderer produces an actual matrix with four-module quiet zone and rejects unsafe or enormous payloads
+ok 115 - QR renderer produces an actual matrix with four-module quiet zone and rejects unsafe or enormous payloads
+  ---
+  duration_ms: 13.991191
+  type: 'test'
+  ...
+# Subtest: admin template contains every literal H3 control binding and loads all required scripts
+ok 116 - admin template contains every literal H3 control binding and loads all required scripts
+  ---
+  duration_ms: 0.73207
+  type: 'test'
+  ...
+# Subtest: slideshow and guest templates contain required DOM elements and avoid remote services
+ok 117 - slideshow and guest templates contain required DOM elements and avoid remote services
+  ---
+  duration_ms: 0.400451
+  type: 'test'
+  ...
+1..117
+# tests 117
+# suites 0
+# pass 117
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 19372.70334

@@ -1,0 +1,34 @@
+test_ack_loss_then_reopen_recovers_without_duplicate (test_client.IntegrationTests.test_ack_loss_then_reopen_recovers_without_duplicate) ... ok
+test_revoked_token_blocks_not_infinite_retries (test_client.IntegrationTests.test_revoked_token_blocks_not_infinite_retries) ... ok
+test_three_distinct_photos_all_accounted_for (test_client.IntegrationTests.test_three_distinct_photos_all_accounted_for) ... ok
+test_10000_pending_jobs_survive_reopen (test_client.QueueTests.test_10000_pending_jobs_survive_reopen) ... ok
+test_duplicate_observations_do_not_duplicate_queue (test_client.QueueTests.test_duplicate_observations_do_not_duplicate_queue) ... ok
+test_partial_file_not_queued_and_source_never_removed (test_client.QueueTests.test_partial_file_not_queued_and_source_never_removed) ... ok
+test_remote_http_and_embedded_credentials_rejected (test_client.QueueTests.test_remote_http_and_embedded_credentials_rejected) ... ok
+test_scope_cannot_be_rebound (test_client.QueueTests.test_scope_cannot_be_rebound) ... ok
+test_staging_hash_and_source_preservation (test_client.QueueTests.test_staging_hash_and_source_preservation) ... ok
+test_staging_limit_applies_backpressure_without_deleting_jobs (test_client.QueueTests.test_staging_limit_applies_backpressure_without_deleting_jobs) ... ok
+test_uploading_state_recovers_without_deletion (test_client.QueueTests.test_uploading_state_recovers_without_deletion) ... ok
+test_cli_preflight_is_verified_but_never_public (test_operations.OperationsIntegrationTests.test_cli_preflight_is_verified_but_never_public) ... ok
+test_drain_processes_only_existing_queue_and_cloud_reconciles (test_operations.OperationsIntegrationTests.test_drain_processes_only_existing_queue_and_cloud_reconciles) ... ok
+test_other_event_cannot_reuse_queue_and_does_not_replace_cached_identity (test_operations.OperationsIntegrationTests.test_other_event_cannot_reuse_queue_and_does_not_replace_cached_identity) ... ok
+test_cannot_relabel_existing_production_as_test (test_operations.OperationsQueueTests.test_cannot_relabel_existing_production_as_test) ... ok
+test_console_export_is_read_only_during_active_transfer (test_operations.OperationsQueueTests.test_console_export_is_read_only_during_active_transfer) ... /usr/lib/python3.13/tkinter/__init__.py:4220: ResourceWarning: unclosed database in <sqlite3.Connection object at 0x7fe7f1762f20>
+  class Image:
+ResourceWarning: Enable tracemalloc to get the object allocation traceback
+/usr/lib/python3.13/tkinter/__init__.py:4220: ResourceWarning: unclosed database in <sqlite3.Connection object at 0x7fe7f1762e30>
+  class Image:
+ResourceWarning: Enable tracemalloc to get the object allocation traceback
+ok
+test_empty_queue_is_idle_not_stalled (test_operations.OperationsQueueTests.test_empty_queue_is_idle_not_stalled) ... ok
+test_error_exports_do_not_include_sensitive_raw_errors_or_source_paths (test_operations.OperationsQueueTests.test_error_exports_do_not_include_sensitive_raw_errors_or_source_paths) ... ok
+test_legacy_queue_migration_is_additive (test_operations.OperationsQueueTests.test_legacy_queue_migration_is_additive) ... ok
+test_old_server_cannot_silently_publish_preflight (test_operations.OperationsQueueTests.test_old_server_cannot_silently_publish_preflight) ... ok
+test_preflight_stays_separate_from_production_counts_and_scanning (test_operations.OperationsQueueTests.test_preflight_stays_separate_from_production_counts_and_scanning) ... ok
+test_retry_backlog_preserves_production_source_and_counts (test_operations.OperationsQueueTests.test_retry_backlog_preserves_production_source_and_counts) ... ok
+test_source_folder_binding_cannot_be_repointed (test_operations.OperationsQueueTests.test_source_folder_binding_cannot_be_repointed) ... ok
+
+----------------------------------------------------------------------
+Ran 23 tests in 8.103s
+
+OK

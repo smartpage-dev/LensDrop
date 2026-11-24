@@ -1,0 +1,105 @@
+<!doctype html><html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>LensDrop H5.4 release report</title><style>*{box-sizing:border-box}body{margin:0;background:#f3f6f7;color:#183341;font:16px/1.65 system-ui,-apple-system,Segoe UI,sans-serif}header{background:#163d4a;color:#fff;padding:35px max(22px,calc((100% - 1040px)/2))}header p{margin:0;color:#c5e5e6;font-size:14px}main{max-width:1040px;margin:25px auto;padding:32px 42px;background:#fff;border-radius:14px;border:1px solid #dce5e9;overflow-wrap:anywhere}h1{font-size:32px;line-height:1.2;margin:10px 0 24px}h2{font-size:24px;margin-top:36px;color:#175a66;scroll-margin-top:20px}h3{font-size:19px;margin-top:28px}a{color:#0a6879}nav{padding:14px;background:#ecf6f5;border-radius:9px;margin-bottom:24px}nav ul{padding-left:22px}table{border-collapse:collapse;width:100%;table-layout:fixed;margin:20px 0;font-size:14px}th,td{padding:10px;vertical-align:top;border:1px solid #dae4e8}th{text-align:left;background:#edf4f6}pre{padding:18px;background:#112e3b;color:#e4f7ff;border-radius:8px;white-space:pre-wrap;overflow-wrap:anywhere}code{font:13px/1.6 ui-monospace,Consolas,monospace}.notice{padding:18px;background:#fff3d8;border-left:4px solid #c58b16;border-radius:6px}li{margin:7px 0}@media(max-width:680px){header{padding:22px 18px}main{padding:22px 18px;margin:0;border:0;border-radius:0}h1{font-size:28px}h2{font-size:22px}td,th{padding:8px 6px;font-size:12px}}</style><header><p>LUCE STUDIO / LENSDROP H5.4 / RELIABILITY REPAIR PILOT</p></header><main><h1>LensDrop H5.4 release and verification report</h1>
+<p>Date: 2026-11-23. Baseline: exact LensDrop H5.3 source archive SHA-256 <code>24497103ce96360b0efd21249e24c0681a3fa7d3939ab439d9cf94dd68033c9c</code> (426 original files). Engineering source repair release, not production certification.</p>
+<h2 id="section-1">Shipped scope</h2>
+<ul>
+<li><strong>001:</strong> visibly quarantine expired/unauthorized/profile-mismatched print jobs; continue other eligible jobs; authenticated refresh plus explicit Retry, not silent printing.</li>
+<li><strong>002:</strong> independent receipt retry/backoff, reservations for actual cloud print-cache responsibility, metadata-only LAN records consume zero image bytes; bounded 24h terminal cache cleanup with durable tombstones and retained identity.</li>
+<li><strong>003:</strong> structurally bounded JPEG framing validator, original-byte/trailer preservation and separate file-local retry budget.</li>
+<li><strong>004/005:</strong> Android pause/checkpoint guarded local retirement, previous-event audit/history, encrypted credential archive, explicit staged changed-source revisions without inherited delivery. This is not remote cancellation.</li>
+<li><strong>006/008:</strong> 120-second unused-group quick Undo, explicit Resume, named receiving destination, preserve historical shown QR during group assignment.</li>
+<li><strong>007:</strong> blind device-code approval in authenticated Admin; five durable wrong-code attempts per invitation.</li>
+<li><strong>019:</strong> 180-second native call watchdog, unknown outcome plus pause, no late-state overwrite or auto reprint.</li>
+<li><strong>020/021 partial:</strong> mandatory Android lint added to GitHub, new tests wired, accurate diagnostics and baseline wording; persisted-job permission retained. No fresh dependency lock install claim.</li>
+</ul>
+<h2 id="section-2">Versions and migration</h2>
+<p>Cloud <code>0.2.0-alpha.7-hostinger.5.4</code>, schema6; station <code>0.1.2-alpha.h5.4</code>, native assembly0.1.2; Android <code>0.2.0-alpha.6-h5.4</code> / code9 / app ID unchanged, transfer queue5 and print queue2. The station ledger gains per-receipt backoff/attention columns transactionally; this is a behavioral migration even without a station user_version label. Upgrade cloud, station, Android after consistent stopped backups.</p>
+<p>Core photo-print request remains the same nine-field immutable protocol. CP9550 driver capture, strip composition and native adapter source are unchanged (native version marker updated). Ticket packet/transport/ledger logic is unchanged; Undo surrounding it is deliberately stricter. Printer Lab, desktop uploader, signing helpers and camera integration are unchanged.</p>
+<h2 id="section-3">Executed tests (this increment)</h2>
+<table>
+<thead>
+<tr>
+<th>Suite</th>
+<th style="text-align:right">Executed result</th>
+<th>Boundary</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Cloud build</td>
+<td style="text-align:right">Pass</td>
+<td>Existing local sharp0.34.1; not fresh install or Hostinger</td>
+</tr>
+<tr>
+<td>Cloud tests</td>
+<td style="text-align:right">131 pass</td>
+<td>117 existing +14 new reservation/retention/migration/pairing cases; real local APIs/SQLite</td>
+</tr>
+<tr>
+<td>Station tests</td>
+<td style="text-align:right">52 pass</td>
+<td>Existing43 +9 new queue/report/watchdog/migration cases; local HTTP/HTTPS and simulated driver/callback</td>
+</tr>
+<tr>
+<td>Android JPEG/retry</td>
+<td style="text-align:right">21 pass</td>
+<td>Real desktop-generated baseline/progressive JPEGs and synthetic trailer/invalid cases; pure Java framing</td>
+</tr>
+<tr>
+<td>Android recovery/identity</td>
+<td style="text-align:right">25 pass</td>
+<td>Exact production ledger through JVM/SQLite bridge; schema4 migration from frozen H5.3 QueueDb included</td>
+</tr>
+<tr>
+<td>Existing Android watch</td>
+<td style="text-align:right">24 pass</td>
+<td>Actual QueueDb/WatchLedger bridge; 10,000 baseline records; not ContentResolver</td>
+</tr>
+<tr>
+<td>Existing ticket</td>
+<td style="text-align:right">27 packet +28 ledger pass</td>
+<td>No Bluetooth/paper</td>
+</tr>
+<tr>
+<td>Existing policy</td>
+<td style="text-align:right">10 session +15 print pass</td>
+<td>Pure Java; existing H5.1 contracts also run by print script</td>
+</tr>
+<tr>
+<td>Existing build contracts</td>
+<td style="text-align:right">15 pass</td>
+<td>Targeted stub/public-API callback checks, not Android SDK</td>
+</tr>
+<tr>
+<td>Existing CP9550 layout</td>
+<td style="text-align:right">31 pass</td>
+<td>Pure Java geometry, not actual cut/profile output</td>
+</tr>
+<tr>
+<td>Existing desktop</td>
+<td style="text-align:right">23 pass</td>
+<td>Includes local cloud integration; source unchanged</td>
+</tr>
+<tr>
+<td>Web UI harness</td>
+<td style="text-align:right">14 pass</td>
+<td>Exact HTML/JS with explicit local API bridge; 390px/desktop, no native Windows or HTTPS browser test</td>
+</tr>
+<tr>
+<td>Java syntax</td>
+<td style="text-align:right">Parse pass</td>
+<td>All current production Java files; not type/API/resource compilation</td>
+</tr>
+</tbody>
+</table>
+<p>The new defect assertions were changed into desired-behavior regressions rather than silently skipping them. Existing tests for previously unbounded Undo and expiry were intentionally updated; their invariants remain. The external reviewer reproduction files are retained in the prior review-response package, not presented as passing repair tests.</p>
+<h2 id="section-4">Test limitations and intermediate failures</h2>
+<p>Early cloud tests caught an unupdated schema guard and old schema expectations; those were fixed before final131 pass. Two old station tests expected expired jobs to stay ready/auto-resume; new source semantics required explicit assertions. A test initially referenced the pairing response as an object instead of its actual array and was corrected. The audit-export test used a minimal JSONObject/JSONArray stub without array serialization; it was changed to inspect actual fields rather than pretend the stub is a full JSON implementation.</p>
+<p>Two combined repeated station runs stalled without an assertion failure (one after progress24 and one after43); the second occurred after the test-client socket/timeout hardening, so that change is NOT established as the cause or cure. Three diagnostic reruns and then three uninstrumented reruns of the exact extracted source each passed all52 tests. The intermittent stall remains unexplained and is an explicit repeatability/soak-test gate, not dismissed as a proven environment problem. The first extracted cloud run passed all131 tests. Extracted-source JPEG/recovery21+25 and ticket27+28 checks also passed. Another batched JVM/parse command reached successful test summaries but timed out before the parser ran; syntax parsing was run separately and passed. Interrupted commands are not counted as completed passes; repeated passes do not increase the number of distinct test cases.</p>
+<h2 id="section-5">What has NOT been executed here</h2>
+<p>No new APK/EXE/native Windows build, Android SDK lint/instrumentation, clean dependency installation, actual provider/lifecycle recovery, real camera/editor input, native printer process termination, CP9550 paper/cutter, integrated58B3 paper scan, phone endurance, live Hostinger deployment or production rollback. Gradle/Android SDK/.NET are unavailable; the official SDK request failed DNS. Adding lint to CI is not claiming lint passed.</p>
+<p>Storage retention tests simulate crashes at the tombstone/unlink boundaries; they are not power-failure tests on the target filesystem. Native watchdog tests use promises/callbacks, not a Windows driver. Local retirement leaves originals/staged data intact, so storage pressure can persist until separately authorized reconciliation. Provider rebuild still fails closed and needs a later recovery flow.</p>
+<h2 id="section-6">Review coverage</h2>
+<p><code>FINDING_STATUS.json</code> preserves all22 original finding IDs/titles/severities and records what changed versus deferred. This is not “22 issues fixed.” Source-level implementation and local regressions cannot close hardware qualification gates. Separate public gallery/projector eligibility, self-service/ticket-scanning and automatic tickets remain future work.</p>
+<h2 id="section-7">Delivery</h2>
+<p>Use the complete source ZIP or the patch over exactH5.3, not both. Deploy the root Cloud ZIP only. Existing keys/storage identities/printer targets stay unchanged; initialization remains0. The guide explains upgrade ordering, explicit actions and rollback hazards. No real guest data, credentials, native binaries, printer drivers or fonts are redistributed.</p>
+</main></html>

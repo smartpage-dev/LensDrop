@@ -1,0 +1,17 @@
+{
+  "passed": 10,
+  "checks": [
+    "CP9550 photo preset is suggested without replacing legacy saved profile",
+    "existing profile preserved",
+    "unique matching queue suggested",
+    "unconfirmed driver mode cannot save",
+    "photo snapshot saved through actual backend",
+    "both independent strip profiles saved with legacy retained",
+    "manual pair quantity and cutting are explicit",
+    "desktop no horizontal overflow",
+    "mobile no horizontal overflow",
+    "no JS runtime errors in harness"
+  ],
+  "errors": [],
+  "scope": "Exact HTML/CSS/JS with injected fetch bridge to local backend; printer enumeration and DEVMODE capture mocked. No native Windows or real HTTPS browser navigation test."
+}

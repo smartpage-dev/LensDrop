@@ -1,0 +1,36 @@
+{
+  "cloud_tests": 131,
+  "station_tests": 52,
+  "jpeg_retry_tests": 21,
+  "recovery_ledger_tests": 25,
+  "watch_ledger_tests": 24,
+  "ticket_protocol_tests": 27,
+  "ticket_ledger_tests": 28,
+  "session_assertions": 10,
+  "print_assertions": 15,
+  "build_contract_tests": 15,
+  "cp9550_assertions": 31,
+  "desktop_tests": 23,
+  "web_ui_checks": 14,
+  "native_build": false,
+  "android_lint_executed": false,
+  "hardware": false,
+  "hostinger_deployed": false,
+  "fresh_dependencies": false,
+  "retention_test_scope": "local API/SQLite + explicit failure boundaries",
+  "jpeg_test_scope": "Java ImageIO-generated fixtures; not real phone staging",
+  "repeatability_caveat": "Two station runs stalled without an assertion failure; three diagnostic and three uninstrumented exact-extracted reruns passed52. Root cause remains unknown; interrupted runs are not passes.",
+  "extracted_rerun": {
+    "cloud_build": true,
+    "cloud_tests": 131,
+    "station_uninstrumented_runs": [
+      52,
+      52,
+      52
+    ],
+    "jpeg_retry": 21,
+    "recovery": 25,
+    "ticket_packet": 27,
+    "ticket_ledger": 28
+  }
+}

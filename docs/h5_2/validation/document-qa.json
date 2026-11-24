@@ -1,0 +1,17 @@
+{
+  "passed": 12,
+  "checks": [
+    "local links: START_CP9550DW_H5_2.html",
+    "local links: CP9550DW_SETUP.html",
+    "local links: RELEASE_REPORT.html",
+    "START_CP9550DW_H5_2.html no horizontal overflow 1280",
+    "START_CP9550DW_H5_2.html no horizontal overflow 390",
+    "START_CP9550DW_H5_2.html no page errors",
+    "CP9550DW_SETUP.html no horizontal overflow 1280",
+    "CP9550DW_SETUP.html no horizontal overflow 390",
+    "CP9550DW_SETUP.html no page errors",
+    "RELEASE_REPORT.html no horizontal overflow 1280",
+    "RELEASE_REPORT.html no horizontal overflow 390",
+    "RELEASE_REPORT.html no page errors"
+  ]
+}
