@@ -107,7 +107,7 @@
     "docs/h5_2/RELEASE_REPORT.html": "5ff6eaab561720acf65be911d4d5e116b570c2fbd56bfbf9bfe0df8a7d780ada",
     "docs/h5_2/calibration/PHOTO_4x6_1200x1800.jpg": "e1b46cee1a0e598b67f28b9fa05162726c88be99e68efed61f01033fdebcc8d3",
     "docs/h5_2/calibration/STRIP_2x6_SINGLE_600x1800.jpg": "a70ed3f82fe4cd91d35e9ed1f8601dd24761e894452b1d5fc0fb41c260a9fc4b",
-    "tools/github/test_windows_packaging.py": "c165dba7c5a9412c26da2490d9f47d96846444a0a4c1ffc4302e20cd8c756173",
+    "tools/github/test_windows_packaging.py": "6ac395f9991730bca1cd152156a5751d91bb88297c93fa8c8676d59163f739b2",
     "tools/github/verify_h57_cloud_station_snapshot.py": "8f020119c80dc8b13a52177737fb353ef7c5ef47d88f20415bb51e5e3a472b7a",
     "tools/github/windows_ci.py": "cc6a37a3ff42bb4f1b483dfdd497ae2372aba40c42ebfda8b36b3e5a592b81da",
     "cloud/src/event-management.cjs": "d6362238443a7c10b132fe8211bda27e1f6a72aa89bb8c69fb6e8ed21ee5de5f",
