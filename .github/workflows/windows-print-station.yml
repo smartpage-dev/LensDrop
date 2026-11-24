@@ -14,6 +14,10 @@ jobs:
       - uses: actions/checkout@v7
         with:
           persist-credentials: false
+      - name: Verify complete H5.7 Cloud and Print Station source (no mixed versions)
+        run: python tools/github/verify_h57_cloud_station_snapshot.py
+      - name: Test Windows packaging inputs and diagnostic stages (no hardware)
+        run: python tools/github/test_windows_packaging.py
       - uses: actions/setup-node@v7
         with:
           node-version: '22.23.5'
@@ -27,7 +31,7 @@ jobs:
           mkdir -p ci-output
           npm --prefix cloud run build 2>&1 | tee ci-output/cloud-build.log
           npm --prefix cloud test 2>&1 | tee ci-output/cloud-tests.log
-          node --test clients/print-station/tests/station.test.cjs 2>&1 | tee ci-output/station-tests.log
+          node --test --test-concurrency=1 clients/print-station/tests/*.test.cjs 2>&1 | tee ci-output/station-tests.log
       - name: Preserve available protocol logs
         if: always()
         uses: actions/upload-artifact@v7
@@ -44,6 +48,8 @@ jobs:
       - uses: actions/checkout@v7
         with:
           persist-credentials: false
+      - name: Verify complete H5.7 Cloud and Print Station source before packaging
+        run: python tools/github/verify_h57_cloud_station_snapshot.py
       - uses: actions/setup-dotnet@v6
         with:
           dotnet-version: '10.0.x'
