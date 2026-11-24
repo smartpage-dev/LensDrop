@@ -13,3 +13,18 @@
 *.jpeg binary
 *.pdf binary
 *.docx binary
+
+# H5.7 Cloud/Windows snapshot verification hashes raw bytes.
+# Force LF checkout on all cross-platform source, tests, and documentation.
+# Without these rules Windows Git may turn LF into CRLF, causing false SHA-256 failures.
+*.cjs text eol=lf
+*.js text eol=lf
+*.html text eol=lf
+*.css text eol=lf
+*.json text eol=lf
+*.md text eol=lf
+*.txt text eol=lf
+*.cs text eol=lf
+*.csproj text eol=lf
+*.manifest text eol=lf
+*.ps1 text eol=lf
