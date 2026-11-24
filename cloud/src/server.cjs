@@ -14,6 +14,7 @@ const operations = require('./operations.cjs');
 const presentation = require('./presentation.cjs');
 const deliveries = require('./deliveries.cjs');
 const onboarding = require('./onboarding-print.cjs');
+const workflow = require('./event-workflow.cjs');
 sharp.cache({ memory: 16, files: 0, items: 16 });
 sharp.concurrency(1);
 const CHUNK = 1024 * 1024;
@@ -82,7 +83,7 @@ function createApp(options = {}) {
   function token(req) { return /^Bearer (.+)$/.exec(req.headers.authorization || '')?.[1] || ''; }
   function admin(req) { requireValue(safeEqual(token(req), adminKey), 401, 'admin_auth_required'); }
   function device(req) {
-    const dev = store.one('SELECT * FROM devices WHERE token_hash=? AND revoked=0', digest(token(req)));
+    const dev = store.one('SELECT * FROM devices WHERE token_hash=? AND revoked=0 AND is_service=0', digest(token(req)));
     requireValue(dev, 401, 'device_token_invalid_or_revoked');
     store.run('UPDATE devices SET last_seen=? WHERE id=?', now(), dev.id);
     return dev;
@@ -94,7 +95,7 @@ function createApp(options = {}) {
   function response(upload) {
     const receipt = upload.photo_id ? store.one('SELECT id,sha256,size,status,created,is_test FROM photos WHERE id=?', upload.photo_id) : null;
     return { upload_id: upload.id, offset: upload.offset, chunk_size: CHUNK, size: upload.size, sha256: upload.sha256,
-      state: upload.state, delivery_id: upload.delivery_id || null, is_test: !!upload.is_test, receipt: receipt ? { photo_id: receipt.id, sha256: receipt.sha256, bytes: receipt.size,
+      state: upload.state, archive_private: !!upload.archive_private, delivery_id: upload.delivery_id || null, is_test: !!upload.is_test, receipt: receipt ? { photo_id: receipt.id, sha256: receipt.sha256, bytes: receipt.size,
         status: receipt.status, is_test: !!receipt.is_test, stored_at: receipt.created, storage: 'single-instance-local-disk' } : null };
   }
   function checkSpace(bytes = 0) {
@@ -129,11 +130,12 @@ function createApp(options = {}) {
           incomplete_uploads: store.one("SELECT COUNT(*) AS n FROM uploads WHERE state='receiving'").n },
         note: 'A successful health check or write probe does not establish persistence across host redeployments or backup durability.' });
     }
-    if (method === 'GET' && ['/', '/admin', '/app.js', '/style.css', '/presentation-admin.js', '/qr.js', '/slideshow.js', '/slideshow.css', '/slideshow-model.js', '/personal.js', '/personal-admin.js', '/onboarding-admin.js', '/pair.js'].includes(p)) {
+    if (method === 'GET' && ['/', '/admin', '/app.js', '/style.css', '/presentation-admin.js', '/qr.js', '/slideshow.js', '/slideshow.css', '/slideshow-model.js', '/personal.js', '/personal-admin.js', '/onboarding-admin.js', '/pair.js', '/staff-desk.js', '/staff-desk.css', '/operations-shell.js'].includes(p)) {
       const name = p === '/' || p === '/admin' ? 'index.html' : p.slice(1);
       return serveFile(res, path.join(publicDir, name), name.endsWith('.js') ? 'text/javascript' : name.endsWith('.css') ? 'text/css' : 'text/html');
     }
     if (method === 'GET' && p === '/pair') return serveFile(res,path.join(publicDir,'pair.html'),'text/html');
+    if (await workflow.route({method,p,url,req,res,store,device,admin,readJSON,json,serveFile,locked})) return;
     if (await onboarding.route({method,p,url,req,res,store,device,admin,readJSON,json,serveFile,locked})) return;
     if (method === 'GET' && /^\/p\/[a-f0-9]{32}$/.test(p)) return serveFile(res, path.join(publicDir, 'personal.html'), 'text/html');
     if (method === 'GET' && /^\/s\/[a-f0-9]{32}$/.test(p)) return serveFile(res, path.join(publicDir, 'slideshow.html'), 'text/html');
@@ -141,7 +143,7 @@ function createApp(options = {}) {
     if (method === 'GET' && p === '/gallery.js') return serveFile(res, path.join(publicDir, 'gallery.js'), 'text/javascript');
     if (method === 'GET' && p === '/v1/device') {
       const dev = device(req), event = store.one('SELECT id,name,policy FROM events WHERE id=?', dev.event_id);
-      return json(res, 200, { device_id: dev.id, label: dev.label, event, capabilities: {isolated_preflight:true,operations_summary:true,personal_delivery_v1:true,qr_pairing_v1:true,dual_print_v1:true}, chunk_size: CHUNK, max_file_size: MAX_FILE });
+      return json(res, 200, { device_id: dev.id, label: dev.label, event, capabilities: {isolated_preflight:true,operations_summary:true,personal_delivery_v1:true,qr_pairing_v1:true,dual_print_v1:true,archive_delivery_v1:true,staff_print_desk_v1:true}, chunk_size: CHUNK, max_file_size: MAX_FILE });
     }
     if (await deliveries.route({method,p,url,req,res,store,device,admin,readJSON,json,serveFile,presentation})) return;
     if (method === 'POST' && p === '/v1/device/heartbeat') {
@@ -265,11 +267,11 @@ function createApp(options = {}) {
       return json(res, 201, { device_id: deviceId, event_id: m[1], token: secret, note: 'Save this device token now; it is not stored in plaintext.' });
     }
     m = /^\/v1\/devices\/([0-9a-f-]+)\/revoke$/.exec(p);
-    if (m && method === 'POST') { admin(req); store.run('UPDATE devices SET revoked=1 WHERE id=?', m[1]); return json(res, 200, { ok: true }); }
+    if (m && method === 'POST') { admin(req); store.run('UPDATE devices SET revoked=1 WHERE id=? AND is_service=0', m[1]); return json(res, 200, { ok: true }); }
     m = /^\/v1\/devices\/([0-9a-f-]+)\/rotate$/.exec(p);
     if (m && method === 'POST') {
       admin(req); const dev=store.one('SELECT * FROM devices WHERE id=?',m[1]);
-      requireValue(dev,404,'device_not_found');
+      requireValue(dev&&!dev.is_service,404,'device_not_found');
       const secret=crypto.randomBytes(32).toString('base64url');
       store.run('UPDATE devices SET token_hash=?,revoked=0 WHERE id=?',digest(secret),dev.id);
       return json(res,200,{device_id:dev.id,event_id:dev.event_id,token:secret});
@@ -282,7 +284,7 @@ function createApp(options = {}) {
       requireValue(Number.isSafeInteger(before) && before > 0, 400, 'invalid_cursor');
       const photos = store.all('SELECT seq,id,filename,device_id,status,size,created,is_test FROM photos WHERE event_id=? AND seq<? ORDER BY seq DESC LIMIT 200', m[1], before);
       return json(res, 200, {
-        devices: store.all('SELECT id FROM devices WHERE event_id=?', m[1]).map(d => operations.deviceSummary(store,d.id)),
+        devices: store.all('SELECT id FROM devices WHERE event_id=? AND is_service=0', m[1]).map(d => operations.deviceSummary(store,d.id)),
         photos, next_before: photos.length === 200 ? photos.at(-1).seq : null,
         counts: store.all('SELECT status,count(*) AS count FROM photos WHERE event_id=? AND is_test=0 GROUP BY status', m[1]),
         test_count: store.one('SELECT count(*) n FROM photos WHERE event_id=? AND is_test=1', m[1]).n });
@@ -294,11 +296,14 @@ function createApp(options = {}) {
       requireValue(Number.isSafeInteger(b.size) && b.size > 0 && b.size <= MAX_FILE, 413, 'file_size_out_of_range');
       requireValue(b.is_test === undefined || typeof b.is_test === 'boolean', 400, 'invalid_test_flag');
       const isTest = b.is_test === true ? 1 : 0;
+      requireValue(b.archive_private===undefined||typeof b.archive_private==='boolean',400,'invalid_archive_flag');
+      const archivePrivate=b.archive_private===true?1:0;
+      requireValue(!archivePrivate||!isTest&&!b.delivery_id,400,'private_archive_must_bind_after_upload');
       const filename = text(b.filename, 240);
       requireValue(/\.jpe?g$/i.test(filename) && !/[\\/]/.test(filename), 415, 'jpeg_only_in_alpha');
       const old = store.one('SELECT * FROM uploads WHERE event_id=? AND device_id=? AND client_id=?', dev.event_id, dev.id, b.client_id);
       if (old) {
-        requireValue(old.size === b.size && old.sha256 === b.sha256 && old.filename === filename && old.is_test === isTest && (old.delivery_id || null) === (b.delivery_id || null), 409, 'client_id_reused_for_different_content');
+        requireValue(old.size === b.size && old.sha256 === b.sha256 && old.filename === filename && old.is_test === isTest && old.archive_private === archivePrivate && (old.delivery_id || null) === (b.delivery_id || null), 409, 'client_id_reused_for_different_content');
         return json(res, 200, response(old));
       }
       deliveries.validateUpload(store,dev,b,isTest);
@@ -308,8 +313,8 @@ function createApp(options = {}) {
       requireValue(used + b.size <= maxEventBytes, 507, 'event_quota_reached');
       checkSpace(b.size * 2);
       const uploadId = id(), t = now();
-      store.run('INSERT INTO uploads(id,event_id,device_id,client_id,filename,size,sha256,created,updated,is_test,delivery_id) VALUES(?,?,?,?,?,?,?,?,?,?,?)',
-        uploadId, dev.event_id, dev.id, b.client_id, filename, b.size, b.sha256, t, t, isTest, b.delivery_id || null);
+      store.run('INSERT INTO uploads(id,event_id,device_id,client_id,filename,size,sha256,created,updated,is_test,delivery_id,archive_private) VALUES(?,?,?,?,?,?,?,?,?,?,?,?)',
+        uploadId, dev.event_id, dev.id, b.client_id, filename, b.size, b.sha256, t, t, isTest, b.delivery_id || null,archivePrivate);
       return json(res, 201, response(ownedUpload(dev, uploadId)));
     }
     m = /^\/v1\/uploads\/([0-9a-f-]+)$/.exec(p);
@@ -393,6 +398,7 @@ function createApp(options = {}) {
           const duplicate = store.one('SELECT * FROM photos WHERE event_id=? AND device_id=? AND sha256=?', dev.event_id, dev.id, u.sha256);
           if (duplicate) {
             deliveries.bindPhoto(store,u,duplicate.id);
+            workflow.linkPrintsForPhoto(store,duplicate.id);
             store.run("UPDATE uploads SET state='complete',photo_id=?,updated=? WHERE id=?", duplicate.id, now(), uploadId);
             await cleanupChunks(uploadId);
             return response(ownedUpload(dev, uploadId));
@@ -408,12 +414,13 @@ function createApp(options = {}) {
           await atomicRename(store.file('temp', `${photoId}.delivery`), store.file('delivery', `${photoId}.jpg`));
           await atomicRename(store.file('temp', `${photoId}.thumb`), store.file('thumbs', `${photoId}.jpg`));
           options.faultHook?.('originals_renamed');
-          const policy = u.is_test ? 'hidden' : u.delivery_id ? 'review' : store.one('SELECT policy FROM events WHERE id=?', dev.event_id).policy;
+          const policy = u.is_test ? 'hidden' : u.delivery_id || u.archive_private ? 'review' : store.one('SELECT policy FROM events WHERE id=?', dev.event_id).policy;
           store.tx(() => {
             requireValue(store.one('SELECT revoked FROM devices WHERE id=?', dev.id).revoked === 0, 401, 'device_revoked');
             store.run('INSERT INTO photos(id,event_id,device_id,filename,size,sha256,status,width,height,created,is_test) VALUES(?,?,?,?,?,?,?,?,?,?,?)',
               photoId, dev.event_id, dev.id, u.filename, u.size, u.sha256, policy, meta.width, meta.height, now(), u.is_test);
             deliveries.bindPhoto(store,u,photoId);
+            workflow.linkPrintsForPhoto(store,photoId);
             store.run("UPDATE uploads SET state='complete',photo_id=?,updated=? WHERE id=?", photoId, now(), uploadId);
           });
           options.faultHook?.('photo_committed');
