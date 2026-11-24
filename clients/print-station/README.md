@@ -1,3 +1,11 @@
+# H5.2 Windows Print Station
+
+New station version: 0.1.1-alpha.h5.2. Read ../../docs/h5_2/CP9550DW_SETUP.html in the repository, or START_HERE.html in the built portable package. Three CP9550DW profiles replace the old single-profile limitation for new setup; existing configurations are preserved. Capture the exact driver's settings for each mode while paused, sync, then refresh Android permissions. One pair-copy means two strips. The software does not guarantee the cutter or Windows 11 compatibility. Full native rebuild and physical acceptance tests are required.
+
+The historical limitations below describe H5 before this update. All non-profile restrictions still apply (unsigned portable app, no service, no physical-output proof). Run all current tests with `node --test --test-concurrency=1 clients/print-station/tests/*.test.cjs` from the repository root.
+
+## Historical H5 notes
+
 # LensDrop H5 Print Station - Windows source
 
 No compiled executable is included in the source delivery. Run the manual **LensDrop Windows Print Station** GitHub workflow after uploading the full repository. It first tests the protocol core on Linux, then builds the .NET 10 Windows x64 tray application and packages a Node runtime. No physical printer test is implied.

@@ -1,0 +1,177 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>LensDrop H5.2 - CP9550DW setup</title><style>*{box-sizing:border-box}body{margin:0;background:#f3f5f7;color:#1c3040;font:16px/1.65 system-ui,-apple-system,Segoe UI,sans-serif}header{background:#142e40;color:white;padding:38px max(22px,calc((100% - 1050px)/2))}header p{max-width:850px;margin:0}header .tag{font-size:12px;letter-spacing:2px;color:#9ed7d2;font-weight:700;margin-bottom:10px}main{overflow-wrap:anywhere;min-width:0;max-width:1050px;margin:28px auto 60px;background:white;padding:38px 44px;border:1px solid #dbe3e9;border-radius:16px}h1{font-size:38px;line-height:1.14;margin:0 0 16px;letter-spacing:-.7px}h2{font-size:25px;line-height:1.3;margin:36px 0 16px;color:#184454;scroll-margin-top:20px}h3{font-size:20px;margin:27px 0 12px}p{margin:14px 0}a{color:#126d78;text-underline-offset:3px;overflow-wrap:anywhere}header a{color:#b3ede7}code{font:13px/1.6 ui-monospace,Consolas,monospace;overflow-wrap:anywhere}p code,li code,td code{background:#edf4f5;padding:2px 4px;border-radius:4px}pre{background:#122e3b;color:#effaff;padding:18px;border-radius:10px;white-space:pre-wrap;overflow-wrap:anywhere}table{width:100%;border-collapse:collapse;margin:20px 0;font-size:14px;table-layout:fixed}td,th{padding:12px;vertical-align:top;border:1px solid #d7e1e6;overflow-wrap:anywhere}th{text-align:left;background:#eaf1f4}li{margin:9px 0}.notice{background:#fff2d5;border-left:5px solid #cf9b28;padding:17px 20px;border-radius:8px;margin:22px 0}nav{padding:16px 20px;background:#eff6f6;border-radius:10px;display:flex;gap:10px 20px;flex-wrap:wrap}.caption{font-size:13px;color:#536978}img{max-width:100%;height:auto;border:1px solid #dce5e9;border-radius:10px}footer{font-size:13px;color:#546775;margin-top:30px}@media(max-width:700px){header{padding:24px 18px}main{margin:0;padding:24px 18px;border:0;border-radius:0}h1{font-size:29px}h2{font-size:23px}table{font-size:12px}td,th{padding:8px 6px}code{font-size:12px}}@media print{body{background:white}header{background:white;color:#142e40;padding:0}header .tag{color:#185e64}main{margin:0;padding:0;max-width:none;border:0}nav{display:none}h2,h3{break-after:avoid}tr{break-inside:avoid}pre{background:#eff4f5;color:black}a{color:inherit;text-decoration:none}}</style></head><body><header><p class="tag">LUCE STUDIO / LENSDROP H5.2</p><p>CP9550DW photo printing and paired 2x6 strips. Source update with controlled hardware qualification.</p></header><main><p><a href="RELEASE_REPORT.html">Change and verification report</a> &middot; <a href="calibration/PHOTO_4x6_1200x1800.jpg">4x6 test JPEG</a> &middot; <a href="calibration/STRIP_2x6_SINGLE_600x1800.jpg">Single-strip test JPEG</a></p><nav><a href="#section-1">Research, profile setup and controlled print testing</a><a href="#section-2">01 - Research findings and boundaries</a><a href="#section-3">02 - Three explicit profiles</a><a href="#section-4">03 - Build and update safely</a><a href="#section-5">04 - Install and verify the Windows printer first</a><a href="#section-6">05 - Configure 4x6 and strip modes</a><a href="#section-7">06 - Select and preview on Android</a><a href="#section-8">07 - Controlled acceptance sequence</a><a href="#section-9">08 - Troubleshooting</a><a href="#section-10">09 - Sources and provenance</a></nav><h1>LensDrop H5.2 - Mitsubishi CP9550DW</h1>
+<h2 id="section-1">Research, profile setup and controlled print testing</h2>
+<p>Version: 2026-11-20. Android: 0.2.0-alpha.6-h5.2 / code 7. Windows station: 0.1.1-alpha.h5.2.</p>
+<p><strong>Engineering update, not hardware certification.</strong> This package changes the Android print picker and Windows station. It does not change the cloud application, schema 5, nine-field job protocol, staff pairing, guest QR rules or the independent 58B3 Printer Lab. The new native code still needs GitHub compilation and real-device testing. Previously successful H5.1 builds do not validate this revision.</p>
+<h2 id="section-2">01 - Research findings and boundaries</h2>
+<p>The CP9550DW is now the preferred photo-printer model in new profile setup. Existing saved queues and pending jobs are not silently changed.</p>
+<table>
+<thead>
+<tr>
+<th>Finding</th>
+<th>Evidence</th>
+<th>What it means</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Normal 4x6 output</td>
+<td>Mitsubishi operation manual, specification page: 102 x 152 mm, 346 x 346 dpi, Fine raster 1416 x 2152 dots. [S1]</td>
+<td>Supported model-level format. The raster includes the driver's image area; it is not a promise that a 300 dpi artwork canvas should be stretched to those dimensions.</td>
+</tr>
+<tr>
+<td>2x6 multi-cut exists</td>
+<td>Mitsubishi's 2010 CP-9550DW brochure explicitly advertises 2x6 multi-cut. This is a manufacturer-authored brochure hosted by AV-iQ. [S2]</td>
+<td>Automatic strips are a legitimate capability to investigate, not an invented software cutter. The brochure does not identify Brian's installed driver, firmware or exact cut geometry.</td>
+</tr>
+<tr>
+<td>Official driver availability</td>
+<td>Mitsubishi lists CPD9550V x64 Ver.2.31_WT under Windows 10, and marks later OS versions unsupported. [S3]</td>
+<td>Windows 11 remains a compatibility test, not a manufacturer-certified configuration. Do not disable driver-signature enforcement or other security protections to force an installation.</td>
+</tr>
+<tr>
+<td>Media planning</td>
+<td>Mitsubishi EMEA lists CK9046 among 9000-series media reaching end of sales in May 2027; regional/vendor conditions can differ. [S4]</td>
+<td>Confirm local supply before relying on this model for future events. Existing stock does not become unusable on that date.</td>
+</tr>
+</tbody>
+</table>
+<p>The current operation manual lists older standard sizes but not the later brochure's strip feature. These sources are not treated as identical revisions. The official driver ZIP could not be downloaded in this execution environment because DNS failed; its internal guide and private cut settings were not inspected. No third-party driver binary or manufacturer firmware is bundled.</p>
+<h2 id="section-3">02 - Three explicit profiles</h2>
+<table>
+<thead>
+<tr>
+<th>Profile ID</th>
+<th>Input</th>
+<th>Output and copy meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>cp9550-photo-4x6</code></td>
+<td>One finished JPEG</td>
+<td>One 4x6 sheet per copy; Contain, no software cropping.</td>
+</tr>
+<tr>
+<td><code>cp9550-strip-pair-auto</code></td>
+<td>ONE finished 1:3 strip JPEG, e.g. 600 x 1800, or its 3:1 rotation</td>
+<td>Two identical strip placements per 4x6 sheet cycle. The captured Windows driver must already be set to a supported 2x6 multi-cut mode.</td>
+</tr>
+<tr>
+<td><code>cp9550-strip-pair-manual</code></td>
+<td>The same single-strip input</td>
+<td>An uncut 4x6 sheet carrying two identical strips. Driver multi-cut must be OFF; trim manually.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>One copy of a strip-pair profile means one sheet cycle and two strips. Two copies mean four strips.</strong> Existing <code>max_copies</code> permissions continue to count job copies/sheet cycles, not individual strips. No odd single-strip output, mixed-client sheet pairing, strip collage designer, three/four-photo montage generation or external-editor automation is added here.</p>
+<p>Do not submit a pre-paired 4x6 layout to the strip-pair profiles: it would be the wrong input. The phone and native renderer reject input whose long/short ratio differs from 3 by more than 0.03. A portrait sheet has two columns; a landscape sheet has two rows, with the strip rotated to fit. The phone shows the nominal pair before confirmation; actual driver bleed, printable margins and cut offsets must still be measured.</p>
+<p>The 58B3 prints guest QR tickets only. It is not the photo printer and this update does not modify Printer Lab or add Bluetooth ticket printing.</p>
+<h2 id="section-4">03 - Build and update safely</h2>
+<ol>
+<li>Update the existing <strong>LensDrop</strong> private GitHub repository, not Luce-Printer-Lab-58. Merge the patch contents at the root, retaining <code>.git</code>, existing files and the persistent LensDrop Android signing secret. Alternatively use the complete source archive.</li>
+<li>Include <code>.github</code>: both workflows gain focused tests. No new credentials, SDK version changes or automatic deployment are introduced.</li>
+<li>Commit and push, then start a <strong>new</strong> <code>Run workflow</code> on the updated branch for <strong>LensDrop Android APK</strong> and <strong>LensDrop Windows Print Station</strong>. Re-running an old job builds its original commit. [S8]</li>
+<li>Artifact names keep the H5 prefix. Android metadata must show <code>0.2.0-alpha.6-h5.2</code>, code <code>7</code>; Windows metadata must show <code>0.1.1-alpha.h5.2</code>. Check the new commit and checksums. A green build is not a physical-print test.</li>
+<li>Pause the station, reconcile outstanding/uncertain jobs, exit its tray application, and back up the entire <code>%LOCALAPPDATA%\LuceStudio\LensDropPrintStation</code> folder. Extract the new portable build into a new program folder; keep all supporting files together. The station data folder and Windows-user-bound credentials stay in place.</li>
+<li>Update Android in place with the same signing identity. Never uninstall or clear app data to solve a signing mismatch while queues matter. Export diagnostics first.</li>
+<li>A running H5 cloud (<code>0.2.0-alpha.6-hostinger.5</code>) remains compatible. No Hostinger redeployment, initialization or database migration is needed for H5.2. An older H3/H4 server still needs the separate H5 upgrade procedure.</li>
+</ol>
+<p>The original Hostinger deployment archive is retained unchanged in <code>deploy/</code>. It does not contain these local/native changes. Do not upload this full GitHub bundle to Hostinger.</p>
+<h2 id="section-5">04 - Install and verify the Windows printer first</h2>
+<p>Use the exact CP9550DW model and the manufacturer's official driver download page [S3]. Confirm the unit's full model designation and applicable driver/firmware with the supplier. Do not substitute a DW-S/DW-U/other model's package or flash guessed firmware.</p>
+<p>Connect the printer by USB to the Windows station and install/configure its driver under the same Windows user that runs LensDrop. Confirm the installed queue appears in Windows. Load the correct matching paper/ribbon kit; the manufacturer's brochure identifies CK9046 for 4x6. [S2]</p>
+<p>Print a controlled 4x6 test using the manufacturer's/Windows facilities before running event jobs. Record the Windows version, driver version, queue name, actual media, paper selection, orientation, cut option, output dimensions and result. No printer should be used for paid/event work merely because it appears in the dropdown.</p>
+<h2 id="section-6">05 - Configure 4x6 and strip modes</h2>
+<p><strong>Finish or reconcile old jobs before changing Windows Printing Preferences.</strong> Older H5 generic jobs have no driver snapshot and can still depend on their queue's current defaults. The capture endpoint refuses to proceed while such unresolved legacy jobs exist.</p>
+<h3>Normal 4x6</h3>
+<p>In Windows Printing Preferences, select the driver-supported 4x6 / 10x15 paper and turn multi-cut OFF. Choose the required quality and orientation. Leave driver copies at one; LensDrop applies the requested job copies separately.</p>
+<p>In LensDrop, leave <strong>Pause queue execution</strong> and <strong>Simulation only</strong> checked. Save the LAN configuration if needed. Under <strong>03 - Mitsubishi CP9550DW profiles</strong>, choose <strong>CP9550DW 4x6 photo</strong>, load installed printers and explicitly select your queue. A uniquely matching CP9550 name may be preselected, but is not saved or enabled automatically.</p>
+<p>Press <strong>Capture current Windows driver settings (NO PRINT)</strong>. Check the reported paper and orientation, acknowledge that you checked the cut mode, then press <strong>Save local configuration</strong>. Capture does not print and the checkbox is an operator assertion, not machine verification.</p>
+<h3>Automatic 2x6 pair</h3>
+<p>Only proceed if the installed driver exposes a documented 2x6 multi-cut configuration for a 4x6 sheet cycle. Do not assume an arbitrary option named Type 1 or Type 2 means 2x6. Configure the driver accordingly, select <strong>CP9550DW 2x6 AUTO pair</strong>, capture, check the details, acknowledge and save.</p>
+<p>The software preserves opaque driver settings through Windows DEVMODE APIs; it does not reverse engineer or edit undocumented Mitsubishi cutter bytes. The settings are bound to the exact queue and driver-file fingerprint. If the driver changes or a different queue is selected, recapture and revalidate. [S5]</p>
+<p>The current preset intentionally requires a captured nominal 4x6 sheet area (with bounded driver bleed tolerance), not a standalone 2x6 paper size. If your driver only exposes a different form or needs different source geometry, stop and supply its settings screenshot/guide; do not force this preset.</p>
+<h3>Manual-cut fallback</h3>
+<p>Set the driver back to normal 4x6, multi-cut OFF. Select <strong>CP9550DW 2x6 MANUAL pair</strong>, capture separately and save. This is an explicit alternative, never an automatic fallback behind a request that promised machine-cut strips.</p>
+<p>All saved profiles can point to one physical CP9550DW queue because each stores its own settings snapshot. Only the public label, ID, revision, fit and effective paper dimensions are sent to the cloud/phone; the opaque snapshot stays local and is copied into accepted jobs. The driver ultimately controls which vendor settings are applied, so physical verification remains mandatory.</p>
+<p>Changing a profile increments its revision. Removing and later recreating a profile must use a higher revision, preventing stale grants from matching a newly configured profile. Already accepted jobs retain their original settings and simulation flag.</p>
+<p><img alt="Station profile panel" src="CP9550_Profile_Panel.png"/></p>
+<p>Actual UI source in a browser test harness. Driver enumeration/capture are simulated; this is not a Windows hardware screenshot.</p>
+<h2 id="section-7">06 - Select and preview on Android</h2>
+<p>After saving profiles, press <strong>Sync with cloud</strong> on Windows. On Android choose <strong>Prepare / refresh authorized station (online)</strong> to obtain the updated profile list and permission grant.</p>
+<p>Choose <strong>Select JPEG / preview / print</strong>, pick a test JPEG, then select the intended profile. For strips, use <code>calibration/STRIP_2x6_SINGLE_600x1800.jpg</code>. The preview must show TWO placements of that one strip. The copy selector explicitly states the resulting strip count. This is a layout preview, not color management or a driver-accurate soft proof.</p>
+<p>Confirm one copy. The same existing job ID is used over Local, Cloud and Hybrid routes. Selection, source checksum, destination and profile revision are immutable; retrying a transport does not create another print. Hardware remains at the Windows station, never in Hostinger or the QR-ticket printer.</p>
+<h2 id="section-8">07 - Controlled acceptance sequence</h2>
+<p>Keep originals, sample paper and test records. Complete each gate before the next.</p>
+<table>
+<thead>
+<tr>
+<th>Gate</th>
+<th>Required observation</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Build</td>
+<td>Both new native builds succeed; correct versions and persistent Android signer confirmed.</td>
+</tr>
+<tr>
+<td>Simulation</td>
+<td>Phone selection, two-up preview, copy count and single station job match. No paper used. Simulation does not inspect the Windows cutter.</td>
+</tr>
+<tr>
+<td>4x6, one copy</td>
+<td>Use <code>PHOTO_4x6_1200x1800.jpg</code>. Verify correct queue, orientation, scale and edges; no strip cut.</td>
+</tr>
+<tr>
+<td>Auto pair, one copy</td>
+<td>Use the single-strip fixture. Receive two separate strips from one sheet cycle; check top/bottom direction, divider cut, actual size and safe text region.</td>
+</tr>
+<tr>
+<td>Manual pair, one copy</td>
+<td>Receive one uncut sheet with two strips; verify manual trimming gives the intended result.</td>
+</tr>
+<tr>
+<td>Two copies</td>
+<td>Verify exactly two sheet cycles and four strips for a pair profile; hardware quantity is not inferred from the UI.</td>
+</tr>
+<tr>
+<td>Profile isolation</td>
+<td>Alternate 4x6 / auto / 4x6 / manual. Cutter behavior must follow each saved snapshot, not the latest global Windows preference.</td>
+</tr>
+<tr>
+<td>Recovery</td>
+<td>Disconnect network before acceptance, after acceptance and around submission. One job identity remains; uncertain physical outcomes are reviewed, not auto-reprinted.</td>
+</tr>
+<tr>
+<td>Restore</td>
+<td>Restart phone/station and confirm saved profiles, queues and permissions behave correctly. Backups must restore under the appropriate Windows user.</td>
+</tr>
+</tbody>
+</table>
+<p>The fixtures contain geometric markers and safe-area labels. They are not an ICC chart, manufacturer bleed specification or guaranteed physical ruler until printed scale has been calibrated. Never put irreplaceable text, faces or guest QR codes directly on the cut/trim edge.</p>
+<p>A successful driver submission remains <code>submitted_unconfirmed</code>. It is not proof of paper output. Some Windows statuses do not establish physical completion; operator confirmation and the existing unknown-outcome handling remain. [S6]</p>
+<h2 id="section-9">08 - Troubleshooting</h2>
+<ul>
+<li><strong>No multi-cut option:</strong> do not enable the auto preset. Check the exact supported driver with Mitsubishi/dealer, or use the manual-cut profile explicitly.</li>
+<li><strong><code>capture_4x6_sheet_not_single_2x6</code>:</strong> the captured form is not a supported sheet-sized setup. Review driver paper selection; do not type guessed dimensions.</li>
+<li><strong><code>resolve_legacy_jobs_before_driver_change</code>:</strong> finish, cancel before submission or reconcile uncertain legacy jobs before capture. Do not delete the ledger.</li>
+<li><strong><code>profile_changed_reselect</code> / retired revision:</strong> refresh station permissions and create a new request only after inspecting the old request's state. Do not edit an existing job ID into another layout.</li>
+<li><strong><code>failed_before_submit</code>:</strong> inspect Windows queue/driver/media and recapture after a driver update. Retry only through the controlled pre-submission action.</li>
+<li><strong><code>outcome_unknown</code>:</strong> check the physical output and spooler. Do not blindly retry or send the same request to another station.</li>
+<li><strong>Output has wrong count/cut/trim:</strong> pause. Compare driver screenshots, media, snapshot and one-copy test. The application does not infer cutter behavior from printer name or paper dimensions.</li>
+</ul>
+<h2 id="section-10">09 - Sources and provenance</h2>
+<p>Accessed 2026-11-20. These establish external facts; they do not certify the new implementation.</p>
+<ul>
+<li>[S1] Mitsubishi Electric Hong Kong, CP9550DW Operation Manual, printed p.21 (PDF page 24): https://www.mitsubishielectric.com.hk/uploads/download/doc/ib/68.pdf</li>
+<li>[S2] Mitsubishi Digital Electronics America, CP-9550DW brochure, copyright 2010, IP0001-01/10-WEB LITCP9550DW; manufacturer document mirrored by AV-iQ: https://cdn-docs.av-iq.com/brochure/CP-9550DW_Brochure.pdf</li>
+<li>[S3] Mitsubishi Electric global driver download table and later-OS footnote: https://www.mitsubishielectric.com/printer/dowmload-01/</li>
+<li>[S4] Mitsubishi Electric Printing EMEA, 9000 Series Media / End of Sales: https://mitsubishielectric-printing.com/en/about-us/news/news/9000-series-media-end-of-sales?PageSpeed=noscript</li>
+<li>[S5] Microsoft, PrinterSettings.GetHdevmode / SetHdevmode and PageSettings.SetHdevmode: https://learn.microsoft.com/en-us/dotnet/api/system.drawing.printing.printersettings.gethdevmode?view=windowsdesktop-10.0 ; https://learn.microsoft.com/en-us/dotnet/api/system.drawing.printing.printersettings.sethdevmode ; https://learn.microsoft.com/en-us/dotnet/api/system.drawing.printing.pagesettings.sethdevmode</li>
+<li>[S6] Microsoft, JOB_INFO_2 print status caveats: https://learn.microsoft.com/en-us/windows/win32/printdocs/job-info-2</li>
+<li>[S7] Android, app-update signing identity requirements: https://developer.android.com/google/play/app-updates</li>
+<li>[S8] GitHub, rerunning jobs retains the original commit: https://docs.github.com/en/actions/how-tos/manage-workflow-runs/re-run-workflows-and-jobs</li>
+</ul>
+<p>The official manual specification page was visually inspected through the PDF screenshot tool. The AV-iQ brochure's parsed content was accessible, but its screenshot fetch failed with HTTP 502. Driver ZIP retrieval failed with container DNS errors. No binary driver, firmware, credentials, private photos or signing keys are redistributed.</p>
+<footer>Engineering documentation dated 2026-11-20. No live installation or physical print was performed.</footer></main></body></html>

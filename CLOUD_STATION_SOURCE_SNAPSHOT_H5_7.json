@@ -1,9 +1,13 @@
 {
   "schema": "lensdrop.h57.cloud-station-source/1",
-  "basis": "H5.7 complete GitHub source snapshot, not a live GitHub checkout",
-  "purpose": "fail fast on missing/stale cloud or station source before tests and native build",
+  "basis": "H5.7.1 Windows packaging recovery overlay; station runtime unchanged",
+  "purpose": "fail fast on missing/stale cloud or station sources and ALL Windows portable packaging assets in both jobs",
   "files": {
-    ".github/workflows/windows-print-station.yml": "2de555cd99f5727fd2f5ab6421f8def9ac0858d70a1e3599171f3a8a67ee169d",
+    ".github/workflows/windows-print-station.yml": "006ca4d821306b4b7f351724d9face58f2f17f4c48b9adca2cefad8f60a5f791",
+    "clients/print-station/README.md": "99012277581dd5fc7a8d32d3200ce339922bdcf381b5596fc12617664d459a46",
+    "clients/print-station/THIRD_PARTY_NOTICES.md": "edaabdbac70c71fa8fec3f3e9f3f5e503451c5af19e87a2e88f9d26f4a75a5c1",
+    "clients/print-station/licenses/QRCode-LICENSE.txt": "b3c7a2fadb2515b8106eae58439a4b9c0581a4eaa88d6a265701f8d4dd7dadb8",
+    "clients/print-station/licenses/QRCode-PROVENANCE.txt": "12880ae1aa14193dc676be7abe197ba1905afa9e1d573208cd2f87fd439aa085",
     "clients/print-station/native/DriverSnapshot.cs": "d56d707e340d12da853f01044a10c858a2394e9850fdcd3de904010da68cbc45",
     "clients/print-station/native/LensDropStation.csproj": "43c418aa360d02e132eb6ca5f4fe707104c897f5c4b0f83dd08719543fad6d10",
     "clients/print-station/native/PhotoLayout.cs": "8673ad06a1a9a65904ea7fe591996d770b711d6fa55a3b92af700543ffed299d",
@@ -25,6 +29,8 @@
     "clients/print-station/src/submission-watchdog.cjs": "da8693b67cc7a71d8275c39acb4fe56757e51ed43c3b1e67ea64d1de772276f1",
     "clients/print-station/tests/cp9550-profiles.test.cjs": "3bff635c6fa54df4ba2dcc15f5a07a156cac8f8887048d44aae258cc5efde11a",
     "clients/print-station/tests/station.test.cjs": "1626a8d2b13c324b21945449c11356185c59ee9d63054485c5ba3b65b68d4624",
+    "clients/print-station/tools/Allow-Private-LAN.ps1": "9e66079efa3b385e4c1f361e5a4d25e12de939f313f430cd5d43baae112890b2",
+    "clients/print-station/tools/Remove-LAN-Rule.ps1": "d3db3b038c4a132356c23eb16b1f0382564eaf42f47110453a1fc6260f58036b",
     "cloud/package.json": "334f7de761123fb5f029cd7b4c359c63d4c864dce33fa0312605d799f2c9093a",
     "cloud/public/app.js": "da8d95423d9a9f1c7267b51dea0d0540ea20ca03f4bc2917a1ce16029f92bce3",
     "cloud/public/gallery.html": "c874c2d8b4f287baeeb04b40e3010ee1f1efd2acf5a1ac84bed83e4f1cc21914",
@@ -96,7 +102,13 @@
     "cloud/vendor/QRCode/QRRSBlock.js": "78281d6a39b575a1078f1f70e7311e4a3c8b67e15e5468c25521b64d6ff6b931",
     "cloud/vendor/QRCode/QRUtil.js": "4191ce852ba66124c4f1fc3bb1a507f667193c0466731339d8c1e66a19aa6bc5",
     "cloud/vendor/QRCode/index.js": "7377be90fc61a40268acf7f30d5bd89c2fca99c57ef5391623de8c151b8da7df",
+    "docs/h5_2/CP9550DW_SETUP.html": "3071391e970bf8212b398297aeb7f4946cb6e320e4fd35bafd0c6c93058a3eae",
+    "docs/h5_2/CP9550_Profile_Panel.png": "002f79ce89f3ff736b5c32694152cf521c49544a90abe3dccef3772d21c8d8fe",
+    "docs/h5_2/RELEASE_REPORT.html": "5ff6eaab561720acf65be911d4d5e116b570c2fbd56bfbf9bfe0df8a7d780ada",
+    "docs/h5_2/calibration/PHOTO_4x6_1200x1800.jpg": "e1b46cee1a0e598b67f28b9fa05162726c88be99e68efed61f01033fdebcc8d3",
+    "docs/h5_2/calibration/STRIP_2x6_SINGLE_600x1800.jpg": "a70ed3f82fe4cd91d35e9ed1f8601dd24761e894452b1d5fc0fb41c260a9fc4b",
+    "tools/github/test_windows_packaging.py": "c165dba7c5a9412c26da2490d9f47d96846444a0a4c1ffc4302e20cd8c756173",
     "tools/github/verify_h57_cloud_station_snapshot.py": "d2e40916d68ce917ada545cf968c2372655927634620a6af9ac28eaa8682ee76",
-    "tools/github/windows_ci.py": "b23a0ec6da0fdc68395f253c87a6698962cd4ba478ce0c56d1b000e068d7fad3"
+    "tools/github/windows_ci.py": "cc6a37a3ff42bb4f1b483dfdd497ae2372aba40c42ebfda8b36b3e5a592b81da"
   }
 }
