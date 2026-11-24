@@ -91,13 +91,24 @@ public final class TicketActivity extends Activity {
         if(scope.isEmpty())throw new IllegalStateException("Pair the event and prepare a guest QR first");
         work(()->{try(QueueDb q=new QueueDb(this)){
             WatchLedger w=new WatchLedger(q);String delivery=prior==null?w.shown(scope):prior.getString("delivery_id");JSONObject group=w.group(scope,delivery);
+            String singleJob=getIntent().getStringExtra("ticket_single_job");
+            if(prior==null&&singleJob!=null){
+                try(android.database.Cursor c=q.getReadableDatabase().rawQuery("SELECT single_id,single_label,single_path FROM jobs WHERE id=? AND scope=? AND state='uploaded' AND single_id IS NOT NULL",new String[]{singleJob,scope})){
+                    if(!c.moveToFirst())throw new IllegalStateException("Selected Single QR not yet verified; wait for upload and QR reconciliation");
+                    delivery=c.getString(0);group=new JSONObject().put("state","open").put("label",c.getString(1)).put("guest_path",c.getString(2));
+                }
+            }else if(prior!=null&&group==null){
+                try(android.database.Cursor c=q.getReadableDatabase().rawQuery("SELECT single_label,single_path FROM jobs WHERE scope=? AND single_id=? AND state='uploaded'",new String[]{scope,delivery})){
+                    if(c.moveToFirst())group=new JSONObject().put("state","open").put("label",c.getString(0)).put("guest_path",c.getString(1));
+                }
+            }
             if(group==null||!"open".equals(group.optString("state")))throw new IllegalStateException("Show a prepared open guest QR first; cancelled/reserved groups cannot print");
             final String url=TicketProtocol.guestUrl(scope.split("\\|",-1)[0],group.getString("guest_path"));
             if(prior!=null&&!url.equals(prior.getString("guest_url")))throw new IllegalStateException("Saved link changed. Reprint blocked.");
-            final String label=group.getString("label"),id=UUID.randomUUID().toString(),parent=prior==null?null:prior.getString("id");
-            TicketProtocol.packet(scope,id,delivery,label,url);
+            final String label=group.getString("label"),id=UUID.randomUUID().toString(),parent=prior==null?null:prior.getString("id"),selectedDelivery=delivery;
+            TicketProtocol.packet(scope,id,selectedDelivery,label,url);
             String note=(prior==null?"PRINT SHOWN QR - NOT AUTOMATICALLY THE RECEIVING GROUP":"EXPLICIT REPRINT - SAME ORIGINAL GUEST LINK")+"\n\nPrinter: "+printerName+"\n"+label+"\nGuest URL (private):\n"+url+"\n\n1 ticket. Native Model 2 / ECC M / 4-dot modules. ASCII only. No photo image. Photos may still be uploading or pending approval.\n\nLong-link scannability must be checked on paper before handing it to a guest.\n\nIf a previous ticket may already have printed, inspect it before confirming. This is NOT a 4x6 photo request.";
-            runOnUiThread(()->{if(!foreground||isFinishing()||isDestroyed())return;new AlertDialog.Builder(this).setTitle(parent==null?"Confirm ONE QR ticket":"Confirm intentional ticket reprint").setMessage(note).setPositiveButton("Print ONE ticket",(d,n)->send(scope,id,delivery,label,url,printer,parent)).setNegativeButton("Cancel",null).show();});
+            runOnUiThread(()->{if(!foreground||isFinishing()||isDestroyed())return;new AlertDialog.Builder(this).setTitle(parent==null?"Confirm ONE QR ticket":"Confirm intentional ticket reprint").setMessage(note).setPositiveButton("Print ONE ticket",(d,n)->send(scope,id,selectedDelivery,label,url,printer,parent)).setNegativeButton("Cancel",null).show();});
         }});
     }
     private void send(String scope,String id,String delivery,String label,String url,String printer,String parent){

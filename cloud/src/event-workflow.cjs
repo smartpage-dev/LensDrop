@@ -5,6 +5,7 @@ const fs=require('node:fs'),fsp=require('node:fs/promises'),crypto=require('node
 const {requireValue:need,digest,id,syncDir}=require('./store.cjs');
 const P=require('../shared/print-protocol.cjs');
 const OP=require('./onboarding-print.cjs');
+const dual=require('./dual-collections.cjs');
 function migrate(s){s.tx(()=>{
  const cols=s.all('PRAGMA table_info(uploads)').map(x=>x.name);
  if(!s.all('PRAGMA table_info(devices)').some(x=>x.name==='is_service'))s.db.exec('ALTER TABLE devices ADD COLUMN is_service INTEGER NOT NULL DEFAULT 0');
@@ -35,13 +36,16 @@ function bind(s,photo,deliveryId,owner=null){return s.tx(()=>{
  need(p&&!p.is_test&&p.status!=='hidden',404,'photo_not_available');need(d&&d.event_id===p.event_id,404,'delivery_not_found');
  if(owner)need(p.device_id===owner.id&&d.device_id===owner.id&&p.event_id===owner.event_id,403,'delivery_owner_mismatch');
  const old=s.one('SELECT delivery_id FROM delivery_items WHERE photo_id=?',p.id);
- need(!old||old.delivery_id===d.id,409,'photo_already_bound_elsewhere');
+ const conflicting=s.one('SELECT delivery_id FROM collection_memberships WHERE photo_id=? AND kind=? AND active=1 AND delivery_id<>?',p.id,d.kind,d.id);
+ need(!conflicting,409,'photo_already_bound_elsewhere');
  if(d.kind==='single'){
   need(!s.one('SELECT photo_id FROM delivery_items WHERE delivery_id=? AND photo_id<>?',d.id,p.id),409,'single_delivery_already_bound');
   need(!s.one("SELECT id FROM uploads WHERE delivery_id=? AND (photo_id IS NULL OR photo_id<>?)",d.id,p.id),409,'single_delivery_already_bound');
  }
- if(!old)s.run('INSERT INTO delivery_items(photo_id,delivery_id,released) VALUES(?,?,?)',p.id,d.id,Number(!!s.one('SELECT auto_release FROM personal_settings WHERE event_id=?',p.event_id)?.auto_release));
- return {photo_id:p.id,delivery_id:d.id,released:!!s.one('SELECT released FROM delivery_items WHERE photo_id=?',p.id).released,public_status:p.status};
+ const released=Number(!!s.one('SELECT auto_release FROM personal_settings WHERE event_id=?',p.event_id)?.auto_release);
+ if(!old)s.run('INSERT INTO delivery_items(photo_id,delivery_id,released) VALUES(?,?,?)',p.id,d.id,released);
+ s.run('INSERT OR IGNORE INTO collection_memberships(photo_id,delivery_id,kind,released,created,updated) VALUES(?,?,?,?,?,?)',p.id,d.id,d.kind,released,Date.now(),Date.now());
+ return {photo_id:p.id,delivery_id:d.id,collections:dual.list(s,p.id),released:!!s.one('SELECT released FROM collection_memberships WHERE photo_id=? AND delivery_id=?',p.id,d.id).released,public_status:p.status};
  });}
 function staffScope(c,match){
  const s=c.store;
@@ -50,10 +54,10 @@ function staffScope(c,match){
  need(access?.enabled,403,'staff_desk_not_enabled');return {event:st.event_id,actor:'station:'+st.id,station:st.id,maxCopies:access.max_copies};
 }
 function cursor(url){const n=Number(url.searchParams.get('before')||Number.MAX_SAFE_INTEGER);need(Number.isSafeInteger(n)&&n>0,400,'invalid_cursor');return n;}
-function photoRecord(s,p){const d=s.one('SELECT d.id,d.label,d.kind,d.token,d.state,i.released FROM delivery_items i JOIN deliveries d ON d.id=i.delivery_id WHERE i.photo_id=?',p.id);
- return {id:p.id,seq:p.seq,filename:p.filename,width:p.width,height:p.height,bytes:p.size,status:p.status,starred:!!p.starred,projector_visible:!!p.projector_visible,printed:!!s.one("SELECT 1 FROM print_photo_links l JOIN print_jobs j ON j.id=l.job_id WHERE l.photo_id=? AND j.state IN ('operator_confirmed') LIMIT 1",p.id),device_label:p.device_label||'',delivery:d?{id:d.id,label:d.label,kind:d.kind,state:d.state,released:!!d.released}:null};}
+function photoRecord(s,p){const d=s.one('SELECT d.id,d.label,d.kind,d.token,d.state,i.released FROM collection_memberships i JOIN deliveries d ON d.id=i.delivery_id WHERE i.photo_id=? AND i.active=1 ORDER BY CASE d.kind WHEN \'group\' THEN 0 ELSE 1 END',p.id);
+ return {id:p.id,seq:p.seq,filename:p.filename,width:p.width,height:p.height,bytes:p.size,status:p.status,starred:!!p.starred,projector_visible:!!p.projector_visible,printed:!!s.one("SELECT 1 FROM print_photo_links l JOIN print_jobs j ON j.id=l.job_id WHERE l.photo_id=? AND j.state IN ('operator_confirmed') LIMIT 1",p.id),device_label:p.device_label||'',delivery:d?{id:d.id,label:d.label,kind:d.kind,state:d.state,released:!!d.released}:null,collections:dual.list(s,p.id)};}
 function orders(s,event,delivery=null,stationId=null){
- return s.all(`SELECT j.*,l.photo_id,c.collected_at FROM print_jobs j JOIN print_photo_links l ON l.job_id=j.id LEFT JOIN print_collection c ON c.job_id=j.id ${delivery?'JOIN delivery_items di ON di.photo_id=l.photo_id':''} WHERE j.event_id=? ${delivery?'AND di.delivery_id=?':''} ${stationId?'AND j.station_id=?':''} ORDER BY j.created DESC LIMIT 100`,event,...(delivery?[delivery]:[]),...(stationId?[stationId]:[])).map(r=>({...OP.describeJob(r),photo_id:r.photo_id,collected_at:r.collected_at||null}));
+ return s.all(`SELECT j.*,l.photo_id,c.collected_at FROM print_jobs j JOIN print_photo_links l ON l.job_id=j.id LEFT JOIN print_collection c ON c.job_id=j.id ${delivery?'JOIN collection_memberships di ON di.photo_id=l.photo_id AND di.active=1':''} WHERE j.event_id=? ${delivery?'AND di.delivery_id=?':''} ${stationId?'AND j.station_id=?':''} ORDER BY j.created DESC LIMIT 100`,event,...(delivery?[delivery]:[]),...(stationId?[stationId]:[])).map(r=>({...OP.describeJob(r),photo_id:r.photo_id,collected_at:r.collected_at||null}));
 }
 function serviceActor(s,st){
  let row=s.one('SELECT * FROM station_staff WHERE station_id=?',st.id);
@@ -76,8 +80,8 @@ async function createOrder(c,scope,b){const s=c.store;
   else require('./event-management.cjs').active(s,scope.event);
   const p=s.one('SELECT * FROM photos WHERE id=? AND event_id=? AND is_test=0 AND status<>?',b.photo_id,scope.event,'hidden');need(p,404,'photo_not_available');
   need(p.size<=P.MAX_FILE,413,'print_jpeg_maximum_32_mib');
-  const binding=s.one('SELECT delivery_id FROM delivery_items WHERE photo_id=?',p.id);
-  need((binding?.delivery_id||null)===(b.delivery_id||null),409,'photo_collection_changed_reload');
+  const binding=b.delivery_id?s.one('SELECT delivery_id FROM collection_memberships WHERE photo_id=? AND delivery_id=? AND active=1',p.id,b.delivery_id):null;
+  need(b.delivery_id?!!binding:!s.one('SELECT 1 FROM collection_memberships WHERE photo_id=? AND active=1',p.id),409,'photo_collection_changed_reload');
   if(b.delivery_id)need(s.one("SELECT id FROM deliveries WHERE id=? AND state='open'",b.delivery_id),409,'delivery_cancelled');
   const profile=JSON.parse(st.profiles).find(x=>x.id===b.profile_id&&x.revision===b.profile_revision);need(profile,409,'profile_changed_reselect');
   if(['cp9550-strip-pair-auto','cp9550-strip-pair-manual'].includes(profile.id))need(Math.abs(Math.max(p.width,p.height)/Math.min(p.width,p.height)-3)<=0.04,422,'finished_single_strip_required');
@@ -102,7 +106,7 @@ async function createOrder(c,scope,b){const s=c.store;
    // Revalidate privacy/scope after async I/O, before making the new job executable.
    need(s.one("SELECT id FROM photos WHERE id=? AND status<>'hidden'",p.id),409,'photo_hidden_during_order');
    if(scope.station)need(s.one('SELECT enabled FROM station_staff WHERE station_id=?',scope.station)?.enabled,403,'staff_desk_not_enabled');
-   const latest=s.one('SELECT * FROM print_stations WHERE id=? AND revoked=0',st.id);need(latest,403,'station_revoked');need(JSON.parse(latest.profiles).some(x=>x.id===profile.id&&x.revision===profile.revision),409,'profile_changed_reselect');if(b.delivery_id)need(s.one("SELECT id FROM deliveries WHERE id=? AND state='open'",b.delivery_id),409,'delivery_cancelled');const currentBinding=s.one('SELECT delivery_id FROM delivery_items WHERE photo_id=?',p.id);need((currentBinding?.delivery_id||null)===(b.delivery_id||null),409,'photo_collection_changed_reload');if(scope.station)need(s.one('SELECT max_copies FROM station_staff WHERE station_id=?',st.id).max_copies>=b.copies,403,'copies_not_permitted');
+   const latest=s.one('SELECT * FROM print_stations WHERE id=? AND revoked=0',st.id);need(latest,403,'station_revoked');need(JSON.parse(latest.profiles).some(x=>x.id===profile.id&&x.revision===profile.revision),409,'profile_changed_reselect');if(b.delivery_id)need(s.one("SELECT id FROM deliveries WHERE id=? AND state='open'",b.delivery_id),409,'delivery_cancelled');need(b.delivery_id?!!s.one('SELECT delivery_id FROM collection_memberships WHERE photo_id=? AND delivery_id=? AND active=1',p.id,b.delivery_id):!s.one('SELECT 1 FROM collection_memberships WHERE photo_id=? AND active=1',p.id),409,'photo_collection_changed_reload');if(scope.station)need(s.one('SELECT max_copies FROM station_staff WHERE station_id=?',st.id).max_copies>=b.copies,403,'copies_not_permitted');
    s.run("UPDATE print_jobs SET asset_ready=1,offset=?,state='ready',updated=? WHERE id=? AND state IN ('awaiting_file','receiving')",p.size,Date.now(),b.id);
    return {job:OP.describeJob(s.one('SELECT * FROM print_jobs WHERE id=?',b.id)),created:!saved};
   }finally{await fsp.rm(tmp,{force:true}).catch(()=>{});}
@@ -124,14 +128,32 @@ async function routeInner(c){const {store:s,p,method,url,req,res,admin,device,re
   s.run('INSERT INTO station_staff(station_id,enabled,max_copies) VALUES(?,?,?) ON CONFLICT(station_id) DO UPDATE SET enabled=excluded.enabled,max_copies=excluded.max_copies',m[2],Number(b.enabled),b.max_copies);
   json(res,200,{ok:true});return true;
  }
+ // H5.11 staff Group Desk. Station staff uses its existing explicit permission.
+ m=/^\/v1\/(?:events\/([0-9a-f-]+)\/staff|station\/staff)\/groups(?:\/([0-9a-f-]+)\/members)?$/.exec(p);
+ if(m&&['GET','POST'].includes(method)){
+  const scope=m[1]?(admin(req),{event:m[1],actor:'admin'}):(()=>{const st=OP.station(s,req),access=s.one('SELECT enabled FROM station_staff WHERE station_id=?',st.id);need(access?.enabled,403,'staff_desk_not_enabled');return {event:st.event_id,actor:'station:'+st.id};})();
+  const event=scope.event;need(s.one('SELECT id FROM events WHERE id=?',event),404,'event_not_found');
+  if(!m[2]&&method==='GET'){
+   const rows=s.all("SELECT d.id,d.label,d.state,d.created,d.token,count(m.photo_id) AS count FROM deliveries d LEFT JOIN collection_memberships m ON m.delivery_id=d.id AND m.active=1 WHERE d.event_id=? AND d.kind='group' GROUP BY d.id ORDER BY d.created DESC LIMIT 100",event);
+   json(res,200,{groups:rows.map(g=>({id:g.id,label:g.label,state:g.state,created:g.created,count:g.count,guest_path:'/p/'+g.token}))});return true;
+  }
+  if(m[2]&&method==='GET'){
+   const d=s.one("SELECT id,label,kind,state FROM deliveries WHERE id=? AND event_id=? AND kind='group'",m[2],event);need(d,404,'group_not_found');
+   json(res,200,{group:d,members:dual.members(s,d.id)});return true;
+  }
+  if(m[2]&&method==='POST'){
+   require('./event-management.cjs').active(s,event);
+   json(res,200,dual.mutate(s,event,await readJSON(req),scope.actor));return true;
+  }
+ }
  // Admin endpoint has an event segment; station endpoint derives its scope from the credential.
  m=/^\/v1\/(?:events\/([0-9a-f-]+)\/staff|station\/staff)\/(config|photos|photo-control|lookup|orders|assign|collect|cancel-prepared|photo\/([0-9a-f-]+)\/(thumb|delivery))$/.exec(p);
  if(!m)return false;const scope=staffScope(c,m),action=m[2];
  if(action==='config'&&method==='GET'){json(res,200,{event:s.one('SELECT id,name FROM events WHERE id=?',scope.event),workflow:settings(s,scope.event),max_copies:scope.maxCopies,stations:s.all('SELECT st.*,ss.enabled AS staff_enabled,ss.max_copies AS staff_max_copies FROM print_stations st LEFT JOIN station_staff ss ON ss.station_id=st.id WHERE st.event_id=? AND st.revoked=0'+(scope.station?' AND st.id=?':''),scope.event,...(scope.station?[scope.station]:[])).map(st=>({...OP.stationPublic(st),staff_enabled:!!st.staff_enabled,staff_max_copies:st.staff_max_copies||1})),note:'Staff operated. Ticket lookup NEVER prints. No quota/payment redemption system.'});return true;}
  if(action.startsWith('photo/')&&method==='GET'){need(s.one("SELECT id FROM photos WHERE id=? AND event_id=? AND is_test=0 AND status<>'hidden'",m[3],scope.event),404,'photo_not_available');await serveFile(res,s.file(m[4]==='thumb'?'thumbs':'delivery',m[3]+'.jpg'),'image/jpeg');return true;}
  if(action==='photos'&&method==='GET'){
-  const before=cursor(url),filter=url.searchParams.get('filter')||'all';need(['all','starred','printed','not_printed','review','public','projector','hidden'].includes(filter),400,'invalid_photo_filter');
-  const clause={all:'',starred:'AND p.starred=1',printed:"AND EXISTS(SELECT 1 FROM print_photo_links l JOIN print_jobs j ON j.id=l.job_id WHERE l.photo_id=p.id AND j.state IN ('operator_confirmed'))",not_printed:"AND NOT EXISTS(SELECT 1 FROM print_photo_links l JOIN print_jobs j ON j.id=l.job_id WHERE l.photo_id=p.id AND j.state IN ('operator_confirmed'))",review:"AND p.status='review'",public:"AND p.status='live'",projector:'AND p.projector_visible=1',hidden:"AND p.status='hidden'"}[filter];
+  const before=cursor(url),filter=url.searchParams.get('filter')||'all';need(['all','starred','printed','not_printed','review','public','projector','hidden','single','group'].includes(filter),400,'invalid_photo_filter');
+  const clause={all:'',starred:'AND p.starred=1',printed:"AND EXISTS(SELECT 1 FROM print_photo_links l JOIN print_jobs j ON j.id=l.job_id WHERE l.photo_id=p.id AND j.state IN ('operator_confirmed'))",not_printed:"AND NOT EXISTS(SELECT 1 FROM print_photo_links l JOIN print_jobs j ON j.id=l.job_id WHERE l.photo_id=p.id AND j.state IN ('operator_confirmed'))",review:"AND p.status='review'",public:"AND p.status='live'",projector:'AND p.projector_visible=1',hidden:"AND p.status='hidden'",single:"AND EXISTS(SELECT 1 FROM collection_memberships cm WHERE cm.photo_id=p.id AND cm.kind='single' AND cm.active=1)",group:"AND EXISTS(SELECT 1 FROM collection_memberships cm WHERE cm.photo_id=p.id AND cm.kind='group' AND cm.active=1)"}[filter];
   const rows=s.all(`SELECT p.*,d.label AS device_label FROM photos p JOIN devices d ON d.id=p.device_id WHERE p.event_id=? AND p.is_test=0 AND p.seq<? ${clause} ORDER BY p.seq DESC LIMIT 50`,scope.event,before);
   json(res,200,{photos:rows.map(p=>photoRecord(s,p)),filter,next_before:rows.length===50?rows.at(-1).seq:null});return true;
  }
@@ -143,7 +165,7 @@ async function routeInner(c){const {store:s,p,method,url,req,res,admin,device,re
   else if(P.UUID.test(ref))d=s.one('SELECT * FROM deliveries WHERE id=? AND event_id=?',ref,scope.event);
   else{let token=/^\/p\/([0-9a-f]{32})$/.exec(ref)?.[1];if(!token){try{const u=new URL(ref);need(u.protocol==='https:'&&!u.username&&!u.password&&!u.search&&!u.hash,400,'invalid_guest_url');token=/^\/p\/([0-9a-f]{32})$/.exec(u.pathname)?.[1];}catch{need(false,400,'invalid_guest_url');}}need(token,400,'full_guest_link_or_collection_id_required');d=s.one('SELECT * FROM deliveries WHERE token=? AND event_id=?',token,scope.event);}
   need(d&&d.state==='open',404,'delivery_not_available');const before=b.before===undefined?Number.MAX_SAFE_INTEGER:b.before;need(Number.isSafeInteger(before)&&before>0,400,'invalid_cursor');
-  const rows=s.all("SELECT p.*,dev.label AS device_label FROM delivery_items i JOIN photos p ON p.id=i.photo_id JOIN devices dev ON dev.id=p.device_id WHERE i.delivery_id=? AND p.is_test=0 AND p.status<>'hidden' AND p.seq<? ORDER BY p.seq DESC LIMIT 50",d.id,before);
+  const rows=s.all("SELECT p.*,dev.label AS device_label FROM collection_memberships i JOIN photos p ON p.id=i.photo_id JOIN devices dev ON dev.id=p.device_id WHERE i.delivery_id=? AND i.active=1 AND p.is_test=0 AND p.status<>'hidden' AND p.seq<? ORDER BY p.seq DESC LIMIT 50",d.id,before);
   json(res,200,{collection:{id:d.id,label:d.label,kind:d.kind},photos:rows.map(p=>photoRecord(s,p)),next_before:rows.length===50?rows.at(-1).seq:null,orders:orders(s,scope.event,d.id,scope.station),note:'Lookup only. Review the collection and photo before confirming any print.'});return true;
  }
  if(action==='assign'&&method==='POST'){require('./event-management.cjs').active(s,scope.event);const b=await readJSON(req);need(P.UUID.test(b.photo_id||'')&&P.UUID.test(b.delivery_id||'')&&Object.keys(b).length===2,400,'invalid_assignment');need(s.one('SELECT id FROM photos WHERE id=? AND event_id=?',b.photo_id,scope.event),404,'photo_not_found');json(res,200,bind(s,b.photo_id,b.delivery_id));return true;}

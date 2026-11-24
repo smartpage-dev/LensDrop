@@ -1,11 +1,11 @@
 {
-  "release": "H5.10",
-  "cloud_version": "0.2.0-alpha.10-hostinger.5.10",
-  "cloud_schema": 9,
-  "android_version": "0.2.0-alpha.6-h5.10",
-  "android_code": 16,
-  "android_photo_schema": 8,
-  "windows_station": "unchanged",
+  "release": "H5.11",
+  "cloud_version": "0.2.0-alpha.11-hostinger.5.11",
+  "cloud_schema": 10,
+  "android_version": "0.2.0-alpha.6-h5.11",
+  "android_code": 17,
+  "android_photo_schema": 9,
+  "windows_station": "0.1.4-alpha.h5.11 (staff desk UI; print engine unchanged)",
   "status": "engineering source pilot; no native build or live deployment",
   "testing": {
     "cloud": 170,

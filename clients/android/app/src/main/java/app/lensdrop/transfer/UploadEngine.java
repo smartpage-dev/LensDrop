@@ -49,7 +49,7 @@ final class UploadEngine implements AutoCloseable {
             if(System.currentTimeMillis()<config.prefs.getLong("cooldown",0)){config.status("Waiting before a shared network/server retry; queue retained.");return;}
             String gate=gate();if(gate!=null){config.status(gate);return;}
             if(System.currentTimeMillis()-lastDeliverySync>30000){lastDeliverySync=System.currentTimeMillis();try{DeliveryCoordinator.sync(queue,boundScope,api);}catch(Exception ignored){}}
-            if(config.get("test_only").isEmpty())DeliveryCoordinator.syncAssignments(queue,boundScope,api);
+            if(config.get("test_only").isEmpty()){DeliveryCoordinator.syncAssignments(queue,boundScope,api);SingleSync.one(queue,boundScope,api);}
             String testId=config.get("test_only");
             QueueDb.Job job=testId.isEmpty()?queue.due(boundScope):queue.testDue(boundScope,testId);
             if(!testId.isEmpty()&&queue.jobState(boundScope,testId).equals("uploaded")){

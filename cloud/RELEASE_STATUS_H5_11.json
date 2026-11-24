@@ -1,0 +1,9 @@
+{
+  "release": "H5.11 Dual Single/Group QR + Staff Desk",
+  "version": "0.2.0-alpha.11-hostinger.5.11",
+  "cloud_schema": 10,
+  "android_required_for_dual_qr": "0.2.0-alpha.6-h5.11 / code17",
+  "windows_staff_desk": "0.1.4-alpha.h5.11",
+  "deployment": "engineering candidate; not deployed",
+  "migration": "backup schema9 DB/WAL/assets first; initialize_storage=0"
+}

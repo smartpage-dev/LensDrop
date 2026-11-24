@@ -66,7 +66,8 @@ public final class MainActivity extends Activity {
         LinearLayout gallery=LuceUi.card(this,panes[0],"Photo gallery","Three-column, live local gallery. Tap a photo for details, star, guest QR and staff print actions.");
         LuceUi.action(this,gallery,"Open photo gallery",true,()->open(GalleryActivity.class));
         LinearLayout guest=LuceUi.card(this,panes[0],"Guest delivery","Choose the intended guest before confirming a photo. A displayed history QR does not change the receiver.");
-        LuceUi.action(this,guest,"Guest QR & photo selection",true,()->open(DeliveryActivity.class));
+        LuceUi.action(this,guest,"Single Photo QR",true,()->open(SingleDeliveryActivity.class));
+        LuceUi.action(this,guest,"Group Photo QR",true,()->{Intent i=new Intent(this,DeliveryActivity.class);i.putExtra("group_only",true);startActivity(i);});
         LuceUi.action(this,guest,"Print a photo",false,()->open(PrintActivity.class));
         LuceUi.action(this,guest,"Print a QR ticket",false,()->open(TicketActivity.class));
         LinearLayout join=LuceUi.card(this,panes[1],"1  Join event","Use a fresh staff QR. Manual credentials are under Advanced, not required after QR pairing.");

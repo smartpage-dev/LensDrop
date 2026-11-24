@@ -15,9 +15,9 @@ import sys
 from datetime import datetime, timezone
 
 ROOT = Path(__file__).resolve().parents[2]
-DEFAULT_MANIFEST = 'ANDROID_SOURCE_SNAPSHOT_H5_10.json'
-RELEASE = 'lensdrop-android-h5.10-code16'
-VERSION = '0.2.0-alpha.6-h5.10'
+DEFAULT_MANIFEST = 'ANDROID_SOURCE_SNAPSHOT_H5_11.json'
+RELEASE = 'lensdrop-android-h5.11-code17'
+VERSION = '0.2.0-alpha.6-h5.11'
 APP_ID = 'app.lensdrop.transfer'
 REQUIRED = {
     '.github/workflows/android-debug.yml', 'tools/github/android_ci.py',
@@ -25,7 +25,7 @@ REQUIRED = {
     'clients/android/build.gradle', 'clients/android/settings.gradle',
     'clients/android/app/src/main/AndroidManifest.xml',
 }
-for name in ('MainActivity', 'DeliveryActivity', 'StaffSetupActivity',
+for name in ('MainActivity', 'SingleDeliveryActivity', 'SingleSync', 'DeliveryActivity', 'StaffSetupActivity',
              'StaffQrScannerActivity', 'RecoveryActivity', 'ArchiveStaging',
              'PrintProfilePolicy', 'JpegStructure', 'QueueDb', 'PrintQueue', 'CloudApi', 'GalleryActivity', 'GalleryLedger', 'SlideshowActivity', 'SlideshowTicketProtocol'):
     REQUIRED.add('clients/android/app/src/main/java/app/lensdrop/transfer/' + name + '.java')
@@ -62,7 +62,7 @@ def safe_path(root: Path, relative: str) -> Path:
 def verify(root: Path, manifest_path: Path) -> dict:
     result = {
         'schema': 'luce.android.source-check/1', 'release': RELEASE,
-        'expected_version_name': VERSION, 'expected_version_code': 16,
+        'expected_version_name': VERSION, 'expected_version_code': 17,
         'git_commit': os.environ.get('GITHUB_SHA', 'local'),
         'checked_at_utc': datetime.now(timezone.utc).isoformat(),
         'ok': False, 'checked_files': 0, 'problems': [],
@@ -120,7 +120,7 @@ def verify(root: Path, manifest_path: Path) -> dict:
             if (root / rel).exists() and rel not in entries:
                 errors.append({'path': rel, 'reason': 'unexpected alternate Gradle configuration'})
         gradle = (root / 'clients/android/app/build.gradle').read_text(encoding='utf-8')
-        if not re.search(r'\bversionCode\s+16\b', gradle) or f"versionName '{VERSION}'" not in gradle or f"applicationId '{APP_ID}'" not in gradle:
+        if not re.search(r'\bversionCode\s+17\b', gradle) or f"versionName '{VERSION}'" not in gradle or f"applicationId '{APP_ID}'" not in gradle:
             errors.append({'path': 'clients/android/app/build.gradle', 'reason': 'unexpected app identity/version'})
     except (OSError, ValueError, KeyError, TypeError, UnicodeError):
         errors.append({'path': manifest_path.name, 'reason': 'missing, unsafe, or invalid manifest/configuration'})

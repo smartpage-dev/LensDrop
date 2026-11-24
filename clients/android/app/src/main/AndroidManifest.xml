@@ -24,6 +24,7 @@
         <activity android:name=".TicketActivity" android:exported="false"/>
         <activity android:name=".SlideshowActivity" android:exported="false"/>
         <activity android:name=".RecoveryActivity" android:exported="false" />
+        <activity android:name=".SingleDeliveryActivity" android:exported="false"/>
         <activity android:name=".DeliveryActivity" android:exported="false"/>
         <activity android:name=".GalleryActivity" android:exported="false"/>
         <service android:name=".EventService" android:exported="false" android:foregroundServiceType="dataSync"/>

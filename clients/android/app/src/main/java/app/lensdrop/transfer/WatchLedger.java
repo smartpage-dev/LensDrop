@@ -159,6 +159,8 @@ final class WatchLedger {
     JSONArray toSync(String scope)throws Exception{
         JSONArray list=new JSONArray();try(Cursor c=db().rawQuery("SELECT id FROM guest_groups WHERE scope=? AND (guest_path IS NULL OR state='cancel_pending') ORDER BY created LIMIT 12",new String[]{scope})){while(c.moveToNext())list.put(group(scope,c.getString(0)));}return list;
     }
+    // Legacy test/client compatibility: preserves the local label when no cloud label is provided.
     void cloudGroup(String id,String path){if(!path.matches("/p/[a-f0-9]{32}"))throw new IllegalStateException("Invalid QR response");db().execSQL("UPDATE guest_groups SET guest_path=? WHERE id=?",new Object[]{path,id});}
+    void cloudGroup(String id,String path,String label){if(!path.matches("/p/[a-f0-9]{32}")||label==null||!label.matches("[SG][0-9]{4,8}"))throw new IllegalStateException("Invalid QR response");db().execSQL("UPDATE guest_groups SET guest_path=?,label=? WHERE id=?",new Object[]{path,label,id});}
     void cancelled(String id){db().execSQL("UPDATE guest_groups SET state='cancelled' WHERE id=? AND state='cancel_pending'",new Object[]{id});}
 }

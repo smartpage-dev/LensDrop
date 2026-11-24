@@ -84,7 +84,7 @@ class SourceSnapshotTests(unittest.TestCase):
 
     def test_wrong_version_rejected(self):
         rel = 'clients/android/app/build.gradle'; p = self.root / rel
-        p.write_text(p.read_text().replace('versionCode 16', 'versionCode 13')); self.reject(rel)
+        p.write_text(p.read_text().replace('versionCode 17', 'versionCode 13')); self.reject(rel)
 
     def test_untracked_runtime_class_rejected(self):
         rel = JAVA + 'LeftoverOldActivity.java'; (self.root / rel).write_text('package app.lensdrop.transfer; class LeftoverOldActivity {}')

@@ -63,6 +63,14 @@ final class CloudApi implements AutoCloseable {
             ByteArrayOutputStream out=new ByteArrayOutputStream();try(InputStream in=c.getInputStream()){byte[] b=new byte[8192];int n;while((n=in.read(b))!=-1){if(out.size()+n>1024*1024)throw new Failure("preview_too_large",false,0);out.write(b,0,n);}}return out.toByteArray();
         }finally{c.disconnect();}
     }
+    byte[] groupThumbnail(String group,String photo)throws Exception{
+        if(!group.matches("[0-9a-f-]{36}")||!photo.matches("[0-9a-f-]{36}"))throw new IllegalArgumentException("Invalid group/photo ID");
+        HttpURLConnection c=connection(new URL(base+"/v1/device/deliveries/"+group+"/members/"+photo+"/thumb"));
+        try{c.setConnectTimeout(15000);c.setReadTimeout(15000);c.setInstanceFollowRedirects(false);c.setRequestProperty("Authorization","Bearer "+token);
+            if(c.getResponseCode()!=200)throw new Failure("group_thumbnail_unavailable",true,10000);
+            ByteArrayOutputStream out=new ByteArrayOutputStream();try(InputStream in=c.getInputStream()){byte[] b=new byte[8192];int n;while((n=in.read(b))!=-1){if(out.size()+n>1024*1024)throw new Failure("preview_too_large",false,0);out.write(b,0,n);}}return out.toByteArray();
+        }finally{c.disconnect();}
+    }
     JSONObject call(String route,JSONObject body)throws Exception{return request(route,body==null?null:body.toString().getBytes(StandardCharsets.UTF_8),null);}
     JSONObject chunk(String route,byte[] body)throws Exception{return request(route,body,sha(body));}
     private JSONObject request(String route,byte[] body,String chunkHash)throws Exception{

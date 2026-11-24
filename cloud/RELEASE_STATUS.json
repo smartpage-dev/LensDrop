@@ -1,39 +1,17 @@
 {
-  "release": "LensDrop H5 QR Pairing and Hybrid Print",
-  "date": "2026-11-17",
-  "cloud_version": "0.2.0-alpha.6-hostinger.5",
-  "cloud_schema": 5,
-  "android_version": "0.2.0-alpha.6-h5",
-  "android_version_code": 5,
-  "photo_queue_schema": 3,
-  "print_queue_schema": 1,
-  "station_source_version": "0.1.0-alpha.h5",
+  "release": "H5.11 Dual Single/Group QR + Staff Desk",
+  "version": "0.2.0-alpha.11-hostinger.5.11",
+  "cloud_schema": 10,
+  "android_required_for_dual_qr": "0.2.0-alpha.6-h5.11 / code17",
+  "windows_staff_desk": "0.1.4-alpha.h5.11",
+  "deployment": "engineering candidate; not deployed",
+  "migration": "backup schema9 DB/WAL/assets first; initialize_storage=0",
   "android_apk_included": false,
   "windows_executable_included": false,
-  "android_sdk_build_completed": false,
-  "windows_native_build_completed": false,
   "github_workflow_executed": false,
   "live_hostinger_deployed_by_assistant": false,
   "hardware_print_tested": false,
   "production_approved": false,
-  "tests": {
-    "cloud_cases": 114,
-    "station_core_cases": 24,
-    "legacy_desktop_cases": 23,
-    "exact_android_ledger_jvm_sqlite_cases": 24,
-    "existing_java_policy_assertions": 10,
-    "new_java_print_assertions": 15,
-    "web_ui_harness_checks": 11
-  },
-  "limits": [
-    "Private IPv4 endpoint manually configured; no discovery",
-    "First cloud pairing requires internet and approval",
-    "Previously prepared local grant lasts up to 12 hours",
-    "One Contain profile edited in Windows UI; Android chooses first published profile",
-    "Print photo selection is explicit, not automatically bound to Group QR",
-    "No spooler job ID monitor; submission remains unconfirmed until operator review",
-    "No native camera SDK/FTP/QR overlay/initial offline pairing",
-    "No physical phone, camera, Windows, printer or eight-hour soak qualification"
-  ],
-  "migration": "Stopped full-data backup required. Schema5. Preserve environment/keys and initialization=0. Back up cloud signing key. Restore matching old data plus code for rollback."
+  "cloud_regression_passed": 175,
+  "station_regression_passed": 57
 }

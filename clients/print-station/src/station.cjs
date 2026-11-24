@@ -47,7 +47,7 @@ function createStation(options){
  res.setHeader('Content-Security-Policy',"default-src 'self'; script-src 'self'; img-src 'self' blob:; style-src 'self'; connect-src 'self'; frame-ancestors 'none'; base-uri 'none'");res.setHeader('X-Frame-Options','DENY');res.setHeader('Referrer-Policy','no-referrer');res.setHeader('X-Content-Type-Options','nosniff');
  if(req.method==='GET'&&['/','/app.js','/style.css','/qr.js','/staff-desk.js','/staff-desk.css','/operations-shell.js'].includes(p)){const file=p==='/'?'index.html':p.slice(1);res.writeHead(200,{'Content-Type':file.endsWith('.js')?'text/javascript':file.endsWith('.css')?'text/css':'text/html','Cache-Control':'no-store'});return res.end(fs.readFileSync(path.join(publicDir,file)));}
  P.check(req.headers['x-station-ui']===uiSecret,'local_ui_auth_required',401);
- if(/^\/api\/staff\/(?:config|photos|lookup|orders|assign|collect|cancel-prepared|photo\/[0-9a-f-]+\/(?:thumb|delivery))$/.test(p)){
+ if(/^\/api\/staff\/(?:config|photos|lookup|orders|assign|collect|cancel-prepared|groups(?:\/[0-9a-f-]+\/members)?|photo\/[0-9a-f-]+\/(?:thumb|delivery))$/.test(p)){
   P.check(cfg.token&&!revoked,'station_not_paired',403);
   const remote='/v1/station/staff/'+p.slice('/api/staff/'.length)+u.search;
   if(/\/photo\//.test(p)&&req.method==='GET'){

@@ -145,7 +145,7 @@ function createApp(options = {}) {
     if (method === 'GET' && p === '/gallery.js') return serveFile(res, path.join(publicDir, 'gallery.js'), 'text/javascript');
     if (method === 'GET' && p === '/v1/device') {
       const dev = device(req), event = store.one('SELECT id,name,policy FROM events WHERE id=?', dev.event_id);
-      return json(res, 200, { device_id: dev.id, label: dev.label, event, capabilities: {isolated_preflight:true,operations_summary:true,personal_delivery_v1:true,qr_pairing_v1:true,dual_print_v1:true,archive_delivery_v1:true,staff_print_desk_v1:true}, chunk_size: CHUNK, max_file_size: MAX_FILE });
+      return json(res, 200, { device_id: dev.id, label: dev.label, event, capabilities: {isolated_preflight:true,operations_summary:true,personal_delivery_v1:true,qr_pairing_v1:true,dual_print_v1:true,archive_delivery_v1:true,staff_print_desk_v1:true,dual_collections_v1:true}, chunk_size: CHUNK, max_file_size: MAX_FILE });
     }
     if (await deliveries.route({method,p,url,req,res,store,device,admin,readJSON,json,serveFile,presentation})) return;
     if (method === 'POST' && p === '/v1/device/heartbeat') {
@@ -485,7 +485,7 @@ function createApp(options = {}) {
       requireValue(!target.is_test || b.status === 'hidden',409,'test_photo_cannot_publish');
       store.tx(()=>{
         requireValue(store.run('UPDATE photos SET status=? WHERE id=?', b.status, m[1]).changes > 0, 404, 'photo_not_found');
-        if(b.status==='hidden'){store.run('UPDATE delivery_items SET released=0 WHERE photo_id=?',m[1]);store.run('UPDATE photos SET projector_visible=0 WHERE id=?',m[1]);}
+        if(b.status==='hidden'){store.run('UPDATE delivery_items SET released=0 WHERE photo_id=?',m[1]);store.run('UPDATE collection_memberships SET released=0 WHERE photo_id=?',m[1]);store.run('UPDATE photos SET projector_visible=0 WHERE id=?',m[1]);}
       });
       return json(res, 200, { ok: true });
     }

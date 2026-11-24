@@ -10,7 +10,7 @@ async function fixture(){const dir=fs.mkdtempSync(path.join(os.tmpdir(),'lensdro
  return{app,dir,call,event,dev,upload,close:async()=>{await app.close();fs.rmSync(dir,{recursive:true,force:true});}};
 }
 test('projection-only review photo never becomes public gallery; per-event and staff scoped',async()=>{const f=await fixture();try{const e=await f.event(),d=await f.dev(e),other=await f.event('Event B'),d2=await f.dev(other),photo=await f.upload(e,d,'#336699');
- assert.equal(f.app.store.one('PRAGMA user_version').user_version,9);
+ assert.equal(f.app.store.one('PRAGMA user_version').user_version,10);
  assert.equal((await f.call('/v1/device/slideshow',undefined,d2.token)).body.event_id,other.id);
  const p=(await f.call(`/v1/events/${e.id}/presentation`,{enabled:true})).body;
  assert.equal((await f.call('/v1'+p.slideshow_path,undefined,'')).body.total,0);
@@ -81,7 +81,7 @@ test('migration from schema7 preserves existing live slideshow audience and even
   const {DatabaseSync}=require('node:sqlite');const db=new DatabaseSync(path.join(dir,'lensdrop.sqlite'));
   db.exec('ALTER TABLE events DROP COLUMN lifecycle;ALTER TABLE photos DROP COLUMN projector_visible;PRAGMA user_version=7;');db.close();
   app=createApp({dataDir:dir,adminKey:key,freeReserve:0});
-  assert.equal(app.store.one('PRAGMA user_version').user_version,9);
+  assert.equal(app.store.one('PRAGMA user_version').user_version,10);
   assert.equal(app.store.one('SELECT projector_visible FROM photos WHERE id=?',pid).projector_visible,1);
   assert.equal(app.store.one('SELECT lifecycle FROM events WHERE id=?',eid).lifecycle,'active');
   assert.equal(app.store.one('SELECT id FROM events WHERE id=?',eid).id,eid);

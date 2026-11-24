@@ -1,3 +1,9 @@
+# CURRENT RELEASE: H5.11 engineering candidate (schema 10)
+
+Read `START_H5_11.md` and `RELEASE_STATUS.json` first. Older instructions below are historical and must not override H5.11 upgrade requirements. Do not deploy without a stopped-data backup and verified client builds.
+
+---
+
 # H5 update - read the current guide first
 
 This component is part of H5. Read the root docs/h5/LensDrop_H5_Setup_Guide.html and RELEASE_STATUS.json before the retained earlier instructions below. Cloud schema5; Android native compilation and Windows native compilation remain unverified. H5 supersedes earlier statements that no print source or staff-QR source exists. No compiled APK/EXE is bundled.
