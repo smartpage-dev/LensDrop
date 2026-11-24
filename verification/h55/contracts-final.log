@@ -1,0 +1,38 @@
+PASS Cloud H55 version
+PASS Station H55 version
+PASS Android version code10
+PASS Android version H55
+PASS Android ID retained
+PASS Workflow runs new actual ledger tests
+PASS Lint remains required
+PASS Signing identity retained
+PASS Only two new user routes
+PASS Archive persists before print request
+PASS Print records archive correlation
+PASS Print source structurally validated
+PASS Transfer checkpoint gated
+PASS Archive checksum verified
+PASS Cloud staging is not print-stage
+PASS No source deletion
+PASS Conflicting guest protected
+PASS Single photo retains old image
+PASS Queue is version6
+PASS Existing archive default remains disabled
+PASS Delivery sync retry recorded
+PASS No retroactive skipped import
+PASS Shared UI copies identical
+PASS Lookup has NO PRINT label
+PASS Confirm disabled until image loaded
+PASS Persistent pending request before send
+PASS Collection separate action
+PASS No guest print UI route
+PASS Service actor hidden credential
+PASS Schema7 additive
+PASS Never enables hub
+PASS Original bound by checksum
+PASS Collection requires paper observation
+PASS Ref collision rejected
+PASS Print protocol version unchanged
+PASS Staff permissions not public
+PASS Legacy skip language corrected
+PASSED 37 source contracts. Not SDK build/lint/network/hardware validation.

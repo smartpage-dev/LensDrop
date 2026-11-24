@@ -1,0 +1,23 @@
+{
+  "scope": "Actual HTML/CSS/JS with injected location/history/storage/crypto and explicit HTTP bridge to actual local cloud/station, synthetic photos and driver; not native Windows/Android/HTTPS/device test",
+  "checks": [
+    "Admin loads three private archive photographs",
+    "Protected thumbnails render as local blob URLs",
+    "Archive and browsing have not created print orders",
+    "Method 2 setting saved and shown",
+    "Paired Windows dashboard receives scoped staff library",
+    "Printed REF lookup shows only its one assigned photo",
+    "Lookup alone creates no print job",
+    "Cancelling preview does not print",
+    "Explicit confirmation creates exactly one ready order",
+    "Successful acknowledgement clears browser pending identity",
+    "Physical collection is not offered for ready work",
+    "Staff order goes through existing simulated station worker once",
+    "Simulation does not unlock physical collection",
+    "Collection records handover without creating print",
+    "Collected order has no repeat handover action",
+    "Staff panel fits mobile width",
+    "No JavaScript runtime errors"
+  ],
+  "errors": []
+}

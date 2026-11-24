@@ -1,0 +1,51 @@
+PASS Cloud H55 version
+PASS Station H55 version
+PASS Android version code10
+PASS Android version H55
+PASS Android ID retained
+PASS Workflow runs new actual ledger tests
+PASS Lint remains required
+PASS Signing identity retained
+PASS Only two new user routes
+PASS Archive persists before print request
+PASS Print records archive correlation
+PASS Print source structurally validated
+PASS Transfer checkpoint gated
+PASS Archive checksum verified
+PASS Cloud staging is not print-stage
+PASS No source deletion
+PASS Conflicting guest protected
+PASS Single photo retains old image
+PASS Queue is version6
+PASS Existing archive default remains disabled
+PASS Delivery sync retry recorded
+PASS No retroactive skipped import
+PASS Shared UI copies identical
+PASS Lookup has NO PRINT label
+PASS Confirm disabled until image loaded
+PASS Persistent pending request before send
+PASS Collection separate action
+PASS No guest print UI route
+PASS Service actor hidden credential
+PASS Schema7 additive
+PASS Never enables hub
+PASS Original bound by checksum
+PASS Collection requires paper observation
+PASS Ref collision rejected
+Traceback (most recent call last):
+  File "/mnt/data/lensdrop_h55_work/LensDrop_H5_5/tools/testing/h55-contract-checks.py", line 16, in <module>
+    ck('Print protocol version unchanged',read('cloud/shared/print-protocol.cjs')==read('clients/print-station/shared/print-protocol.cjs'))
+                                                                                   ~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/mnt/data/lensdrop_h55_work/LensDrop_H5_5/tools/testing/h55-contract-checks.py", line 5, in read
+    def read(p):return (r/p).read_text()
+                       ~~~~~~~~~~~~~~~^^
+  File "/usr/lib/python3.13/pathlib/_local.py", line 548, in read_text
+    return PathBase.read_text(self, encoding, errors, newline)
+           ~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.13/pathlib/_abc.py", line 632, in read_text
+    with self.open(mode='r', encoding=encoding, errors=errors, newline=newline) as f:
+         ~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.13/pathlib/_local.py", line 539, in open
+    return io.open(self, mode, buffering, encoding, errors, newline)
+           ~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+FileNotFoundError: [Errno 2] No such file or directory: '/mnt/data/lensdrop_h55_work/LensDrop_H5_5/clients/print-station/shared/print-protocol.cjs'

@@ -1,0 +1,354 @@
+TAP version 13
+# Subtest: three distinct 4x6/auto-pair/manual-pair presets retain matching snapshots
+ok 1 - three distinct 4x6/auto-pair/manual-pair presets retain matching snapshots
+  ---
+  duration_ms: 2.398153
+  type: 'test'
+  ...
+# Subtest: opaque local driver settings never enter public profile or grant data
+ok 2 - opaque local driver settings never enter public profile or grant data
+  ---
+  duration_ms: 0.470302
+  type: 'test'
+  ...
+# Subtest: wrong printer snapshot is rejected
+ok 3 - wrong printer snapshot is rejected
+  ---
+  duration_ms: 0.492545
+  type: 'test'
+  ...
+# Subtest: a changed opaque byte fails checksum
+ok 4 - a changed opaque byte fails checksum
+  ---
+  duration_ms: 0.191733
+  type: 'test'
+  ...
+# Subtest: invalid DEVMODE length is rejected
+ok 5 - invalid DEVMODE length is rejected
+  ---
+  duration_ms: 0.245111
+  type: 'test'
+  ...
+# Subtest: single 2x6 paper setting is not mistaken for two-up sheet
+ok 6 - single 2x6 paper setting is not mistaken for two-up sheet
+  ---
+  duration_ms: 0.191502
+  type: 'test'
+  ...
+# Subtest: cut mode requires explicit operator confirmation
+ok 7 - cut mode requires explicit operator confirmation
+  ---
+  duration_ms: 0.198162
+  type: 'test'
+  ...
+# Subtest: automatic profile cannot be relabelled as manual internally
+ok 8 - automatic profile cannot be relabelled as manual internally
+  ---
+  duration_ms: 0.30576
+  type: 'test'
+  ...
+# Subtest: a different printer driver cannot enter the model preset
+ok 9 - a different printer driver cannot enter the model preset
+  ---
+  duration_ms: 0.367571
+  type: 'test'
+  ...
+# Subtest: effective paper dimensions must match capture
+ok 10 - effective paper dimensions must match capture
+  ---
+  duration_ms: 0.336797
+  type: 'test'
+  ...
+# Subtest: fit cover cannot silently crop the strip
+ok 11 - fit cover cannot silently crop the strip
+  ---
+  duration_ms: 0.259792
+  type: 'test'
+  ...
+# Subtest: landscape capture publishes effective sheet dimensions
+ok 12 - landscape capture publishes effective sheet dimensions
+  ---
+  duration_ms: 0.152655
+  type: 'test'
+  ...
+# Subtest: existing generic printer profile remains unchanged
+ok 13 - existing generic printer profile remains unchanged
+  ---
+  duration_ms: 0.167407
+  type: 'test'
+  ...
+# Subtest: new image layout cannot be smuggled into a generic profile
+ok 14 - new image layout cannot be smuggled into a generic profile
+  ---
+  duration_ms: 0.135499
+  type: 'test'
+  ...
+# Subtest: a snapshot change needs a new revision
+ok 15 - a snapshot change needs a new revision
+  ---
+  duration_ms: 0.39342
+  type: 'test'
+  ...
+# Subtest: no extra fields are added to immutable nine-field jobs
+ok 16 - no extra fields are added to immutable nine-field jobs
+  ---
+  duration_ms: 0.314273
+  type: 'test'
+  ...
+# (node:3122) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: H5 station LAN requires a valid signed grant and scoped secret; local Admin uses another secret
+ok 17 - H5 station LAN requires a valid signed grant and scoped secret; local Admin uses another secret
+  ---
+  duration_ms: 307.651928
+  type: 'test'
+  ...
+# Subtest: H5 station direct upload verifies checksum then simulation marks a clearly nonphysical outcome
+ok 18 - H5 station direct upload verifies checksum then simulation marks a clearly nonphysical outcome
+  ---
+  duration_ms: 163.849968
+  type: 'test'
+  ...
+# Subtest: H5 station the same job repeated across LAN and cloud produces only one ledger entry and one outcome
+ok 19 - H5 station the same job repeated across LAN and cloud produces only one ledger entry and one outcome
+  ---
+  duration_ms: 202.127553
+  type: 'test'
+  ...
+# Subtest: H5 station cloud-only route downloads the exact private file and never publishes it
+ok 20 - H5 station cloud-only route downloads the exact private file and never publishes it
+  ---
+  duration_ms: 108.961257
+  type: 'test'
+  ...
+# Subtest: H5 station lost LAN acknowledgement then cloud fallback reconciles the existing accepted job
+ok 21 - H5 station lost LAN acknowledgement then cloud fallback reconciles the existing accepted job
+  ---
+  duration_ms: 147.978826
+  type: 'test'
+  ...
+# Subtest: H5 station partial LAN transfer followed by cloud image delivery replaces only the matching source
+ok 22 - H5 station partial LAN transfer followed by cloud image delivery replaces only the matching source
+  ---
+  duration_ms: 253.140115
+  type: 'test'
+  ...
+# Subtest: H5 station identity reuse with different copies is rejected, not treated as an intentional reprint
+ok 23 - H5 station identity reuse with different copies is rejected, not treated as an intentional reprint
+  ---
+  duration_ms: 84.729806
+  type: 'test'
+  ...
+# Subtest: H5 station checksum failures do not advance the durable offset
+ok 24 - H5 station checksum failures do not advance the durable offset
+  ---
+  duration_ms: 82.935123
+  type: 'test'
+  ...
+# Subtest: H5 station restart resumes a partial image and discards a noncommitted trailing write
+ok 25 - H5 station restart resumes a partial image and discards a noncommitted trailing write
+  ---
+  duration_ms: 163.894626
+  type: 'test'
+  ...
+# Subtest: H5 station restart after submission boundary becomes unknown and never automatically reprints
+ok 26 - H5 station restart after submission boundary becomes unknown and never automatically reprints
+  ---
+  duration_ms: 210.317565
+  type: 'test'
+  ...
+# Subtest: H5 station confirmed finish clears image cache only after cloud acknowledgement; dedupe tombstone remains
+ok 27 - H5 station confirmed finish clears image cache only after cloud acknowledgement; dedupe tombstone remains
+  ---
+  duration_ms: 181.805029
+  type: 'test'
+  ...
+# Subtest: H5 station physical mode toggled later cannot turn a queued simulation into a real print
+ok 28 - H5 station physical mode toggled later cannot turn a queued simulation into a real print
+  ---
+  duration_ms: 100.87251
+  type: 'test'
+  ...
+# Subtest: H5 station pause prevents submission while retaining ready data
+ok 29 - H5 station pause prevents submission while retaining ready data
+  ---
+  duration_ms: 146.423596
+  type: 'test'
+  ...
+# Subtest: H5 station expired accepted authorization waits for renewal instead of submitting
+ok 30 - H5 station expired accepted authorization waits for renewal instead of submitting
+  ---
+  duration_ms: 182.558423
+  type: 'test'
+  ...
+# Subtest: H5 station online revocation stops station execution and local intake
+ok 31 - H5 station online revocation stops station execution and local intake
+  ---
+  duration_ms: 109.878724
+  type: 'test'
+  ...
+# Subtest: H5 station revoked photographer cannot submit after permissions refresh
+ok 32 - H5 station revoked photographer cannot submit after permissions refresh
+  ---
+  duration_ms: 103.567694
+  type: 'test'
+  ...
+# Subtest: H5 station a different owner grant cannot inspect or complete an existing job
+ok 33 - H5 station a different owner grant cannot inspect or complete an existing job
+  ---
+  duration_ms: 153.24707
+  type: 'test'
+  ...
+# Subtest: H5 station unsubmitted cancel cannot be reversed by transport retry
+ok 34 - H5 station unsubmitted cancel cannot be reversed by transport retry
+  ---
+  duration_ms: 129.10485
+  type: 'test'
+  ...
+# Subtest: H5 station station profile edit requires a revision and existing job captures original printer mapping
+ok 35 - H5 station station profile edit requires a revision and existing job captures original printer mapping
+  ---
+  duration_ms: 126.678175
+  type: 'test'
+  ...
+# Subtest: H5 station public LAN cannot access local dashboard API
+ok 36 - H5 station public LAN cannot access local dashboard API
+  ---
+  duration_ms: 126.707954
+  type: 'test'
+  ...
+# Subtest: H5 driver boundary is called once for duplicate deliveries; actual hardware is not exercised
+ok 37 - H5 driver boundary is called once for duplicate deliveries; actual hardware is not exercised
+  ---
+  duration_ms: 149.417525
+  type: 'test'
+  ...
+# Subtest: H5 uncertain driver callback is never blindly repeated
+ok 38 - H5 uncertain driver callback is never blindly repeated
+  ---
+  duration_ms: 159.570367
+  type: 'test'
+  ...
+# Subtest: H5 station a refreshed valid grant can renew an expired ready job without changing identity or profile
+ok 39 - H5 station a refreshed valid grant can renew an expired ready job without changing identity or profile
+  ---
+  duration_ms: 166.927177
+  type: 'test'
+  ...
+# Subtest: H5 station local configuration rejects a public hostname that only resembles a private address
+ok 40 - H5 station local configuration rejects a public hostname that only resembles a private address
+  ---
+  duration_ms: 100.166941
+  type: 'test'
+  ...
+# Subtest: H5 station H5.2 printer preset list is authenticated and does not modify existing settings
+ok 41 - H5 station H5.2 printer preset list is authenticated and does not modify existing settings
+  ---
+  duration_ms: 127.885492
+  type: 'test'
+  ...
+# Subtest: H5 station H5.2 retired profile revision cannot be reused
+ok 42 - H5 station H5.2 retired profile revision cannot be reused
+  ---
+  duration_ms: 170.201399
+  type: 'test'
+  ...
+# Subtest: H5 station H5.2 a saved driver snapshot stays private and is copied into accepted job
+ok 43 - H5 station H5.2 a saved driver snapshot stays private and is copied into accepted job
+  ---
+  duration_ms: 124.048497
+  type: 'test'
+  ...
+# Subtest: H5 station H5.4 expired head is quarantined while later eligible work executes once
+ok 44 - H5 station H5.4 expired head is quarantined while later eligible work executes once
+  ---
+  duration_ms: 157.979174
+  type: 'test'
+  ...
+# Subtest: H5 station H5.4 full image quota does not block a LAN receipt or fetching existing cloud work
+ok 45 - H5 station H5.4 full image quota does not block a LAN receipt or fetching existing cloud work
+  ---
+  duration_ms: 163.813848
+  type: 'test'
+  ...
+# Subtest: H5 station H5.4 a failed individual receipt backs off but unrelated cloud work is fetched
+ok 46 - H5 station H5.4 a failed individual receipt backs off but unrelated cloud work is fetched
+  ---
+  duration_ms: 175.922114
+  type: 'test'
+  ...
+# Subtest: H5 station H5.4 invalid station authentication still pauses globally; it is not ignored as one receipt error
+ok 47 - H5 station H5.4 invalid station authentication still pauses globally; it is not ignored as one receipt error
+  ---
+  duration_ms: 93.074686
+  type: 'test'
+  ...
+# Subtest: H5 station H5.4 expired job cannot be retried under revoked or changed-profile authority
+ok 48 - H5 station H5.4 expired job cannot be retried under revoked or changed-profile authority
+  ---
+  duration_ms: 255.72591
+  type: 'test'
+  ...
+# Subtest: H5 station H5.4 changed profile is quarantined before driver submission
+ok 49 - H5 station H5.4 changed profile is quarantined before driver submission
+  ---
+  duration_ms: 129.018988
+  type: 'test'
+  ...
+# Subtest: H5.4 watchdog timeout pauses and preserves unknown result even after late native success
+ok 50 - H5.4 watchdog timeout pauses and preserves unknown result even after late native success
+  ---
+  duration_ms: 166.034217
+  type: 'test'
+  ...
+# Subtest: H5.4 watchdog late native rejection is handled and never causes a second print
+ok 51 - H5.4 watchdog late native rejection is handled and never causes a second print
+  ---
+  duration_ms: 169.26891
+  type: 'test'
+  ...
+# Subtest: H5 station H5.4 additive ledger upgrade preserves legacy jobs and completes missing metadata columns
+ok 52 - H5 station H5.4 additive ledger upgrade preserves legacy jobs and completes missing metadata columns
+  ---
+  duration_ms: 196.345748
+  type: 'test'
+  ...
+# Subtest: H5 station H5.5 staff proxy requires BOTH loopback secret and explicit cloud station permission
+ok 53 - H5 station H5.5 staff proxy requires BOTH loopback secret and explicit cloud station permission
+  ---
+  duration_ms: 108.567333
+  type: 'test'
+  ...
+# Subtest: H5 station H5.5 staff order reaches the SAME native ledger via cloud and simulates once
+ok 54 - H5 station H5.5 staff order reaches the SAME native ledger via cloud and simulates once
+  ---
+  duration_ms: 124.117595
+  type: 'test'
+  ...
+# Subtest: H5 station H5.5 staff lookup returns its guest without starting any job
+ok 55 - H5 station H5.5 staff lookup returns its guest without starting any job
+  ---
+  duration_ms: 142.964686
+  type: 'test'
+  ...
+# Subtest: H5 station H5.5 station streams protected photo previews only to authenticated staff
+ok 56 - H5 station H5.5 station streams protected photo previews only to authenticated staff
+  ---
+  duration_ms: 129.93372
+  type: 'test'
+  ...
+# Subtest: H5 station H5.5 losing cloud access does not fabricate a station-local event library
+ok 57 - H5 station H5.5 losing cloud access does not fabricate a station-local event library
+  ---
+  duration_ms: 97.775775
+  type: 'test'
+  ...
+1..57
+# tests 57
+# suites 0
+# pass 57
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 6382.649713

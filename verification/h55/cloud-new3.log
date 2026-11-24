@@ -1,0 +1,164 @@
+TAP version 13
+# (node:5245) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: H5.5 schema7 adds archive and staff records without resetting existing identities
+ok 1 - H5.5 schema7 adds archive and staff records without resetting existing identities
+  ---
+  duration_ms: 157.837199
+  type: 'test'
+  ...
+# Subtest: H5.5 capabilities and event defaults advertise two routes without station upload hub
+ok 2 - H5.5 capabilities and event defaults advertise two routes without station upload hub
+  ---
+  duration_ms: 34.248353
+  type: 'test'
+  ...
+# Subtest: H5.5 private archive stays review even in an instant-live event; not a print request
+ok 3 - H5.5 private archive stays review even in an instant-live event; not a print request
+  ---
+  duration_ms: 69.356373
+  type: 'test'
+  ...
+# Subtest: H5.5 archive flag cannot be combined with preflight or implicit guest assignment
+ok 4 - H5.5 archive flag cannot be combined with preflight or implicit guest assignment
+  ---
+  duration_ms: 40.573643
+  type: 'test'
+  ...
+# Subtest: H5.5 later guest assignment is idempotent, owner-scoped and does not publicly publish
+ok 5 - H5.5 later guest assignment is idempotent, owner-scoped and does not publicly publish
+  ---
+  duration_ms: 74.461731
+  type: 'test'
+  ...
+# Subtest: H5.5 unassigned immutable archive preview is owner authenticated
+ok 6 - H5.5 unassigned immutable archive preview is owner authenticated
+  ---
+  duration_ms: 64.339014
+  type: 'test'
+  ...
+# Subtest: H5.5 Single Photo link cannot be rebound or accept another image
+ok 7 - H5.5 Single Photo link cannot be rebound or accept another image
+  ---
+  duration_ms: 114.399538
+  type: 'test'
+  ...
+# Subtest: H5.5 cross-owner guest assignment and hidden photo binding are denied
+ok 8 - H5.5 cross-owner guest assignment and hidden photo binding are denied
+  ---
+  duration_ms: 71.260157
+  type: 'test'
+  ...
+# Subtest: H5.5 staff desk disabled by default and authenticated event scoped; guest QR grants no staff access
+ok 9 - H5.5 staff desk disabled by default and authenticated event scoped; guest QR grants no staff access
+  ---
+  duration_ms: 67.186767
+  type: 'test'
+  ...
+# Subtest: H5.5 lookup full QR, printed REF and UUID returns photos but creates no order
+ok 10 - H5.5 lookup full QR, printed REF and UUID returns photos but creates no order
+  ---
+  duration_ms: 78.475747
+  type: 'test'
+  ...
+# Subtest: H5.5 ticket lookup rejects out-of-event, cancelled and ambiguous short references
+ok 11 - H5.5 ticket lookup rejects out-of-event, cancelled and ambiguous short references
+  ---
+  duration_ms: 74.636368
+  type: 'test'
+  ...
+# Subtest: H5.5 staff creates a private immutable order from original archive; retry is one order
+ok 12 - H5.5 staff creates a private immutable order from original archive; retry is one order
+  ---
+  duration_ms: 72.384707
+  type: 'test'
+  ...
+# Subtest: H5.5 same ID different payload, copies above role and cross-station request fail
+ok 13 - H5.5 same ID different payload, copies above role and cross-station request fail
+  ---
+  duration_ms: 91.287328
+  type: 'test'
+  ...
+# Subtest: H5.5 changed collection, hidden source and stale profile cannot be printed from old preview
+ok 14 - H5.5 changed collection, hidden source and stale profile cannot be printed from old preview
+  ---
+  duration_ms: 109.338484
+  type: 'test'
+  ...
+# Subtest: H5.5 staff station permission revoked stops new actions, not blindly cancels old jobs
+ok 15 - H5.5 staff station permission revoked stops new actions, not blindly cancels old jobs
+  ---
+  duration_ms: 68.489126
+  type: 'test'
+  ...
+# Subtest: H5.5 collect requires physical confirmation and is idempotent; never adds print
+ok 16 - H5.5 collect requires physical confirmation and is idempotent; never adds print
+  ---
+  duration_ms: 86.053076
+  type: 'test'
+  ...
+# Subtest: H5.5 print cleanup does not delete the original gallery object or staff order
+ok 17 - H5.5 print cleanup does not delete the original gallery object or staff order
+  ---
+  duration_ms: 87.075121
+  type: 'test'
+  ...
+# Subtest: H5.5 photographer LAN job reports link to already archived photo
+ok 18 - H5.5 photographer LAN job reports link to already archived photo
+  ---
+  duration_ms: 62.982031
+  type: 'test'
+  ...
+# Subtest: H5.5 archive arriving after a LAN print links the original job without creating another
+ok 19 - H5.5 archive arriving after a LAN print links the original job without creating another
+  ---
+  duration_ms: 61.937964
+  type: 'test'
+  ...
+# {"type":"request_error","code":"print_storage_quota"}
+# Subtest: H5.5 staff quota failure rolls back the new order and never loses gallery photo
+ok 20 - H5.5 staff quota failure rolls back the new order and never loses gallery photo
+  ---
+  duration_ms: 71.21864
+  type: 'test'
+  ...
+# Subtest: H5.5 identical completed staff request survives restart without repeat order
+ok 21 - H5.5 identical completed staff request survives restart without repeat order
+  ---
+  duration_ms: 71.82613
+  type: 'test'
+  ...
+# Subtest: H5.5 independent staff assignment cannot move an existing guest photo
+ok 22 - H5.5 independent staff assignment cannot move an existing guest photo
+  ---
+  duration_ms: 79.946297
+  type: 'test'
+  ...
+# Subtest: H5.5 ready staff order cannot be cancelled by browser pending-state cleanup
+ok 23 - H5.5 ready staff order cannot be cancelled by browser pending-state cleanup
+  ---
+  duration_ms: 72.799934
+  type: 'test'
+  ...
+# {"type":"request_error","code":"ENOENT"}
+# Subtest: H5.5 interrupted staff copy preserves order identity and retries same request
+ok 24 - H5.5 interrupted staff copy preserves order identity and retries same request
+  ---
+  duration_ms: 77.949462
+  type: 'test'
+  ...
+# Subtest: H5.5 staff service actor cannot enroll a phone or pollute photographer accounting
+ok 25 - H5.5 staff service actor cannot enroll a phone or pollute photographer accounting
+  ---
+  duration_ms: 66.953855
+  type: 'test'
+  ...
+1..25
+# tests 25
+# suites 0
+# pass 25
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 2021.910054

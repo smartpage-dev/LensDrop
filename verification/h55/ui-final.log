@@ -1,0 +1,18 @@
+PASS Admin loads three private archive photographs
+PASS Protected thumbnails render as local blob URLs
+PASS Archive and browsing have not created print orders
+PASS Method 2 setting saved and shown
+PASS Paired Windows dashboard receives scoped staff library
+PASS Printed REF lookup shows only its one assigned photo
+PASS Lookup alone creates no print job
+PASS Cancelling preview does not print
+PASS Explicit confirmation creates exactly one ready order
+PASS Successful acknowledgement clears browser pending identity
+PASS Physical collection is not offered for ready work
+PASS Staff order goes through existing simulated station worker once
+PASS Simulation does not unlock physical collection
+PASS Collection records handover without creating print
+PASS Collected order has no repeat handover action
+PASS Staff panel fits mobile width
+PASS No JavaScript runtime errors
+PASSED 17 UI checks
