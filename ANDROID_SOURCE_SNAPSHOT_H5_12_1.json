@@ -315,7 +315,7 @@
       "encoding": "utf8-lf"
     },
     "clients/android/ticket-tests/TicketLedgerTest.java": {
-      "sha256": "e28702600aaa5831b3f6aa9f55d0566ec77b5684ceb6cabb7412d9793f29ef65",
+      "sha256": "34fbd6f7ef5b54ebfca311dc3a465a3e6af298248389bf48699d1bacf5f3b52d",
       "encoding": "utf8-lf"
     },
     "clients/android/ticket-tests/TicketProtocolTest.java": {
@@ -339,7 +339,7 @@
       "encoding": "utf8-lf"
     },
     "clients/android/workflow-tests/ArchiveWorkflowTest.java": {
-      "sha256": "994d4daff850b8bbd20ace7462b6b3ba75f30c8d471adb0211d1b8525c30f445",
+      "sha256": "ca5bd66ce9deab9f96cc405924bb161d29154876112a9e4149bd3d41935697a8",
       "encoding": "utf8-lf"
     },
     "clients/android/workflow-tests/FrozenH54PrintQueue.java": {
