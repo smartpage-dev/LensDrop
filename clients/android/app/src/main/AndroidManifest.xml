@@ -23,6 +23,7 @@
         <service android:name=".PrintService" android:exported="false" android:foregroundServiceType="dataSync"/>
         <activity android:name=".TicketActivity" android:exported="false"/>
         <activity android:name=".SlideshowActivity" android:exported="false"/>
+        <activity android:name=".EventGalleryActivity" android:exported="false"/>
         <activity android:name=".RecoveryActivity" android:exported="false" />
         <activity android:name=".SingleDeliveryActivity" android:exported="false"/>
         <activity android:name=".DeliveryActivity" android:exported="false"/>

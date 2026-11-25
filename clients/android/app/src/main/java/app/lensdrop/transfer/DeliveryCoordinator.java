@@ -28,10 +28,11 @@ final class DeliveryCoordinator {
         WatchLedger w=new WatchLedger(q);JSONArray records=w.toSync(scope);
         for(int i=0;i<records.length();i++){
             JSONObject g=records.getJSONObject(i);String id=g.getString("id");
-            if(g.optString("guest_path").isEmpty()){
-                JSONObject b=new JSONObject();b.put("id",id);b.put("kind",g.getString("kind"));b.put("label",g.getString("label"));b.put("auto_label",true);
+            if(!g.optBoolean("cloud_registered",false)){
+                JSONObject b=new JSONObject();b.put("id",id);b.put("kind",g.getString("kind"));b.put("label",g.getString("label"));b.put("auto_label",true);if(!g.isNull("local_token")&&!g.optString("local_token").isEmpty())b.put("token",g.getString("local_token"));
                 JSONObject saved=api.call("/v1/device/deliveries",b);
                 if(!saved.getString("id").equals(id)||!saved.getString("kind").equals(g.getString("kind")))throw new IllegalStateException("QR identity mismatch");
+                if(!g.optString("guest_path").isEmpty()&&!g.getString("guest_path").equals(saved.getString("guest_path")))throw new IllegalStateException("Pre-generated group QR identity mismatch; original QR retained");
                 w.cloudGroup(id,saved.getString("guest_path"),saved.getString("label"));
             }
             if(g.getString("state").equals("cancel_pending")){api.call("/v1/device/deliveries/"+id+"/cancel",new JSONObject());w.cancelled(id);}

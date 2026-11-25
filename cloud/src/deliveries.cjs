@@ -55,17 +55,18 @@ async function route(c){
   if(p==='/v1/device/deliveries'&&method==='POST'){
     const dev=device(req),b=await readJSON(req);
     require('./event-management.cjs').active(s,dev.event_id);
-    requireValue(Object.keys(b).every(k=>['id','kind','label','auto_label'].includes(k)),400,'unknown_delivery_field');
+    requireValue(Object.keys(b).every(k=>['id','kind','label','auto_label','token'].includes(k)),400,'unknown_delivery_field');
     requireValue(typeof b.id==='string'&&UUID.test(b.id),400,'delivery_id_must_be_uuid');
     requireValue(['group','single'].includes(b.kind),400,'invalid_delivery_kind');
     requireValue(typeof b.label==='string'&&b.label.trim().length>0&&b.label.length<=60&&!/[\x00-\x1f]/.test(b.label),400,'invalid_delivery_label');
     const existing=s.one('SELECT * FROM deliveries WHERE id=?',b.id);
     if(existing){
-      const d=owned(s,dev,b.id);requireValue(d.kind===b.kind&&(b.auto_label===true||d.label===b.label),409,'delivery_identity_conflict');json(res,200,describe(s,d));return true;
+      const d=owned(s,dev,b.id);requireValue(d.kind===b.kind&&(b.auto_label===true||d.label===b.label)&&(b.token===undefined||b.token===d.token),409,'delivery_identity_conflict');json(res,200,describe(s,d));return true;
     }
     requireValue(s.one('SELECT count(*) n FROM deliveries WHERE event_id=?',dev.event_id).n<100000,429,'delivery_limit_reached');
     requireValue(b.auto_label===undefined||b.auto_label===true,400,'invalid_auto_label');
-    s.tx(()=>{const label=b.auto_label===true?dual.allocate(s,dev.event_id,b.kind):b.label;s.run('INSERT INTO deliveries(id,event_id,device_id,kind,label,token,created) VALUES(?,?,?,?,?,?,?)',b.id,dev.event_id,dev.id,b.kind,label,crypto.randomBytes(16).toString('hex'),Date.now());});
+    requireValue(b.token===undefined||typeof b.token==='string'&&/^[a-f0-9]{32}$/.test(b.token),400,'invalid_preissued_token');
+    s.tx(()=>{const label=b.auto_label===true?dual.allocate(s,dev.event_id,b.kind):b.label;s.run('INSERT INTO deliveries(id,event_id,device_id,kind,label,token,created) VALUES(?,?,?,?,?,?,?)',b.id,dev.event_id,dev.id,b.kind,label,b.token||crypto.randomBytes(16).toString('hex'),Date.now());});
     json(res,201,describe(s,owned(s,dev,b.id)));return true;
   }
   m=/^\/v1\/device\/photos\/([0-9a-f-]+)\/single$/.exec(p);
@@ -138,13 +139,15 @@ async function route(c){
       const brand=presentation.ensure(s,d.event_id);requireValue(brand.logo_key,404,'logo_not_found');await serveFile(res,s.file('branding',brand.logo_key),'image/png');return true;
     }
     if(m[3]){
-      const photo=s.one("SELECT p.* FROM delivery_items i JOIN photos p ON p.id=i.photo_id WHERE i.delivery_id=? AND p.id=? AND i.released=1 AND p.is_test=0 AND p.status<>'hidden'",d.id,m[3]);requireValue(photo,404,'photo_not_found');
+      const photo=s.one("SELECT p.* FROM collection_memberships i JOIN photos p ON p.id=i.photo_id WHERE i.delivery_id=? AND p.id=? AND i.active=1 AND i.released=1 AND p.is_test=0 AND p.status<>'hidden'",d.id,m[3]);requireValue(photo,404,'photo_not_found');
       await serveFile(res,s.file(m[4]==='thumb'?'thumbs':'delivery',photo.id+'.jpg'),'image/jpeg',url.searchParams.has('download')?'LensDrop-'+photo.id+'.jpg':undefined);return true;
     }
     const before=Number(url.searchParams.get('before')||Number.MAX_SAFE_INTEGER);requireValue(Number.isSafeInteger(before)&&before>0,400,'invalid_cursor');
     const photos=s.all("SELECT p.seq,p.id,p.width,p.height,p.created FROM collection_memberships i JOIN photos p ON p.id=i.photo_id WHERE i.delivery_id=? AND i.active=1 AND i.released=1 AND p.is_test=0 AND p.status<>'hidden' AND p.seq<? ORDER BY p.seq DESC LIMIT 100",d.id,before);
     const event=s.one('SELECT name FROM events WHERE id=?',d.event_id);
-    json(res,200,{name:event.name,label:d.label,kind:d.kind,branding:presentation.publicBrand(presentation.ensure(s,d.event_id),'/v1/p/'+m[1]),photos,next_before:photos.length===100?photos.at(-1).seq:null,refresh_seconds:5});return true;
+    const members=s.one("SELECT count(*) n FROM collection_memberships WHERE delivery_id=? AND active=1",d.id).n;
+    const conflict=s.one('SELECT conflict FROM preissued_singles WHERE delivery_id=?',d.id)?.conflict===1;
+    json(res,200,{name:event.name,label:d.label,kind:d.kind,delivery_status:conflict?'needs_staff_attention':photos.length?'ready':members?'awaiting_approval':'preparing',branding:presentation.publicBrand(presentation.ensure(s,d.event_id),'/v1/p/'+m[1]),photos,next_before:photos.length===100?photos.at(-1).seq:null,refresh_seconds:5});return true;
   }
   return false;
 }

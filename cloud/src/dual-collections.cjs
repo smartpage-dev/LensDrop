@@ -36,6 +36,8 @@ function allocate(s,event,kind){
 function ensureSingle(s,photoId,owner){return s.tx(()=>{
  const p=s.one('SELECT * FROM photos WHERE id=? AND event_id=? AND device_id=? AND is_test=0',photoId,owner.event_id,owner.id);
  need(p,404,'photo_not_found');
+ const upload=s.one("SELECT * FROM uploads WHERE photo_id=? AND device_id=? AND state='complete' ORDER BY created LIMIT 1",photoId,owner.id);
+ if(upload)require('./early-delivery.cjs').claim(s,upload,photoId);
  let m=s.one("SELECT d.* FROM collection_memberships m JOIN deliveries d ON d.id=m.delivery_id WHERE m.photo_id=? AND m.kind='single' AND m.active=1",photoId);
  if(!m){const label=allocate(s,p.event_id,'single'),id=crypto.randomUUID();
   s.run('INSERT INTO deliveries(id,event_id,device_id,kind,label,token,created) VALUES(?,?,?,?,?,?,?)',id,p.event_id,p.device_id,'single',label,crypto.randomBytes(16).toString('hex'),Date.now());

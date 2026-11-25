@@ -84,7 +84,7 @@ class SourceSnapshotTests(unittest.TestCase):
 
     def test_wrong_version_rejected(self):
         rel = 'clients/android/app/build.gradle'; p = self.root / rel
-        p.write_text(p.read_text().replace('versionCode 17', 'versionCode 13')); self.reject(rel)
+        p.write_text(p.read_text().replace('versionCode 18', 'versionCode 13')); self.reject(rel)
 
     def test_untracked_runtime_class_rejected(self):
         rel = JAVA + 'LeftoverOldActivity.java'; (self.root / rel).write_text('package app.lensdrop.transfer; class LeftoverOldActivity {}')
@@ -145,7 +145,7 @@ class ExtractedIntentCompilationTests(unittest.TestCase):
         cls.targets = re.findall(r'startActivity\(new Intent\(this,([A-Za-z_]\w*)\.class\)\)', cls.source)
 
     def compile(self, source):
-        self.assertEqual(set(self.targets), {'TicketActivity', 'PrintActivity', 'RecoveryActivity'})
+        self.assertEqual(set(self.targets), {'TicketActivity', 'PrintActivity', 'RecoveryActivity', 'SingleDeliveryActivity'})
         # Extract only content imports needed by the exact navigation expressions.
         imports = '\n'.join(re.findall(r'^import android\.content\.(?:Intent|\*);', source, re.M))
         statements = '\n'.join('startActivity(new Intent(this,' + name + '.class));' for name in self.targets)

@@ -93,8 +93,8 @@ public final class TicketActivity extends Activity {
             WatchLedger w=new WatchLedger(q);String delivery=prior==null?w.shown(scope):prior.getString("delivery_id");JSONObject group=w.group(scope,delivery);
             String singleJob=getIntent().getStringExtra("ticket_single_job");
             if(prior==null&&singleJob!=null){
-                try(android.database.Cursor c=q.getReadableDatabase().rawQuery("SELECT single_id,single_label,single_path FROM jobs WHERE id=? AND scope=? AND state='uploaded' AND single_id IS NOT NULL",new String[]{singleJob,scope})){
-                    if(!c.moveToFirst())throw new IllegalStateException("Selected Single QR not yet verified; wait for upload and QR reconciliation");
+                try(android.database.Cursor c=q.getReadableDatabase().rawQuery("SELECT COALESCE(single_id,id),COALESCE(single_label,'Preparing QR'),COALESCE(single_path,'/p/'||early_token) FROM jobs WHERE id=? AND scope=? AND (single_id IS NOT NULL OR early_token IS NOT NULL) AND is_test=0 AND state NOT IN ('skipped','retired_local')",new String[]{singleJob,scope})){
+                    if(!c.moveToFirst())throw new IllegalStateException("Selected Single QR unavailable. It must be durably prepared first");
                     delivery=c.getString(0);group=new JSONObject().put("state","open").put("label",c.getString(1)).put("guest_path",c.getString(2));
                 }
             }else if(prior!=null&&group==null){

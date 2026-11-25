@@ -80,6 +80,8 @@ public final class MainActivity extends Activity {
         archive=LuceUi.check(this,source,"Archive all new photos privately",archiveEnabled());
         LuceUi.label(this,source,"Archive first; assign/release to guests separately. Existing excluded, skipped and retired files stay untouched. Pause transfers before changing these settings.",14,false);
         LuceUi.action(this,source,"Save photo source",true,this::start);
+        CheckBox instantQr=LuceUi.check(this,source,"Instant local QR before photo upload (H5.12.1)",config.instantQr());
+        instantQr.setOnCheckedChangeListener((view,enabled)->{config.prefs.edit().putBoolean("instant_qr_enabled",enabled).apply();say(enabled?"New eligible photos get local QR immediately. Cloud sync continues in background.":"New photos use the previous Cloud verified QR workflow. Existing tokens are preserved.");});
         LuceUi.action(this,source,"Photo / notification permissions",false,this::permissions);
         LuceUi.notice(this,source,"First start: pause capture/export while existing files are excluded. Begin shooting only after Watching is ready.");
         LinearLayout printing=LuceUi.card(this,panes[1],"3  Printing (optional)","Photo printing needs Admin permission and a prepared Windows station. QR tickets use your own Bluetooth printer.");
@@ -98,6 +100,7 @@ public final class MainActivity extends Activity {
         LuceUi.action(this,diagnostics,"Export redacted diagnostics",false,()->export("diagnostics"));
         LinearLayout slideshow=LuceUi.card(this,panes[2],"Event slideshow QR","Share the public projector link with clients. Different from a private guest photo ticket.");
         LuceUi.action(this,slideshow,"Show / open / print event slideshow QR",true,()->open(SlideshowActivity.class));
+        LuceUi.action(this,slideshow,"Show Event Gallery QR",true,()->open(EventGalleryActivity.class));
         LinearLayout rehearsal=LuceUi.disclosure(this,panes[2],"Rehearsal & end of event");
         LuceUi.action(this,rehearsal,"Isolated pre-shoot test JPEG",false,this::chooseTest);
         LuceUi.action(this,rehearsal,"Finish received queue (stop discovering)",false,()->{config.prefs.edit().putBoolean("drain",true).putString("test_only","").commit();resume();});

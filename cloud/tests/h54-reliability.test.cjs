@@ -12,7 +12,7 @@ t('schema 6 preserves a real schema-5 table and backfills reservations conservat
  const {st,dev}=await f.ready(),b=await f.jpeg(),held=f.job(st,dev,b),lan=f.job(st,dev,b),pending=f.job(st,dev,b);
  await f.uploadPrint(held,b,dev);await report(f,lan,st,'simulated');await f.call('/v1/device/print-jobs',pending,dev.token);
  const s=f.app.store;s.db.exec("ALTER TABLE print_jobs DROP COLUMN asset_reserved; ALTER TABLE print_jobs DROP COLUMN asset_cleanup; ALTER TABLE print_jobs DROP COLUMN terminal_at; ALTER TABLE pairing_invites DROP COLUMN approval_failures; ALTER TABLE pairing_invites DROP COLUMN approval_last_attempt; PRAGMA user_version=5;");
- await f.restart();assert.equal(f.app.store.one('PRAGMA user_version').user_version,10);assert.equal(row(f,held).asset_reserved,b.length);assert.equal(row(f,pending).asset_reserved,b.length);assert.equal(row(f,lan).asset_reserved,0);
+ await f.restart();assert.equal(f.app.store.one('PRAGMA user_version').user_version,11);assert.equal(row(f,held).asset_reserved,b.length);assert.equal(row(f,pending).asset_reserved,b.length);assert.equal(row(f,lan).asset_reserved,0);
  assert.equal(row(f,lan).state,'simulated');assert.equal(fs.readFileSync(f.app.store.file('print-assets',held.id+'.part')).compare(b),0);
 });
 t('incomplete bytes reserve capacity; metadata-only LAN receipts do not spend it',async f=>{

@@ -63,7 +63,7 @@ final class WatchLedger {
                 if(!name.toLowerCase(java.util.Locale.ROOT).matches(".*\\.jpe?g$")||name.contains("/")||name.contains("\\")){
                     d.execSQL("UPDATE watch_items SET disposition='invalid' WHERE scope=? AND uri=?",new Object[]{scope,uri});d.setTransactionSuccessful();return;
                 }
-                job=UUID.randomUUID().toString();ContentValues v=new ContentValues();v.put("id",job);v.put("scope",scope);v.put("uri",uri);v.put("name",name);v.put("size",size);v.put("modified",modified);v.put("created",now);v.put("delivery_id",delivery);v.put("state",queue.archiveAll(scope)||delivery!=null?"queued":"candidate");v.put("archive_private",queue.archiveAll(scope)?1:0);
+                job=UUID.randomUUID().toString();ContentValues v=new ContentValues();v.put("id",job);v.put("scope",scope);v.put("uri",uri);v.put("name",name);v.put("size",size);v.put("modified",modified);v.put("created",now);v.put("delivery_id",delivery);v.put("state",queue.archiveAll(scope)||delivery!=null?"queued":"candidate");v.put("archive_private",queue.archiveAll(scope)?1:0);if(queue.instant()&&(queue.archiveAll(scope)||delivery!=null))v.put("early_token",InstantQr.token());
                 long inserted=d.insertWithOnConflict("jobs",null,v,SQLiteDatabase.CONFLICT_IGNORE);
                 if(inserted<0){try(Cursor c=d.rawQuery("SELECT id FROM jobs WHERE scope=? AND uri=? AND size=? AND modified=?",new String[]{scope,uri,Long.toString(size),Long.toString(modified)})){if(c.moveToFirst())job=c.getString(0);}}
                 d.execSQL("UPDATE watch_items SET disposition='ready',job_id=? WHERE scope=? AND uri=?",new Object[]{job,scope,uri});
@@ -83,13 +83,22 @@ final class WatchLedger {
     }
     JSONObject group(String scope,String id)throws Exception{
         if(id==null)return null;
-        try(Cursor c=db().rawQuery("SELECT id,kind,label,guest_path,state,created FROM guest_groups WHERE scope=? AND id=?",new String[]{scope,id})){
-            if(!c.moveToFirst())return null;JSONObject o=new JSONObject();o.put("id",c.getString(0));o.put("kind",c.getString(1));o.put("label",c.getString(2));o.put("guest_path",c.getString(3));o.put("state",c.getString(4));o.put("created",c.getLong(5));
+        try(Cursor c=db().rawQuery("SELECT id,kind,label,guest_path,state,created,local_token,cloud_registered FROM guest_groups WHERE scope=? AND id=?",new String[]{scope,id})){
+            if(!c.moveToFirst())return null;JSONObject o=new JSONObject();o.put("id",c.getString(0));o.put("kind",c.getString(1));o.put("label",c.getString(2));o.put("guest_path",c.getString(3));o.put("state",c.getString(4));o.put("created",c.getLong(5));o.put("local_token",c.getString(6));o.put("cloud_registered",c.getInt(7)==1);
             try(Cursor jobs=db().rawQuery("SELECT state,count(*) FROM jobs WHERE scope=? AND delivery_id=? GROUP BY state",new String[]{scope,id})){while(jobs.moveToNext())o.put(jobs.getString(0),jobs.getLong(1));}return o;
         }
     }
     JSONArray history(String scope,int offset)throws Exception{
         JSONArray list=new JSONArray();try(Cursor c=db().rawQuery("SELECT id FROM guest_groups WHERE scope=? AND state<>'reserved' ORDER BY created DESC,id DESC LIMIT 50 OFFSET ?",new String[]{scope,Integer.toString(offset)})){while(c.moveToNext())list.put(group(scope,c.getString(0)));}return list;
+    }
+    String latestGroup(String scope){
+        String id=null;
+        // Prefer last group with an explicitly assigned photo, even if a newer group is empty.
+        try(Cursor c=db().rawQuery("SELECT g.id FROM guest_groups g WHERE g.scope=? AND g.kind='group' AND g.state='open' ORDER BY EXISTS(SELECT 1 FROM jobs j WHERE j.scope=g.scope AND j.delivery_id=g.id AND j.is_test=0) DESC, g.created DESC,g.id DESC LIMIT 1",new String[]{scope})){
+            if(c.moveToFirst())id=c.getString(0);
+        }
+        if(id!=null)db().execSQL("UPDATE watch_sessions SET shown_group=? WHERE scope=?",new Object[]{id,scope});
+        return id;
     }
     void show(String scope,String id)throws Exception{
         JSONObject g=group(scope,id);if(g==null||!g.getString("state").equals("open"))throw new IllegalStateException("This group is unavailable");
@@ -140,6 +149,10 @@ final class WatchLedger {
         SQLiteDatabase d=db();d.beginTransaction();try{
             String state,already;boolean archived;try(Cursor c=d.rawQuery("SELECT state,delivery_id,archive_private,selection_hidden FROM jobs WHERE scope=? AND id=? AND is_test=0",new String[]{scope,job})){if(!c.moveToFirst())throw new IllegalStateException("Candidate no longer available");state=c.getString(0);already=c.getString(1);archived=c.getInt(2)==1;if(c.getInt(3)==1)throw new IllegalStateException("Candidate was hidden from selection");}
             if(!(archived&&already==null&&!state.equals("retired_local")&&!state.equals("skipped"))&&!WatchRules.canAssign(state,already))throw new IllegalStateException("Photo already selected; its QR destination cannot be overwritten");
+            if(mode(scope).equals("single")&&queue.instant()){
+                d.execSQL("UPDATE jobs SET state=CASE WHEN state='candidate' THEN 'queued' ELSE state END, archive_private=1, early_token=COALESCE(early_token,?), selection_hidden=0 WHERE id=? AND scope=?",new Object[]{InstantQr.token(),job,scope});
+                d.setTransactionSuccessful();return job;
+            }
             String id=mode(scope).equals("single")?takeReserved(scope,"single"):active(scope);
             if(id==null)throw new IllegalStateException("Start or resume a group first");
             JSONObject g=group(scope,id);if(g==null||!g.getString("state").equals("open"))throw new IllegalStateException("Group is unavailable");
@@ -152,15 +165,18 @@ final class WatchLedger {
         SQLiteDatabase d=db();d.beginTransaction();try{
             long n,total;try(Cursor c=d.rawQuery("SELECT count(*) FROM guest_groups WHERE scope=? AND kind=? AND state='reserved'",new String[]{scope,kind})){c.moveToFirst();n=c.getLong(0);}
             try(Cursor c=d.rawQuery("SELECT count(*) FROM guest_groups WHERE scope=? AND kind=?",new String[]{scope,kind})){c.moveToFirst();total=c.getLong(0);}
-            while(n++<3){total++;d.execSQL("INSERT INTO guest_groups(id,scope,kind,label,created) VALUES(?,?,?,?,?)",new Object[]{UUID.randomUUID().toString(),scope,kind,(kind.equals("group")?"Group ":"Photo ")+String.format(java.util.Locale.ROOT,"%04d",total),System.currentTimeMillis()});}
+            while(n++<(queue.instant()?1:3)){total++;
+                String token=queue.instant()?InstantQr.token():null;
+                d.execSQL("INSERT INTO guest_groups(id,scope,kind,label,guest_path,created,local_token,cloud_registered) VALUES(?,?,?,?,?,?,?,?)",new Object[]{UUID.randomUUID().toString(),scope,kind,(kind.equals("group")?"Group ":"Photo ")+String.format(java.util.Locale.ROOT,"%04d",total),token==null?null:InstantQr.path(token),System.currentTimeMillis(),token,0});
+            }
             d.setTransactionSuccessful();
         }finally{d.endTransaction();}
     }
     JSONArray toSync(String scope)throws Exception{
-        JSONArray list=new JSONArray();try(Cursor c=db().rawQuery("SELECT id FROM guest_groups WHERE scope=? AND (guest_path IS NULL OR state='cancel_pending') ORDER BY created LIMIT 12",new String[]{scope})){while(c.moveToNext())list.put(group(scope,c.getString(0)));}return list;
+        JSONArray list=new JSONArray();try(Cursor c=db().rawQuery("SELECT id FROM guest_groups WHERE scope=? AND (cloud_registered=0 OR state='cancel_pending') ORDER BY created LIMIT 12",new String[]{scope})){while(c.moveToNext())list.put(group(scope,c.getString(0)));}return list;
     }
     // Legacy test/client compatibility: preserves the local label when no cloud label is provided.
-    void cloudGroup(String id,String path){if(!path.matches("/p/[a-f0-9]{32}"))throw new IllegalStateException("Invalid QR response");db().execSQL("UPDATE guest_groups SET guest_path=? WHERE id=?",new Object[]{path,id});}
-    void cloudGroup(String id,String path,String label){if(!path.matches("/p/[a-f0-9]{32}")||label==null||!label.matches("[SG][0-9]{4,8}"))throw new IllegalStateException("Invalid QR response");db().execSQL("UPDATE guest_groups SET guest_path=?,label=? WHERE id=?",new Object[]{path,label,id});}
+    void cloudGroup(String id,String path){if(!path.matches("/p/[a-f0-9]{32}"))throw new IllegalStateException("Invalid QR response");db().execSQL("UPDATE guest_groups SET guest_path=?,cloud_registered=1 WHERE id=?",new Object[]{path,id});}
+    void cloudGroup(String id,String path,String label){if(!path.matches("/p/[a-f0-9]{32}")||label==null||!label.matches("[SG][0-9]{4,8}"))throw new IllegalStateException("Invalid QR response");db().execSQL("UPDATE guest_groups SET guest_path=?,label=?,cloud_registered=1 WHERE id=?",new Object[]{path,label,id});}
     void cancelled(String id){db().execSQL("UPDATE guest_groups SET state='cancelled' WHERE id=? AND state='cancel_pending'",new Object[]{id});}
 }

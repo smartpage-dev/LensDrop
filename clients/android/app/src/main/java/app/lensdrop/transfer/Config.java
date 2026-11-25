@@ -19,6 +19,7 @@ final class Config {
     String get(String key) { return prefs.getString(key,""); }
     boolean active() { return prefs.getBoolean("active",false); }
     boolean cellular() { return prefs.getBoolean("cellular",false); }
+    boolean instantQr() { return prefs.getBoolean("instant_qr_enabled",true); }
     long started() { return prefs.getLong("started",0); }
     void active(boolean value) { prefs.edit().putBoolean("active",value).commit(); }
     void status(String value) { if(!get("status").equals(value))prefs.edit().putString("status",value).apply(); }

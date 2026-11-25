@@ -79,6 +79,7 @@ class Store {
     require('./event-workflow.cjs').migrate(this);
     require('./event-management.cjs').migrate(this);
     require('./photo-controls.cjs').migrate(this);
+    require('./early-delivery.cjs').migrate(this);
   }
   one(sql, ...args) { return this.db.prepare(sql).get(...args); }
   all(sql, ...args) { return this.db.prepare(sql).all(...args); }

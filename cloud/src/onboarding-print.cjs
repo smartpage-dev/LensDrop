@@ -16,6 +16,7 @@ require('./print-assets.cjs').migrate(s);
 const columns=new Set(s.all('PRAGMA table_info(pairing_invites)').map(x=>x.name));
 if(!columns.has('approval_failures'))s.db.exec('ALTER TABLE pairing_invites ADD COLUMN approval_failures INTEGER NOT NULL DEFAULT 0');
 if(!columns.has('approval_last_attempt'))s.db.exec('ALTER TABLE pairing_invites ADD COLUMN approval_last_attempt INTEGER NOT NULL DEFAULT 0');
+if(!columns.has('replacement_device_id'))s.db.exec('ALTER TABLE pairing_invites ADD COLUMN replacement_device_id TEXT');
 if(s.one('PRAGMA user_version').user_version<6)s.db.exec('PRAGMA user_version=6');
 fs.mkdirSync(s.file('','print-assets'),{recursive:true,mode:0o700});
 const file=path.join(s.root,'print-signing-key.pem');
@@ -61,10 +62,18 @@ if((m=/^\/v1\/events\/([0-9a-f-]+)\/pairings$/.exec(p))&&['GET','POST'].includes
  if(method==='GET'){json(res,200,s.all('SELECT id,kind,label,state,expires,entity_id,created,approval_failures FROM pairing_invites WHERE event_id=? ORDER BY created DESC LIMIT 100',m[1]));return true;}
  require('./event-management.cjs').active(s,m[1]);
  const b=await readJSON(req),kind=b.kind||'phone';need(['phone','station'].includes(kind),400,'invalid_pairing_kind');const perm=permissions(b.permissions),name=label(b.label),base=origin(b.origin);
+ let replacement=null;
+ if(b.replace_device_id!==undefined){
+   need(kind==='phone'&&P.UUID.test(b.replace_device_id),400,'invalid_repair_target');
+   replacement=s.one('SELECT * FROM devices WHERE id=? AND event_id=? AND is_service=0',b.replace_device_id,m[1]);
+   need(replacement&&!replacement.admin_archived,404,'repair_target_unavailable');
+   need(!replacement.revoked||b.reactivate===true,409,'revoke_requires_explicit_reactivation');
+   need(name===replacement.label,409,'repair_label_mismatch');
+ }
  if(perm.station_id)need(s.one('SELECT id FROM print_stations WHERE id=? AND event_id=? AND revoked=0',perm.station_id,m[1]),400,'station_not_in_event');
  need(s.one("SELECT count(*) n FROM pairing_invites WHERE event_id=? AND state IN ('open','claimed') AND expires>?",m[1],now()).n<32,429,'too_many_open_invitations');
  const identifier=id(),secret=crypto.randomBytes(32).toString('hex'),expires=now()+300000;
- s.run('INSERT INTO pairing_invites(id,event_id,kind,label,secret_hash,expires,permissions,station_id,created) VALUES(?,?,?,?,?,?,?,?,?)',identifier,m[1],kind,name,digest(secret),expires,JSON.stringify(perm),perm.station_id,now());
+ s.run('INSERT INTO pairing_invites(id,event_id,kind,label,secret_hash,expires,permissions,station_id,created,replacement_device_id) VALUES(?,?,?,?,?,?,?,?,?,?)',identifier,m[1],kind,name,digest(secret),expires,JSON.stringify(perm),perm.station_id,now(),replacement?.id||null);
  json(res,201,{id:identifier,expires,kind,pairing_url:base+'/pair#'+identifier+'.'+secret,warning:'Staff enrollment only. Enter the code displayed on the intended device in authenticated Admin; not a guest photo QR.'});return true;
 }
 if(p==='/v1/pairings/claim'&&method==='POST'){
@@ -91,8 +100,12 @@ if((m=/^\/v1\/pairings\/([0-9a-f-]+)\/(approve|revoke)$/.exec(p))&&method==='POS
   s.run('UPDATE pairing_invites SET approval_failures=approval_failures+1,approval_last_attempt=? WHERE id=?',now(),inv.id);
   need(false,inv.approval_failures+1>=5?429:409,inv.approval_failures+1>=5?'pairing_approval_locked':'confirmation_code_mismatch');
  }
- const entity=id();
- s.tx(()=>{if(inv.kind==='station')s.run('INSERT INTO print_stations(id,event_id,label,token_hash) VALUES(?,?,?,?)',entity,inv.event_id,inv.label,inv.credential_hash);else{s.run('INSERT INTO devices(id,event_id,label,token_hash) VALUES(?,?,?,?)',entity,inv.event_id,inv.label,inv.credential_hash);s.run('INSERT INTO device_permissions VALUES(?,?)',entity,inv.permissions);}s.run("UPDATE pairing_invites SET state='approved',entity_id=? WHERE id=?",entity,inv.id);});
+ const entity=inv.replacement_device_id||id();
+ s.tx(()=>{if(inv.replacement_device_id){
+   const previous=s.one('SELECT * FROM devices WHERE id=? AND event_id=? AND is_service=0 AND admin_archived=0',entity,inv.event_id);
+   need(previous,409,'repair_target_unavailable');
+   s.run('UPDATE devices SET token_hash=?,revoked=0,admin_hidden=0,last_seen=NULL,heartbeat=NULL WHERE id=?',inv.credential_hash,entity);
+ }else if(inv.kind==='station')s.run('INSERT INTO print_stations(id,event_id,label,token_hash) VALUES(?,?,?,?)',entity,inv.event_id,inv.label,inv.credential_hash);else{s.run('INSERT INTO devices(id,event_id,label,token_hash) VALUES(?,?,?,?)',entity,inv.event_id,inv.label,inv.credential_hash);s.run('INSERT INTO device_permissions VALUES(?,?)',entity,inv.permissions);}s.run("UPDATE pairing_invites SET state='approved',entity_id=? WHERE id=?",entity,inv.id);});
  json(res,200,{ok:true,entity_id:entity,kind:inv.kind});return true;
 }
 if((m=/^\/v1\/events\/([0-9a-f-]+)\/print-cache\/cleanup$/.exec(p))&&method==='POST'){

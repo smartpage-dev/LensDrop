@@ -13,6 +13,7 @@ const { Store, HttpError, requireValue, digest, id, syncDir } = require('./store
 const operations = require('./operations.cjs');
 const presentation = require('./presentation.cjs');
 const deliveries = require('./deliveries.cjs');
+const earlyDelivery = require('./early-delivery.cjs');
 const photoControls = require('./photo-controls.cjs');
 const onboarding = require('./onboarding-print.cjs');
 const workflow = require('./event-workflow.cjs');
@@ -145,9 +146,14 @@ function createApp(options = {}) {
     if (method === 'GET' && p === '/gallery.js') return serveFile(res, path.join(publicDir, 'gallery.js'), 'text/javascript');
     if (method === 'GET' && p === '/v1/device') {
       const dev = device(req), event = store.one('SELECT id,name,policy FROM events WHERE id=?', dev.event_id);
-      return json(res, 200, { device_id: dev.id, label: dev.label, event, capabilities: {isolated_preflight:true,operations_summary:true,personal_delivery_v1:true,qr_pairing_v1:true,dual_print_v1:true,archive_delivery_v1:true,staff_print_desk_v1:true,dual_collections_v1:true}, chunk_size: CHUNK, max_file_size: MAX_FILE });
+      return json(res, 200, { device_id: dev.id, label: dev.label, event, capabilities: {isolated_preflight:true,operations_summary:true,personal_delivery_v1:true,qr_pairing_v1:true,dual_print_v1:true,archive_delivery_v1:true,staff_print_desk_v1:true,dual_collections_v1:true,early_guest_qr_v1:true}, chunk_size: CHUNK, max_file_size: MAX_FILE });
     }
     if (await deliveries.route({method,p,url,req,res,store,device,admin,readJSON,json,serveFile,presentation})) return;
+    if (await earlyDelivery.route({method,p,url,req,res,store,device,admin,readJSON,json})) return;
+    if (method === 'GET' && p === '/v1/device/gallery') {
+      const dev=device(req),event=eventManagement.event(store,dev.event_id);
+      return json(res,200,{event_id:event.id,event_name:event.name,gallery_path:'/g/'+event.slug,public_gallery:eventManagement.counts(store,event.id).public_gallery});
+    }
     if (method === 'POST' && p === '/v1/device/heartbeat') {
       const dev = device(req), body = await readJSON(req), stats = {};
       Object.assign(stats, operations.sanitizeHeartbeat(body));
@@ -196,6 +202,28 @@ function createApp(options = {}) {
     if(control && method==='POST'){admin(req);const b=await readJSON(req);requireValue(Object.keys(b).length===1&&typeof b.hidden==='boolean',400,'invalid_device_visibility');const d=store.one('SELECT * FROM devices WHERE id=? AND is_service=0',control[1]);requireValue(d,404,'device_not_found');store.run('UPDATE devices SET admin_hidden=? WHERE id=?',Number(b.hidden),d.id);return json(res,200,{device_id:d.id,admin_hidden:b.hidden,revoked:!!d.revoked});}
     control=/^\/v1\/devices\/([0-9a-f-]+)\/archive$/.exec(p);
     if(control && method==='POST'){admin(req);const b=await readJSON(req);requireValue(Object.keys(b).length===1&&b.confirm==='ARCHIVE_AND_REVOKE',400,'archive_confirmation_required');const d=store.one('SELECT id,admin_archived FROM devices WHERE id=? AND is_service=0',control[1]);requireValue(d,404,'device_not_found');store.run('UPDATE devices SET revoked=1,admin_hidden=1,admin_archived=1 WHERE id=?',d.id);return json(res,200,{device_id:d.id,revoked:true,archived:true,photos_retained:true});}
+    control=/^\/v1\/devices\/([0-9a-f-]+)\/(rename|delete-empty)$/.exec(p);
+    if(control&&method==='POST'){
+      admin(req);const b=await readJSON(req),dev=store.one('SELECT * FROM devices WHERE id=? AND is_service=0',control[1]);
+      requireValue(dev,404,'device_not_found');
+      if(control[2]==='rename'){
+        requireValue(Object.keys(b).length===1,400,'invalid_rename_fields');
+        const label=text(b.label,80);
+        store.run('UPDATE devices SET label=? WHERE id=?',label,dev.id);
+        return json(res,200,{device_id:dev.id,label});
+      }
+      requireValue(Object.keys(b).sort().join(',')==='confirm_id,confirm_label'&&b.confirm_id===dev.id&&b.confirm_label===dev.label,400,'device_delete_confirmation_required');
+      requireValue(dev.revoked&&dev.admin_archived,409,'archive_and_revoke_before_delete');
+      for(const [table,col] of [['photos','device_id'],['uploads','device_id'],['deliveries','device_id'],['print_jobs','device_id'],['station_staff','actor_id'],['preissued_singles','device_id']]){
+        requireValue(store.one(`SELECT count(*) n FROM ${table} WHERE ${col}=?`,dev.id).n===0,409,'device_has_history_archive_instead');
+      }
+      store.tx(()=>{
+        store.run('DELETE FROM device_permissions WHERE device_id=?',dev.id);
+        store.run('DELETE FROM pairing_invites WHERE entity_id=? OR replacement_device_id=?',dev.id,dev.id);
+        requireValue(store.run('DELETE FROM devices WHERE id=? AND revoked=1 AND admin_archived=1',dev.id).changes===1,409,'device_changed');
+      });
+      return json(res,200,{ok:true,deleted_device:dev.id,media_deleted:false});
+    }
     if (p === '/v1/events' && method === 'GET') { admin(req); return json(res, 200, store.all('SELECT * FROM events ORDER BY created DESC')); }
     let em = /^\/v1\/events\/([0-9a-f-]+)\/(lifecycle|visibility-summary)$/.exec(p);
     if(em && method==='GET'){admin(req);return json(res,200,em[2]==='lifecycle'?eventManagement.event(store,em[1]):eventManagement.counts(store,em[1]));}
@@ -437,6 +465,7 @@ function createApp(options = {}) {
           const duplicate = store.one('SELECT * FROM photos WHERE event_id=? AND device_id=? AND sha256=?', dev.event_id, dev.id, u.sha256);
           if (duplicate) {
             deliveries.bindPhoto(store,u,duplicate.id);
+            earlyDelivery.claim(store,u,duplicate.id);
             workflow.linkPrintsForPhoto(store,duplicate.id);
             store.run("UPDATE uploads SET state='complete',photo_id=?,updated=? WHERE id=?", duplicate.id, now(), uploadId);
             await cleanupChunks(uploadId);
@@ -461,6 +490,7 @@ function createApp(options = {}) {
             store.run('INSERT INTO photos(id,event_id,device_id,filename,size,sha256,status,width,height,created,is_test,projector_visible) VALUES(?,?,?,?,?,?,?,?,?,?,?,?)',
               photoId, dev.event_id, dev.id, u.filename, u.size, u.sha256, policy, meta.width, meta.height, now(), u.is_test, projectorAuto);
             deliveries.bindPhoto(store,u,photoId);
+            earlyDelivery.claim(store,u,photoId);
             workflow.linkPrintsForPhoto(store,photoId);
             photoControls.audit(store,dev.event_id,photoId,'system','cloud_verified');
             store.run("UPDATE uploads SET state='complete',photo_id=?,updated=? WHERE id=?", photoId, now(), uploadId);

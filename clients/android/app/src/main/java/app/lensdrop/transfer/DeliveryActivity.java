@@ -43,10 +43,10 @@ public class DeliveryActivity extends Activity {
         LinearLayout actions=LuceUi.card(this,page,"Choose the delivery","Group: several photos share one QR. Single: one selected photo has one fixed QR.");
         modes=new Spinner(this);modes.setAdapter(new ArrayAdapter<>(this,android.R.layout.simple_spinner_dropdown_item,new String[]{"Group QR / multiple photographs","Single selected photo QR"}));actions.addView(modes);if(groupOnly){actions.setVisibility(View.GONE);modes.setEnabled(false);}
         try(QueueDb initial=new QueueDb(this)){modes.setSelection(new WatchLedger(initial).mode(config.get("scope")).equals("single")?1:0);}catch(Exception ignored){}
-        modes.setOnItemSelectedListener(new android.widget.AdapterView.OnItemSelectedListener(){public void onNothingSelected(android.widget.AdapterView<?> p){} public void onItemSelected(android.widget.AdapterView<?> p,View v,int n,long id){if(binding)return;run(w->{w.mode(config.get("scope"),n==0?"group":"single");say("Mode changed for future selections only. Existing assignments are retained.");});}});
+        modes.setOnItemSelectedListener(new android.widget.AdapterView.OnItemSelectedListener(){public void onNothingSelected(android.widget.AdapterView<?> p){} public void onItemSelected(android.widget.AdapterView<?> p,View v,int n,long id){if(binding||groupOnly)return;run(w->{w.mode(config.get("scope"),n==0?"group":"single");say("Mode changed for future selections only. Existing assignments are retained.");});}});
 
         LuceUi.label(this,actions,"Daily controls stay in the fixed toolbar below. Select Group or Single here; changing mode never moves existing photos.",13,false);
-        LinearLayout links=LuceUi.card(this,page,"Prepare & deliver","Prepare links online before use. Printing a QR ticket does not create a photo-print request.");
+        LinearLayout links=LuceUi.card(this,page,"Prepare & deliver","In Instant QR mode, Next Group creates a private QR locally. Cloud registration follows.");if(groupOnly&&config.instantQr())links.setVisibility(View.GONE);
         button(links,"Prepare guest links (3 group + 3 single)",v->prepare());
         LuceUi.label(this,links,"First QR: use Next Group (Group mode) or Select Photo (Single mode). The app prepares links online if needed. Watching a folder does not assign a guest automatically.",13,false);
         LinearLayout advanced=LuceUi.disclosure(this,page,"Advanced group controls");
@@ -69,7 +69,7 @@ public class DeliveryActivity extends Activity {
         dockButton(row2,"Print Photo",()->startActivity(new Intent(this,PrintActivity.class)));
         dockButton(row2,"Print QR",()->startActivity(new Intent(this,TicketActivity.class)));
         if(config.get("scope").isEmpty()){say("Join an event in Setup first.");return;}
-        run(w->{w.ensure(config.get("scope"),config.get("folder"));if(groupOnly)w.mode(config.get("scope"),"group");});
+        run(w->{w.ensure(config.get("scope"),config.get("folder"));if(groupOnly){w.mode(config.get("scope"),"group");w.latestGroup(config.get("scope"));}});
         String showId=getIntent().getStringExtra("gallery_show_delivery");
         String galleryId=getIntent().getStringExtra("gallery_job_id");
         if(showId!=null&&!showId.isEmpty())run(w->{w.show(config.get("scope"),showId);showQrTop();say(getIntent().getBooleanExtra("gallery_ticket_hint",false)?"Check the shown guest QR, then tap Print QR below. No ticket has printed yet.":"Showing the selected guest QR. Receiving group was not changed.");});
@@ -83,7 +83,7 @@ public class DeliveryActivity extends Activity {
     private void previousQr(){
         run(w->{JSONArray rows=w.history(config.get("scope"),0);String current=w.shown(config.get("scope"));
             int at=-1;for(int i=0;i<rows.length();i++)if(rows.getJSONObject(i).getString("id").equals(current)){at=i;break;}
-            int next=at+1;
+            int next=at+1;while(groupOnly&&next<rows.length()&&!"group".equals(rows.getJSONObject(next).optString("kind")))next++;
             if(next>=rows.length())throw new IllegalStateException("No earlier QR in recent history. Use Advanced History for older groups.");
             JSONObject target=rows.getJSONObject(next);
             w.show(config.get("scope"),target.getString("id"));
@@ -100,7 +100,8 @@ public class DeliveryActivity extends Activity {
                 if(!"group".equals(w.mode(scope)))throw new IllegalStateException("Switch to Group mode before Next Group.");
                 try{w.nextGroup(scope);}catch(IllegalStateException missing){
                     // No prepared QR: reserve and verify guest links ONLINE, then take one.
-                    try(CloudApi api=new CloudApi(this,config.get("base"),config.token(),config.cellular())){DeliveryCoordinator.prepare(q,scope,api);}
+                    if(config.instantQr())w.reserve(scope,"group");
+                    else try(CloudApi api=new CloudApi(this,config.get("base"),config.token(),config.cellular())){DeliveryCoordinator.prepare(q,scope,api);}
                     if(!scope.equals(config.get("scope")))throw new IllegalStateException("Event changed while preparing QR");
                     w.nextGroup(scope);
                 }
@@ -118,7 +119,7 @@ public class DeliveryActivity extends Activity {
             try(QueueDb q=new QueueDb(this)){
                 WatchLedger w=new WatchLedger(q);
                 if("group".equals(w.mode(scope))&&w.active(scope)==null)throw new IllegalStateException("Tap Next Group first, then select photos for that guest.");
-                if("single".equals(w.mode(scope))){
+                if("single".equals(w.mode(scope))&&!config.instantQr()){
                     boolean ready;
                     try(android.database.Cursor c=q.getReadableDatabase().rawQuery(
                         "SELECT 1 FROM guest_groups WHERE scope=? AND kind='single' AND state='reserved' AND guest_path IS NOT NULL LIMIT 1",new String[]{scope})){
@@ -139,7 +140,7 @@ public class DeliveryActivity extends Activity {
             JSONObject p=new JSONObject();String[] fields={"id","uri","name","size","modified","spool","sha","state","photo_id"};
             for(int n=0;n<fields.length;n++){if(n==3||n==4)p.put(fields[n],c.getLong(n));else p.put(fields[n],c.getString(n));}
             if("group".equals(w.mode(scope))&&w.active(scope)==null){say("Tap Next Group to create a guest QR, then choose this photo again.");return;}
-            if("single".equals(w.mode(scope))){
+            if("single".equals(w.mode(scope))&&!config.instantQr()){
                 boolean ready;
                 try(android.database.Cursor pool=w.queue.getReadableDatabase().rawQuery(
                         "SELECT 1 FROM guest_groups WHERE scope=? AND kind='single' AND state='reserved' AND guest_path IS NOT NULL LIMIT 1",new String[]{scope})){
@@ -236,8 +237,8 @@ public class DeliveryActivity extends Activity {
         }catch(Exception e){say("QR renderer unavailable. Use the saved guest link in Admin; do not change group identities.");}
     }
     private void history(int offset){
-        run(w->{JSONArray rows=w.history(config.get("scope"),offset);String[] choices=new String[rows.length()+1];for(int i=0;i<rows.length();i++){JSONObject g=rows.getJSONObject(i);choices[i]=g.getString("label")+" / "+g.getString("kind")+" / "+g.getString("state");}choices[rows.length()]="Older history...";
-            runOnUiThread(()->new AlertDialog.Builder(this).setTitle("History: show is display-only").setItems(choices,(dialog,n)->{if(n==rows.length()){history(offset+50);return;}try{JSONObject g=rows.getJSONObject(n);String id=g.getString("id");String[] actions=g.getString("kind").equals("group")?new String[]{"Show QR only","Resume this group for new photos"}:new String[]{"Show QR only"};new AlertDialog.Builder(this).setTitle(g.getString("label")).setItems(actions,(d,action)->{if(action==0)run(x->x.show(config.get("scope"),id));else new AlertDialog.Builder(this).setMessage("Resume "+g.optString("label")+" for FUTURE photographs? Existing assignments stay unchanged; automatic assignment stays OFF.").setPositiveButton("Resume group",(dd,nn)->run(x->x.resume(config.get("scope"),id))).setNegativeButton("Cancel",null).show();}).show();}catch(Exception e){say("Could not read history entry.");}}).setNegativeButton("Close",null).show());
+        run(w->{JSONArray rows=w.history(config.get("scope"),offset);String[] choices=new String[rows.length()+1];for(int i=0;i<rows.length();i++){JSONObject g=rows.getJSONObject(i);choices[i]=groupOnly&&!"group".equals(g.optString("kind"))?"(Single QR - use Single Photo page)":g.getString("label")+" / "+g.getString("kind")+" / "+g.getString("state");}choices[rows.length()]="Older history...";
+            runOnUiThread(()->new AlertDialog.Builder(this).setTitle("History: show is display-only").setItems(choices,(dialog,n)->{if(n==rows.length()){history(offset+50);return;}try{JSONObject g=rows.getJSONObject(n);if(groupOnly&&!"group".equals(g.optString("kind"))){say("Open Single Photo QR for this entry.");return;}String id=g.getString("id");String[] actions=g.getString("kind").equals("group")?new String[]{"Show QR only","Resume this group for new photos"}:new String[]{"Show QR only"};new AlertDialog.Builder(this).setTitle(g.getString("label")).setItems(actions,(d,action)->{if(action==0)run(x->x.show(config.get("scope"),id));else new AlertDialog.Builder(this).setMessage("Resume "+g.optString("label")+" for FUTURE photographs? Existing assignments stay unchanged; automatic assignment stays OFF.").setPositiveButton("Resume group",(dd,nn)->run(x->x.resume(config.get("scope"),id))).setNegativeButton("Cancel",null).show();}).show();}catch(Exception e){say("Could not read history entry.");}}).setNegativeButton("Close",null).show());
         });
     }
     private void candidates(int offset){
@@ -263,7 +264,7 @@ public class DeliveryActivity extends Activity {
             final String mode=w.mode(config.get("scope"));final String target=w.active(config.get("scope"));final JSONObject targetGroup=w.group(config.get("scope"),target);final String targetLabel=targetGroup==null?"No receiving group":targetGroup.optString("label");final boolean showingOther=!java.util.Objects.equals(w.shown(config.get("scope")),target);
             runOnUiThread(()->{
                 if(isFinishing()||isDestroyed()){bitmap.recycle();return;}ImageView image=new ImageView(this);image.setAdjustViewBounds(true);image.setImageBitmap(bitmap);
-                AlertDialog dialog=new AlertDialog.Builder(this).setTitle(mode.equals("single")?"Create QR for this photo only":"Assign to "+targetLabel).setMessage(mode.equals("single")?"A NEW single-photo link will be shown after confirmation.":"Receive in: "+targetLabel+(showingOther?". You are showing another guest QR; it will stay on screen.":". Existing assignments stay unchanged.")).setView(image).setPositiveButton("Confirm",(d,n)->run(x->{if(!x.mode(config.get("scope")).equals(mode)||!java.util.Objects.equals(x.active(config.get("scope")),target))throw new IllegalStateException("Receiving selection changed. Reopen preview.");x.select(config.get("scope"),photo.getString("id"));say("Photo destination locked. QR remains the same while upload continues. Resume transfer if paused.");})).setNeutralButton("Hide from selection (keep archive)",(d,n)->run(x->x.skip(config.get("scope"),photo.getString("id")))).setNegativeButton("Cancel",null).create();
+                AlertDialog dialog=new AlertDialog.Builder(this).setTitle(mode.equals("single")?"Create QR for this photo only":"Assign to "+targetLabel).setMessage(mode.equals("single")?"A NEW single-photo link will be shown after confirmation.":"Receive in: "+targetLabel+(showingOther?". You are showing another guest QR; it will stay on screen.":". Existing assignments stay unchanged.")).setView(image).setPositiveButton("Confirm",(d,n)->run(x->{if(!x.mode(config.get("scope")).equals(mode)||!java.util.Objects.equals(x.active(config.get("scope")),target))throw new IllegalStateException("Receiving selection changed. Reopen preview.");x.select(config.get("scope"),photo.getString("id"));say("Photo destination locked. QR remains the same while upload continues. Resume transfer if paused.");if("single".equals(mode)&&config.instantQr())runOnUiThread(()->startActivity(new Intent(this,SingleDeliveryActivity.class)));})).setNeutralButton("Hide from selection (keep archive)",(d,n)->run(x->x.skip(config.get("scope"),photo.getString("id")))).setNegativeButton("Cancel",null).create();
                 dialog.setOnDismissListener(d->{image.setImageDrawable(null);bitmap.recycle();});dialog.show();
             });
         });

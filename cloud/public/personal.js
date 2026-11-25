@@ -6,9 +6,9 @@
   async function refresh(){
     if(busy)return;busy=true;
     try{
-      const r=await fetch(base+(before?'?before='+before:''),{cache:'no-store'});if(!r.ok)throw Error(r.status===404?'This delivery is unavailable.':'Connection interrupted.');const d=await r.json();lastOk=Date.now();
+      const r=await fetch(base+(before?'?before='+before:''),{cache:'no-store'});if(!r.ok)throw Error(r.status===404?'Preparing your link, or the link is no longer available. This page will automatically retry.':'Connection interrupted.');const d=await r.json();lastOk=Date.now();
       $('eventName').textContent=d.name;$('deliveryLabel').textContent=d.label+' / '+(d.kind==='single'?'Single selected photograph':'Your group');
-      $('personalState').textContent=d.photos.length?'Your photographs are ready.':'Your photographs are being prepared. Keep this page; it will update after upload and approval.';
+      $('personalState').textContent=d.delivery_status==='needs_staff_attention'?'Please contact the photographer: this photo needs identity review.':d.photos.length?'Your photographs are ready.':d.delivery_status==='awaiting_approval'?'Photo uploaded. Awaiting staff release; this page will update automatically.':'Preparing your photographs. No need to scan again; this page checks automatically.';
       if(d.branding?.logo_path){if($('personalLogo').getAttribute('src')!==d.branding.logo_path)$('personalLogo').src=d.branding.logo_path;$('personalLogo').hidden=false;}else $('personalLogo').hidden=true;
       available=new Set(d.photos.map(p=>p.id));if(selected&&!available.has(selected)){$('personalPreview').close();$('personalImage').removeAttribute('src');selected=null;}
       next=d.next_before;$('olderPage').hidden=!next;
@@ -20,5 +20,5 @@
   $('closePersonal').onclick=()=>{$('personalPreview').close();$('personalImage').removeAttribute('src');selected=null;};
   $('latestPage').onclick=()=>{before=null;refresh();};$('olderPage').onclick=()=>{before=next;refresh();};
   document.addEventListener('visibilitychange',()=>{if(!document.hidden){clear();lastOk=0;refresh();}});
-  refresh();setInterval(()=>{if(!document.hidden)refresh();if(lastOk&&Date.now()-lastOk>30000)clear();},5000);
+  refresh();setInterval(()=>{if(!document.hidden)refresh();if(lastOk&&Date.now()-lastOk>30000)clear();},3000);
 })();

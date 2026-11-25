@@ -9,7 +9,9 @@ import org.json.JSONObject;
 import java.util.UUID;
 
 final class QueueDb extends SQLiteOpenHelper {
-    QueueDb(Context context) { super(context,"lensdrop-queue.sqlite",null,9);setWriteAheadLoggingEnabled(true); }
+    private final Context context;
+    QueueDb(Context context) { super(context,"lensdrop-queue.sqlite",null,10);this.context=context.getApplicationContext();setWriteAheadLoggingEnabled(true); }
+    boolean instant(){return new Config(context).instantQr();}
     @Override public void onConfigure(SQLiteDatabase db) { db.execSQL("PRAGMA synchronous=FULL"); }
     @Override public void onCreate(SQLiteDatabase db) {
         db.execSQL("CREATE TABLE observed(scope TEXT,uri TEXT,size INTEGER,modified INTEGER,stable INTEGER,PRIMARY KEY(scope,uri))");
@@ -23,9 +25,10 @@ final class QueueDb extends SQLiteOpenHelper {
         createH58(db);
         createH59(db);
         createH511(db);
+        createH512(db);
     }
     @Override public void onUpgrade(SQLiteDatabase db,int oldVersion,int newVersion) {
-        if(oldVersion<1||newVersion!=9)throw new IllegalStateException("Unsupported queue version. Preserve app data.");
+        if(oldVersion<1||newVersion!=10)throw new IllegalStateException("Unsupported queue version. Preserve app data.");
         if(oldVersion<2){
             db.execSQL("ALTER TABLE jobs ADD COLUMN is_test INTEGER NOT NULL DEFAULT 0");
             db.execSQL("ALTER TABLE jobs ADD COLUMN last_progress INTEGER NOT NULL DEFAULT 0");
@@ -38,6 +41,23 @@ final class QueueDb extends SQLiteOpenHelper {
         if(oldVersion<7)createH58(db);
         if(oldVersion<8)createH59(db);
         if(oldVersion<9)createH511(db);
+        if(oldVersion<10)createH512(db);
+    }
+    private static void createH512(SQLiteDatabase db){
+        db.execSQL("ALTER TABLE jobs ADD COLUMN early_token TEXT");
+        db.execSQL("ALTER TABLE jobs ADD COLUMN early_registered INTEGER NOT NULL DEFAULT 0");
+        db.execSQL("ALTER TABLE jobs ADD COLUMN early_attempts INTEGER NOT NULL DEFAULT 0");
+        db.execSQL("ALTER TABLE jobs ADD COLUMN early_next INTEGER NOT NULL DEFAULT 0");
+        db.execSQL("ALTER TABLE guest_groups ADD COLUMN local_token TEXT");
+        db.execSQL("ALTER TABLE guest_groups ADD COLUMN cloud_registered INTEGER NOT NULL DEFAULT 0");
+        db.execSQL("UPDATE guest_groups SET cloud_registered=1 WHERE guest_path IS NOT NULL");
+        db.execSQL("CREATE INDEX IF NOT EXISTS early_single_due ON jobs(scope,early_registered,early_next)");
+    }
+    void primeInstant(String scope){
+        if(!instant())return;
+        try(Cursor c=getReadableDatabase().rawQuery("SELECT id FROM jobs WHERE scope=? AND early_token IS NULL AND single_id IS NULL AND is_test=0 AND (archive_private=1 OR delivery_id IS NOT NULL) AND state IN ('queued','retry','uploading') ORDER BY created LIMIT 5",new String[]{scope})){
+            while(c.moveToNext())getWritableDatabase().execSQL("UPDATE jobs SET early_token=? WHERE scope=? AND id=? AND early_token IS NULL",new Object[]{InstantQr.token(),scope,c.getString(0)});
+        }
     }
     private static void createH511(SQLiteDatabase db){
         db.execSQL("ALTER TABLE jobs ADD COLUMN single_id TEXT");

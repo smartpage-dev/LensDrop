@@ -4,7 +4,7 @@ const version = require('../package.json').version;
 const HEARTBEAT_TTL = 90_000;
 function migrate(s) {
   const v = s.one('PRAGMA user_version').user_version;
-  if (v > 10) throw new Error('Database is newer than this application. Restore the matching application; do not downgrade.');
+  if (v > 11) throw new Error('Database is newer than this application. Restore the matching application; do not downgrade.');
   s.tx(() => {
     for (const [table, name, definition] of [
       ['uploads','is_test','INTEGER NOT NULL DEFAULT 0'],
