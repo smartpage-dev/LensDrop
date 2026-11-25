@@ -85,6 +85,7 @@ jobs:
           bash clients/android/RUN_PRINT_POLICY_TESTS.sh 2>&1 | tee ci-output/print-policy-tests.log
           bash clients/android/RUN_PRINT_PROFILE_TESTS.sh 2>&1 | tee ci-output/print-profile-tests.log
           bash clients/android/RUN_LEDGER_TESTS.sh 2>&1 | tee ci-output/ledger-tests.log
+          bash clients/android/RUN_INSTANT_QR_TESTS.sh 2>&1 | tee ci-output/instant-qr-tests.log
           bash clients/android/RUN_TICKET_TESTS.sh 2>&1 | tee ci-output/ticket-tests.log
           bash clients/android/RUN_RELIABILITY_TESTS.sh 2>&1 | tee ci-output/reliability-tests.log
           bash clients/android/RUN_WORKFLOW_TESTS.sh 2>&1 | tee ci-output/archive-workflow-tests.log
