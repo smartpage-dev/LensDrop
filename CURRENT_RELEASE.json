@@ -1,16 +1,14 @@
 {
-  "release": "H5.11",
-  "cloud_version": "0.2.0-alpha.11-hostinger.5.11",
-  "cloud_schema": 10,
-  "android_version": "0.2.0-alpha.6-h5.11",
-  "android_code": 17,
-  "android_photo_schema": 9,
-  "windows_station": "0.1.4-alpha.h5.11 (staff desk UI; print engine unchanged)",
-  "status": "engineering source pilot; no native build or live deployment",
-  "testing": {
-    "cloud": 170,
-    "station": 57,
-    "windows_packaging": 8,
-    "android_gallery_contracts": 26
-  }
+  "release": "H5.12.2 Claude P1 Reliability Patch (Android-only)",
+  "cloud_version": "0.2.0-alpha.12-hostinger.5.12.1",
+  "cloud_schema": 11,
+  "android_version": "0.2.0-alpha.8-h5.12.2",
+  "android_code": 19,
+  "android_photo_schema": 10,
+  "windows_station": "0.1.4-alpha.h5.11 (unchanged)",
+  "status": "Engineering staging candidate; native APK/lint and physical ticket printing not verified",
+  "changes": "LD-001/LD-002/LD-003 fixes and local JVM/SQLite regression suite",
+  "cloud_redeploy_required": false,
+  "live_hostinger_deployed_by_assistant": false,
+  "production_approved": false
 }

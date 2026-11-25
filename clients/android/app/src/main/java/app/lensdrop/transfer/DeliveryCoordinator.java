@@ -11,7 +11,7 @@ final class DeliveryCoordinator {
     }
     static void syncAssignments(QueueDb q,String scope,CloudApi api)throws Exception{
         // One small batch; a bad link cannot starve other assignments or photo uploads.
-        try(android.database.Cursor rows=q.getReadableDatabase().rawQuery("SELECT id,photo_id,delivery_id,delivery_attempts FROM jobs WHERE scope=? AND archive_private=1 AND state='uploaded' AND delivery_id IS NOT NULL AND photo_id IS NOT NULL AND delivery_synced=0 AND delivery_next<=? ORDER BY delivery_next,created LIMIT 3",new String[]{scope,Long.toString(System.currentTimeMillis())})){
+        try(android.database.Cursor rows=q.getReadableDatabase().rawQuery("SELECT id,photo_id,delivery_id,delivery_attempts FROM jobs WHERE scope=? AND archive_private=1 AND state='uploaded' AND delivery_id IS NOT NULL AND photo_id IS NOT NULL AND delivery_synced=0 AND delivery_next<=? AND delivery_id IN (SELECT id FROM guest_groups WHERE scope=? AND state='open' AND cloud_registered=1) ORDER BY delivery_next,created LIMIT 3",new String[]{scope,Long.toString(System.currentTimeMillis()),scope})){
             while(rows.moveToNext()){
                 String job=rows.getString(0),photo=rows.getString(1),delivery=rows.getString(2);int attempts=rows.getInt(3);
                 try{JSONObject r=api.call("/v1/device/photos/"+photo+"/delivery",new JSONObject().put("delivery_id",delivery));
@@ -19,6 +19,16 @@ final class DeliveryCoordinator {
                     q.getWritableDatabase().execSQL("UPDATE jobs SET delivery_synced=1,delivery_error=NULL WHERE id=? AND delivery_synced=0",new Object[]{job});
                 }catch(Exception e){boolean retry=e instanceof CloudApi.Failure&&((CloudApi.Failure)e).retry;String code=e instanceof CloudApi.Failure?((CloudApi.Failure)e).code:"assignment_connection_or_receipt_error";
                     if(!(e instanceof CloudApi.Failure)&&!(e instanceof IllegalStateException))retry=true;
+                    if("delivery_not_found".equals(code)){
+                        // This link may have been locally registered before a Cloud restart.
+                        // Recreate ONLY the same immutable group id/token; never reassign.
+                        try(android.database.Cursor g=q.getReadableDatabase().rawQuery("SELECT state FROM guest_groups WHERE scope=? AND id=? AND kind='group'",new String[]{scope,delivery})){
+                            if(g.moveToFirst()&&"open".equals(g.getString(0))){
+                                retry=true;
+                                q.getWritableDatabase().execSQL("UPDATE guest_groups SET cloud_registered=0 WHERE scope=? AND id=? AND state='open'",new Object[]{scope,delivery});
+                            }
+                        }
+                    }
                     q.getWritableDatabase().execSQL("UPDATE jobs SET delivery_error=?,delivery_attempts=delivery_attempts+1,delivery_next=? WHERE id=? AND delivery_synced=0",new Object[]{SessionRules.safeError(code),retry?System.currentTimeMillis()+Math.min(60000,3000L*(1L<<Math.min(4,attempts))):Long.MAX_VALUE,job});
                 }
             }

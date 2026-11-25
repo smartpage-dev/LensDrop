@@ -18,9 +18,12 @@ final class SingleSync {
                     if(!"single".equals(r.getString("kind"))||!InstantQr.path(token).equals(r.getString("guest_path")))throw new IllegalStateException("Early QR cloud identity mismatch");
                     ContentValues values=new ContentValues();values.put("single_id",r.getString("id"));values.put("single_label",r.getString("label"));values.put("single_path",r.getString("guest_path"));values.put("early_registered",1);values.put("early_next",0);q.update(id,values);
                 }catch(Exception e){
-                    boolean retry=!(e instanceof CloudApi.Failure)||((CloudApi.Failure)e).retry;
+                    String code=e instanceof CloudApi.Failure?((CloudApi.Failure)e).code:"registration_network_error";
+                    boolean pausedAuth="device_token_invalid_or_revoked".equals(code)||"device_revoked".equals(code)||code.startsWith("http_401")||code.startsWith("http_403");
+                    boolean retry=!(e instanceof CloudApi.Failure)||((CloudApi.Failure)e).retry||pausedAuth;
                     ContentValues values=new ContentValues();values.put("early_attempts",attempts+1);
-                    values.put("early_next",retry?System.currentTimeMillis()+Math.min(60000L,2000L*(1L<<Math.min(5,attempts))):Long.MAX_VALUE);q.update(id,values);
+                    long wait=pausedAuth?300000L:Math.min(60000L,2000L*(1L<<Math.min(5,attempts)));
+                    values.put("early_next",retry?System.currentTimeMillis()+wait:Long.MAX_VALUE);q.update(id,values);
                 }
                 return;
             }

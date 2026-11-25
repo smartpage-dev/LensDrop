@@ -34,6 +34,7 @@ public final class JpegReliabilityTest {
   t("Malformed files block immediately even on first failure",()->yes(!UploadRetryPolicy.retry("jpeg_invalid_structure",false,0)));
   t("Network backpressure retains shared cooldown without per-file retry exhaustion",()->{yes(UploadRetryPolicy.retry("http_503",true,100));yes(UploadRetryPolicy.sharedCooldown("http_503",true));});
   t("User pause is not a network outage",()->{yes(!UploadRetryPolicy.sharedCooldown("paused",true));yes(!UploadRetryPolicy.sharedCooldown("resource_or_user_pause",true));});
+  t("Pending group registration is a local ordering wait, not a global outage",()->{yes(!UploadRetryPolicy.sharedCooldown("group_registration_pending",true));yes(UploadRetryPolicy.retry("group_registration_pending",true,100));});
   System.out.println("PASSED "+passed+" JPEG/retry checks");
  }
 }

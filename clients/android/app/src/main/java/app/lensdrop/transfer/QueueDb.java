@@ -98,6 +98,15 @@ final class QueueDb extends SQLiteOpenHelper {
     }
     boolean assignmentRetryPending(String scope){try(Cursor c=getReadableDatabase().rawQuery("SELECT 1 FROM jobs WHERE scope=? AND archive_private=1 AND state='uploaded' AND delivery_id IS NOT NULL AND photo_id IS NOT NULL AND delivery_synced=0 AND delivery_next<? LIMIT 1",new String[]{scope,Long.toString(Long.MAX_VALUE)})){return c.moveToFirst();}}
     void retryAssignments(String scope){getWritableDatabase().execSQL("UPDATE jobs SET delivery_error=NULL,delivery_next=0,delivery_attempts=0 WHERE scope=? AND archive_private=1 AND state='uploaded' AND delivery_synced=0",new Object[]{scope});}
+    /** Re-pair/retry never changes a guest's already displayed early token. */
+    void retryEarlySingles(String scope){getWritableDatabase().execSQL("UPDATE jobs SET early_next=0,early_attempts=0 WHERE scope=? AND early_token IS NOT NULL AND early_registered=0 AND is_test=0 AND state NOT IN ('skipped','retired_local')",new Object[]{scope});}
+    /** Idempotent recovery for rows parked by the old H5.12.1 client. No schema bump. */
+    void recoverParkedLinks(String scope){
+        getWritableDatabase().execSQL("UPDATE jobs SET delivery_next=0,delivery_attempts=0 WHERE scope=? AND delivery_synced=0 AND delivery_error='delivery_not_found' AND delivery_next=?",new Object[]{scope,Long.MAX_VALUE});
+        getWritableDatabase().execSQL("UPDATE jobs SET early_next=0,early_attempts=0 WHERE scope=? AND early_registered=0 AND early_token IS NOT NULL AND early_next=?",new Object[]{scope,Long.MAX_VALUE});
+    }
+    boolean needsGroupRegistration(String scope){try(Cursor c=getReadableDatabase().rawQuery("SELECT 1 FROM guest_groups g JOIN jobs j ON j.scope=g.scope AND j.delivery_id=g.id WHERE g.scope=? AND g.kind='group' AND g.state='open' AND g.cloud_registered=0 AND j.state NOT IN ('skipped','retired_local') LIMIT 1",new String[]{scope})){return c.moveToFirst();}}
+    boolean waitingGroupRegistration(String scope,String delivery){try(Cursor c=getReadableDatabase().rawQuery("SELECT 1 FROM guest_groups WHERE scope=? AND id=? AND state='open' AND cloud_registered=0",new String[]{scope,delivery})){return c.moveToFirst();}}
     private static void createH54(SQLiteDatabase db){
         // Preserve every old ID/receipt/assignment while permitting explicitly selected revisions.
         db.execSQL("ALTER TABLE jobs RENAME TO jobs_h53");
@@ -124,7 +133,10 @@ final class QueueDb extends SQLiteOpenHelper {
         db.execSQL("CREATE INDEX job_delivery ON jobs(delivery_id)");
     }
     void recover() { getWritableDatabase().execSQL("UPDATE jobs SET state='retry',next_try=0 WHERE state='uploading'"); }
-    void retryBlocked(String scope) { getWritableDatabase().execSQL("UPDATE jobs SET state='retry',next_try=0,file_failures=0 WHERE state='blocked' AND scope=?",new Object[]{scope}); }
+    void retryBlocked(String scope) {
+        getWritableDatabase().execSQL("UPDATE jobs SET state='retry',next_try=0,file_failures=0 WHERE state='blocked' AND scope=?",new Object[]{scope});
+        retryEarlySingles(scope);
+    }
     boolean hasOtherPending(String scope) {
         try(Cursor c=getReadableDatabase().rawQuery("SELECT 1 FROM jobs WHERE scope<>? AND (state NOT IN ('uploaded','skipped','retired_local') OR (state='uploaded' AND archive_private=1 AND delivery_id IS NOT NULL AND delivery_synced=0)) LIMIT 1",new String[]{scope})) {return c.moveToFirst();}
     }
@@ -184,7 +196,7 @@ final class QueueDb extends SQLiteOpenHelper {
         try(Cursor c=getReadableDatabase().rawQuery("SELECT state FROM jobs WHERE scope=? AND id=?",new String[]{scope,id})){return c.moveToFirst()?c.getString(0):"missing";}
     }
     JSONObject snapshot(String scope)throws Exception{
-        JSONObject result=new JSONObject();result.put("version","0.2.0-alpha.6-h5.5");result.put("generated_at",System.currentTimeMillis());result.put("scope","files-observed-by-this-client-only");result.put("camera_card_complete",false);result.put("source_originals_may_be_deleted",false);
+        JSONObject result=new JSONObject();result.put("version","0.2.0-alpha.8-h5.12.2");result.put("generated_at",System.currentTimeMillis());result.put("scope","files-observed-by-this-client-only");result.put("camera_card_complete",false);result.put("source_originals_may_be_deleted",false);
         for(int flag=0;flag<=1;flag++){
             JSONObject group=new JSONObject();long received=0,uploaded=0,queued=0,blocked=0,candidates=0,skipped=0,retired=0;
             try(Cursor c=getReadableDatabase().rawQuery("SELECT state,count(*) FROM jobs WHERE scope=? AND is_test=? GROUP BY state",new String[]{scope,Integer.toString(flag)})){

@@ -80,7 +80,7 @@ public final class MainActivity extends Activity {
         archive=LuceUi.check(this,source,"Archive all new photos privately",archiveEnabled());
         LuceUi.label(this,source,"Archive first; assign/release to guests separately. Existing excluded, skipped and retired files stay untouched. Pause transfers before changing these settings.",14,false);
         LuceUi.action(this,source,"Save photo source",true,this::start);
-        CheckBox instantQr=LuceUi.check(this,source,"Instant local QR before photo upload (H5.12.1)",config.instantQr());
+        CheckBox instantQr=LuceUi.check(this,source,"Instant local QR before photo upload",config.instantQr());
         instantQr.setOnCheckedChangeListener((view,enabled)->{config.prefs.edit().putBoolean("instant_qr_enabled",enabled).apply();say(enabled?"New eligible photos get local QR immediately. Cloud sync continues in background.":"New photos use the previous Cloud verified QR workflow. Existing tokens are preserved.");});
         LuceUi.action(this,source,"Photo / notification permissions",false,this::permissions);
         LuceUi.notice(this,source,"First start: pause capture/export while existing files are excluded. Begin shooting only after Watching is ready.");

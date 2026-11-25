@@ -14,9 +14,25 @@ final class TicketLedger {
     void create(String scope,String id,String delivery,String label,String url,String printer,String parent)throws Exception{
         TicketProtocol.packet(scope,id,delivery,label,url);TicketProtocol.printer(printer);if(parent!=null)TicketProtocol.uuid(parent);
         SQLiteDatabase d=db();d.beginTransaction();try{
+            JSONObject previous=parent==null?null:get(scope,parent);
+            if(parent!=null&&(previous==null||!previous.getString("delivery_id").equals(delivery)||!previous.getString("guest_url").equals(url)||"sending".equals(previous.getString("state"))))throw new IllegalStateException("Invalid reprint source");
+            String origin=scope.split("\\|",-1)[0];
             JSONObject g=new WatchLedger(queue).group(scope,delivery);
-            if(g==null||!"open".equals(g.optString("state"))||!label.equals(g.optString("label"))||!url.equals(TicketProtocol.guestUrl(scope.split("\\|",-1)[0],g.getString("guest_path"))))throw new IllegalStateException("Group link changed or became unavailable. Reopen ticket preview.");
-            if(parent!=null){JSONObject previous=get(scope,parent);if(previous==null||!previous.getString("delivery_id").equals(delivery)||!previous.getString("guest_url").equals(url)||"sending".equals(previous.getString("state")))throw new IllegalStateException("Invalid reprint source");}
+            if(g!=null){
+                if(!"open".equals(g.optString("state"))||!url.equals(TicketProtocol.guestUrl(origin,g.getString("guest_path")))||!(label.equals(g.optString("label"))||(previous!=null&&label.equals(previous.optString("label")))))throw new IllegalStateException("Group link changed or became unavailable. Reopen ticket preview.");
+            }else{
+                // Single print identity may be the local job UUID (before preissue) or
+                // the immutable Cloud Single ID (after preissue). Both resolve to one job.
+                try(Cursor c=d.rawQuery("SELECT id,single_label,single_path,early_token FROM jobs WHERE scope=? AND (id=? OR single_id=?) AND is_test=0 AND state NOT IN ('skipped','retired_local') LIMIT 2",new String[]{scope,delivery,delivery})){
+                    if(!c.moveToFirst())throw new IllegalStateException("Single link unavailable. Reopen Single QR preview.");
+                    String job=c.getString(0),official=c.getString(1),path=c.getString(2),token=c.getString(3);
+                    if(c.moveToNext())throw new IllegalStateException("Ambiguous Single ticket identity");
+                    String expected=path!=null?path:token!=null?InstantQr.path(token):null;
+                    if(expected==null||!url.equals(TicketProtocol.guestUrl(origin,expected)))throw new IllegalStateException("Single QR changed or became unavailable. Reopen ticket preview.");
+                    String current=official==null?TicketProtocol.earlySingleLabel(job):official;
+                    if(!label.equals(current)&&!(previous!=null&&label.equals(previous.optString("label"))))throw new IllegalStateException("Single label changed. Reopen ticket preview.");
+                }
+            }
             JSONObject old=get(scope,id);
             if(old!=null){if(!old.getString("delivery_id").equals(delivery)||!old.getString("guest_url").equals(url)||!old.getString("printer").equals(printer)||!old.getString("label").equals(label)||!(parent==null?!old.has("parent_id"):parent.equals(old.optString("parent_id"))))throw new IllegalStateException("Ticket ID conflict");d.setTransactionSuccessful();return;}
             long now=System.currentTimeMillis();

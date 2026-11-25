@@ -29,6 +29,14 @@ final class UploadEngine implements AutoCloseable {
     UploadEngine(Context context)throws Exception{
         this.context=context.getApplicationContext();config=new Config(context);queue=new QueueDb(context);scanner=new MediaScanner(context);
         boundScope=config.get("scope");
+        // H5.12.1 had terminally parked cloud links. Perform this additive recovery
+        // exactly ONCE per paired scope; do not resurrect persistent invalid 400s
+        // after every app/process restart. The operator can explicitly Retry.
+        String recoveryKey="h5122-parked-"+java.util.UUID.nameUUIDFromBytes(boundScope.getBytes(java.nio.charset.StandardCharsets.UTF_8));
+        if(!config.prefs.getBoolean(recoveryKey,false)){
+            queue.recoverParkedLinks(boundScope);
+            if(!config.prefs.edit().putBoolean(recoveryKey,true).commit())throw new IllegalStateException("Could not persist one-time QR recovery marker");
+        }
         api=new CloudApi(context,config.get("base"),config.token(),config.cellular());
     }
     void tick(){
@@ -49,7 +57,9 @@ final class UploadEngine implements AutoCloseable {
             if(config.get("test_only").isEmpty())queue.primeInstant(boundScope);
             if(System.currentTimeMillis()<config.prefs.getLong("cooldown",0)){config.status("Waiting before a shared network/server retry; queue retained.");return;}
             String gate=gate();if(gate!=null){config.status(gate);return;}
-            if(System.currentTimeMillis()-lastDeliverySync>30000){lastDeliverySync=System.currentTimeMillis();try{DeliveryCoordinator.sync(queue,boundScope,api);}catch(Exception ignored){}}
+            if(queue.needsGroupRegistration(boundScope)||System.currentTimeMillis()-lastDeliverySync>30000){
+                lastDeliverySync=System.currentTimeMillis();try{DeliveryCoordinator.sync(queue,boundScope,api);}catch(Exception ignored){}
+            }
             if(config.get("test_only").isEmpty()){DeliveryCoordinator.syncAssignments(queue,boundScope,api);SingleSync.one(queue,boundScope,api);}
             String testId=config.get("test_only");
             QueueDb.Job job=testId.isEmpty()?queue.due(boundScope):queue.testDue(boundScope,testId);
@@ -122,7 +132,9 @@ final class UploadEngine implements AutoCloseable {
     private void transfer(QueueDb.Job j){
         try{
             if(!j.scope.equals(boundScope))throw new CloudApi.Failure("queue_scope_mismatch",false,0);
-            if(j.delivery!=null&&!j.archivePrivate&&j.upload==null){JSONObject ident=api.call("/v1/device",null);if(ident.optJSONObject("capabilities")==null||!ident.getJSONObject("capabilities").optBoolean("personal_delivery_v1"))throw new CloudApi.Failure("personal_delivery_requires_h4",false,0);}
+            if(j.delivery!=null&&!j.archivePrivate&&j.upload==null){
+                if(queue.waitingGroupRegistration(boundScope,j.delivery))throw new CloudApi.Failure("group_registration_pending",true,5000);
+                JSONObject ident=api.call("/v1/device",null);if(ident.optJSONObject("capabilities")==null||!ident.getJSONObject("capabilities").optBoolean("personal_delivery_v1"))throw new CloudApi.Failure("personal_delivery_requires_h4",false,0);}
             if(j.isTest&&j.upload==null){JSONObject identity=api.call("/v1/device",null);if(identity.optJSONObject("capabilities")==null||!identity.getJSONObject("capabilities").optBoolean("isolated_preflight"))throw new CloudApi.Failure("preflight_requires_h2_server",false,0);}
             if(j.archivePrivate&&j.upload==null){JSONObject identity=api.call("/v1/device",null);if(identity.optJSONObject("capabilities")==null||!identity.getJSONObject("capabilities").optBoolean("archive_delivery_v1"))throw new CloudApi.Failure("private_archive_requires_h55",false,0);}
             config.status("Transferring one photograph; other files remain queued.");

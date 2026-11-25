@@ -140,8 +140,8 @@ def collect() -> None:
         'application_id': 'app.lensdrop.transfer', 'minimum_android_api': 29,
         'jdk_major': 17, 'gradle': '8.11.1', 'agp': '8.9.1', 'compile_sdk': 35,
         'sdk_build_tools': '35.0.0', 'signing_mode': selected,
-        'source_snapshot': 'lensdrop-android-h5.12.1-code18',
-        'source_snapshot_manifest_sha256': hashlib.sha256((ROOT / 'ANDROID_SOURCE_SNAPSHOT_H5_12_1.json').read_bytes()).hexdigest(),
+        'source_snapshot': 'lensdrop-android-h5.12.2-code19',
+        'source_snapshot_manifest_sha256': hashlib.sha256((ROOT / 'ANDROID_SOURCE_SNAPSHOT_H5_12_2.json').read_bytes()).hexdigest(),
         'source_snapshot_verified': True,
         'git_commit': os.environ.get('GITHUB_SHA', 'local'),
         'github_run_id': os.environ.get('GITHUB_RUN_ID'),
@@ -155,7 +155,7 @@ def collect() -> None:
     (OUT / 'README_INSTALL.txt').write_text(
         'LensDrop H5 DEBUG APK - controlled testing only.\n'
         'This file was compiled and signature-verified, not field validated.\n'
-        'Use Android 10+ and the H5.5 cloud (schema 7) / H5.5 station for this workflow.\n'
+        'Use Android 10+ with LensDrop H5.12.1 Cloud (schema 11) or later compatible host. Preserve the existing Windows station.\n'
         'Do not use an administrator key as the phone device token.\n'
         'Signing mode: ' + selected + '\n'
         'Temporary signing may change each run. Do NOT uninstall/clear app data to resolve a\n'

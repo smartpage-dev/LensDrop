@@ -32,7 +32,10 @@ final class TicketProtocol {
         if(s==null||!s.matches("[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}")||!UUID.fromString(s).toString().equals(s))throw new IllegalArgumentException("Invalid snapshot identity");return s;
     }
     static String printer(String s){if(s==null||!s.matches("[0-9A-F]{2}(:[0-9A-F]{2}){5}"))throw new IllegalArgumentException("Select and confirm one paired printer");return s;}
-    static String label(String s){if(s==null||!s.matches("(?:Group|Photo) [0-9]{4,12}"))throw new IllegalArgumentException("Unexpected group label; use the screen QR");return s;}
+    static String label(String s){if(s==null||!s.matches("(?:Group|Photo) [0-9]{4,12}|Photo [0-9A-F]{8}|[SG][0-9]{4,8}"))throw new IllegalArgumentException("Unexpected guest label; reopen QR preview");return s;}
+    /** Stable text for an early Single ticket before the Cloud allocates S####.
+     * A job UUID, not a status message, identifies the same private link. */
+    static String earlySingleLabel(String job){return "Photo "+uuid(job).replace("-","").substring(0,8).toUpperCase(Locale.ROOT);}
     static byte[] b(int... n){byte[] out=new byte[n.length];for(int i=0;i<n.length;i++)out[i]=(byte)n[i];return out;}
     static byte[] ascii(String s,boolean lines){
         if(s==null||s.length()>1024)throw new IllegalArgumentException("Text length");

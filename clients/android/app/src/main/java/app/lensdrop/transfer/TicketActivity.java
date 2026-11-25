@@ -93,19 +93,19 @@ public final class TicketActivity extends Activity {
             WatchLedger w=new WatchLedger(q);String delivery=prior==null?w.shown(scope):prior.getString("delivery_id");JSONObject group=w.group(scope,delivery);
             String singleJob=getIntent().getStringExtra("ticket_single_job");
             if(prior==null&&singleJob!=null){
-                try(android.database.Cursor c=q.getReadableDatabase().rawQuery("SELECT COALESCE(single_id,id),COALESCE(single_label,'Preparing QR'),COALESCE(single_path,'/p/'||early_token) FROM jobs WHERE id=? AND scope=? AND (single_id IS NOT NULL OR early_token IS NOT NULL) AND is_test=0 AND state NOT IN ('skipped','retired_local')",new String[]{singleJob,scope})){
+                try(android.database.Cursor c=q.getReadableDatabase().rawQuery("SELECT id,single_id,single_label,COALESCE(single_path,'/p/'||early_token) FROM jobs WHERE id=? AND scope=? AND (single_id IS NOT NULL OR early_token IS NOT NULL) AND is_test=0 AND state NOT IN ('skipped','retired_local')",new String[]{singleJob,scope})){
                     if(!c.moveToFirst())throw new IllegalStateException("Selected Single QR unavailable. It must be durably prepared first");
-                    delivery=c.getString(0);group=new JSONObject().put("state","open").put("label",c.getString(1)).put("guest_path",c.getString(2));
+                    delivery=c.getString(1)==null?c.getString(0):c.getString(1);group=new JSONObject().put("state","open").put("label",c.getString(2)==null?TicketProtocol.earlySingleLabel(c.getString(0)):c.getString(2)).put("guest_path",c.getString(3));
                 }
             }else if(prior!=null&&group==null){
-                try(android.database.Cursor c=q.getReadableDatabase().rawQuery("SELECT single_label,single_path FROM jobs WHERE scope=? AND single_id=? AND state='uploaded'",new String[]{scope,delivery})){
-                    if(c.moveToFirst())group=new JSONObject().put("state","open").put("label",c.getString(0)).put("guest_path",c.getString(1));
+                try(android.database.Cursor c=q.getReadableDatabase().rawQuery("SELECT id,single_label,COALESCE(single_path,'/p/'||early_token) FROM jobs WHERE scope=? AND (single_id=? OR id=?) AND is_test=0 AND state NOT IN ('skipped','retired_local')",new String[]{scope,delivery,delivery})){
+                    if(c.moveToFirst())group=new JSONObject().put("state","open").put("label",c.getString(1)==null?TicketProtocol.earlySingleLabel(c.getString(0)):c.getString(1)).put("guest_path",c.getString(2));
                 }
             }
             if(group==null||!"open".equals(group.optString("state")))throw new IllegalStateException("Show a prepared open guest QR first; cancelled/reserved groups cannot print");
             final String url=TicketProtocol.guestUrl(scope.split("\\|",-1)[0],group.getString("guest_path"));
             if(prior!=null&&!url.equals(prior.getString("guest_url")))throw new IllegalStateException("Saved link changed. Reprint blocked.");
-            final String label=group.getString("label"),id=UUID.randomUUID().toString(),parent=prior==null?null:prior.getString("id"),selectedDelivery=delivery;
+            final String label=prior==null?group.getString("label"):prior.getString("label"),id=UUID.randomUUID().toString(),parent=prior==null?null:prior.getString("id"),selectedDelivery=delivery;
             TicketProtocol.packet(scope,id,selectedDelivery,label,url);
             String note=(prior==null?"PRINT SHOWN QR - NOT AUTOMATICALLY THE RECEIVING GROUP":"EXPLICIT REPRINT - SAME ORIGINAL GUEST LINK")+"\n\nPrinter: "+printerName+"\n"+label+"\nGuest URL (private):\n"+url+"\n\n1 ticket. Native Model 2 / ECC M / 4-dot modules. ASCII only. No photo image. Photos may still be uploading or pending approval.\n\nLong-link scannability must be checked on paper before handing it to a guest.\n\nIf a previous ticket may already have printed, inspect it before confirming. This is NOT a 4x6 photo request.";
             runOnUiThread(()->{if(!foreground||isFinishing()||isDestroyed())return;new AlertDialog.Builder(this).setTitle(parent==null?"Confirm ONE QR ticket":"Confirm intentional ticket reprint").setMessage(note).setPositiveButton("Print ONE ticket",(d,n)->send(scope,id,selectedDelivery,label,url,printer,parent)).setNegativeButton("Cancel",null).show();});
