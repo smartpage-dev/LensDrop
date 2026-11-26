@@ -40,6 +40,19 @@ final class TicketLedger {
             d.setTransactionSuccessful();
         }finally{d.endTransaction();}
     }
+    /** Stable guest URL may change from a local job ID to a Cloud Single ID.
+     * Detect an earlier ticket without treating that as a new printable guest. */
+    JSONObject latestForGuestUrl(String scope,String guestUrl)throws Exception{
+        try(Cursor c=db().rawQuery("SELECT id FROM qr_tickets WHERE scope=? AND guest_url=? ORDER BY created DESC,id DESC LIMIT 1",new String[]{scope,guestUrl})){
+            return c.moveToFirst()?get(scope,c.getString(0)):null;
+        }
+    }
+    /** Latest attempt for the exact personal delivery. Never infer completion from sending. */
+    JSONObject latestForDelivery(String scope,String delivery)throws Exception{
+        try(Cursor c=db().rawQuery("SELECT id FROM qr_tickets WHERE scope=? AND delivery_id=? ORDER BY created DESC,id DESC LIMIT 1",new String[]{scope,delivery})){
+            return c.moveToFirst()?get(scope,c.getString(0)):null;
+        }
+    }
     JSONObject get(String scope,String id)throws Exception{
         try(Cursor c=db().rawQuery("SELECT id,scope,delivery_id,label,guest_url,printer,parent_id,created,state,observation,error,last_change FROM qr_tickets WHERE scope=? AND id=?",new String[]{scope,id})){
             if(!c.moveToFirst())return null;

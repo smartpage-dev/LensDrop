@@ -196,7 +196,7 @@ final class QueueDb extends SQLiteOpenHelper {
         try(Cursor c=getReadableDatabase().rawQuery("SELECT state FROM jobs WHERE scope=? AND id=?",new String[]{scope,id})){return c.moveToFirst()?c.getString(0):"missing";}
     }
     JSONObject snapshot(String scope)throws Exception{
-        JSONObject result=new JSONObject();result.put("version","0.2.0-alpha.8-h5.12.2");result.put("generated_at",System.currentTimeMillis());result.put("scope","files-observed-by-this-client-only");result.put("camera_card_complete",false);result.put("source_originals_may_be_deleted",false);
+        JSONObject result=new JSONObject();result.put("version","0.2.0-alpha.9-h5.12.3");result.put("generated_at",System.currentTimeMillis());result.put("scope","files-observed-by-this-client-only");result.put("camera_card_complete",false);result.put("source_originals_may_be_deleted",false);
         for(int flag=0;flag<=1;flag++){
             JSONObject group=new JSONObject();long received=0,uploaded=0,queued=0,blocked=0,candidates=0,skipped=0,retired=0;
             try(Cursor c=getReadableDatabase().rawQuery("SELECT state,count(*) FROM jobs WHERE scope=? AND is_test=? GROUP BY state",new String[]{scope,Integer.toString(flag)})){

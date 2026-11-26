@@ -88,6 +88,7 @@ jobs:
           bash clients/android/RUN_INSTANT_QR_TESTS.sh 2>&1 | tee ci-output/instant-qr-tests.log
           bash clients/android/RUN_TICKET_TESTS.sh 2>&1 | tee ci-output/ticket-tests.log
           bash clients/android/RUN_CLAUDE_P1_TESTS.sh 2>&1 | tee ci-output/claude-p1-regression.log
+          bash clients/android/RUN_DIRECT_PRINT_TESTS.sh 2>&1 | tee ci-output/direct-print-regression.log
           bash clients/android/RUN_RELIABILITY_TESTS.sh 2>&1 | tee ci-output/reliability-tests.log
           bash clients/android/RUN_WORKFLOW_TESTS.sh 2>&1 | tee ci-output/archive-workflow-tests.log
           bash clients/android/RUN_GALLERY_TESTS.sh 2>&1 | tee ci-output/gallery-tests.log

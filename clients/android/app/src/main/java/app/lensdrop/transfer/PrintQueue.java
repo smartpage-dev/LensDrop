@@ -10,6 +10,12 @@ final class PrintQueue extends SQLiteOpenHelper {
     private static void createRecovery(SQLiteDatabase db){db.execSQL("CREATE TABLE recovery_audit(id TEXT PRIMARY KEY,scope TEXT NOT NULL,job_id TEXT NOT NULL,action TEXT NOT NULL,previous_state TEXT NOT NULL,at INTEGER NOT NULL,detail TEXT NOT NULL)");}
     void add(String scope,JSONObject spec,String path,String mode)throws Exception{add(scope,spec,path,mode,null);}
     void add(String scope,JSONObject spec,String path,String mode,String archiveId)throws Exception{ContentValues v=new ContentValues();v.put("id",spec.getString("id"));v.put("scope",scope);v.put("spec",spec.toString());v.put("path",path);v.put("mode",mode);v.put("created",System.currentTimeMillis());if(archiveId!=null)v.put("archive_job_id",archiveId);getWritableDatabase().insertOrThrow("jobs",null,v);}
+    /** Direct-print idempotency: one immutable first attempt per selected photo. */
+    JSONObject get(String scope,String id)throws Exception{
+        try(Cursor c=getReadableDatabase().rawQuery("SELECT * FROM jobs WHERE scope=? AND id=? LIMIT 1",new String[]{scope,id})){
+            return c.moveToFirst()?row(c):null;
+        }
+    }
     JSONObject row(Cursor c)throws Exception{JSONObject x=new JSONObject();for(String k:new String[]{"id","scope","spec","path","mode","state","remote_state","error","archive_job_id"})x.put(k,c.getString(c.getColumnIndexOrThrow(k)));x.put("next_try",c.getLong(c.getColumnIndexOrThrow("next_try")));x.put("attempts",c.getInt(c.getColumnIndexOrThrow("attempts")));return x;}
     JSONObject next(String scope)throws Exception{try(Cursor c=getReadableDatabase().rawQuery("SELECT * FROM jobs WHERE scope=? AND state IN ('queued','accepted') AND next_try<=? ORDER BY created LIMIT 1",new String[]{scope,Long.toString(System.currentTimeMillis())})){return c.moveToFirst()?row(c):null;}}
     boolean hasPending(){try(Cursor c=getReadableDatabase().rawQuery("SELECT 1 FROM jobs WHERE state NOT IN ('done','cancelled','retired_local') LIMIT 1",null)){return c.moveToFirst();}}

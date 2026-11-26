@@ -15,19 +15,20 @@ import sys
 from datetime import datetime, timezone
 
 ROOT = Path(__file__).resolve().parents[2]
-DEFAULT_MANIFEST = 'ANDROID_SOURCE_SNAPSHOT_H5_12_2.json'
-RELEASE = 'lensdrop-android-h5.12.2-code19'
-VERSION = '0.2.0-alpha.8-h5.12.2'
+DEFAULT_MANIFEST = 'ANDROID_SOURCE_SNAPSHOT_H5_12_3.json'
+RELEASE = 'lensdrop-android-h5.12.3-code20'
+VERSION = '0.2.0-alpha.9-h5.12.3'
 APP_ID = 'app.lensdrop.transfer'
 REQUIRED = {
     '.github/workflows/android-debug.yml', 'tools/github/android_ci.py',
     'tools/github/verify_android_snapshot.py', 'clients/android/app/build.gradle',
     'clients/android/build.gradle', 'clients/android/settings.gradle',
     'clients/android/app/src/main/AndroidManifest.xml',
+    'clients/android/RUN_DIRECT_PRINT_TESTS.sh',
 }
 for name in ('MainActivity', 'SingleDeliveryActivity', 'SingleSync', 'DeliveryActivity', 'StaffSetupActivity',
              'StaffQrScannerActivity', 'RecoveryActivity', 'ArchiveStaging',
-             'PrintProfilePolicy', 'JpegStructure', 'QueueDb', 'PrintQueue', 'CloudApi', 'GalleryActivity', 'GalleryLedger', 'SlideshowActivity', 'SlideshowTicketProtocol', 'InstantQr', 'EventGalleryActivity'):
+             'PrintProfilePolicy', 'JpegStructure', 'QueueDb', 'PrintQueue', 'SinglePhotoPrint', 'SingleQuickPrintRules', 'TicketProtocol', 'TicketLedger', 'CloudApi', 'GalleryActivity', 'GalleryLedger', 'SlideshowActivity', 'SlideshowTicketProtocol', 'InstantQr', 'EventGalleryActivity'):
     REQUIRED.add('clients/android/app/src/main/java/app/lensdrop/transfer/' + name + '.java')
 MAX_BYTES = 32 * 1024 * 1024
 HEX = re.compile(r'^[0-9a-f]{64}$')
@@ -62,7 +63,7 @@ def safe_path(root: Path, relative: str) -> Path:
 def verify(root: Path, manifest_path: Path) -> dict:
     result = {
         'schema': 'luce.android.source-check/1', 'release': RELEASE,
-        'expected_version_name': VERSION, 'expected_version_code': 19,
+        'expected_version_name': VERSION, 'expected_version_code': 20,
         'git_commit': os.environ.get('GITHUB_SHA', 'local'),
         'checked_at_utc': datetime.now(timezone.utc).isoformat(),
         'ok': False, 'checked_files': 0, 'problems': [],
@@ -120,7 +121,7 @@ def verify(root: Path, manifest_path: Path) -> dict:
             if (root / rel).exists() and rel not in entries:
                 errors.append({'path': rel, 'reason': 'unexpected alternate Gradle configuration'})
         gradle = (root / 'clients/android/app/build.gradle').read_text(encoding='utf-8')
-        if not re.search(r'\bversionCode\s+19\b', gradle) or f"versionName '{VERSION}'" not in gradle or f"applicationId '{APP_ID}'" not in gradle:
+        if not re.search(r'\bversionCode\s+20\b', gradle) or f"versionName '{VERSION}'" not in gradle or f"applicationId '{APP_ID}'" not in gradle:
             errors.append({'path': 'clients/android/app/build.gradle', 'reason': 'unexpected app identity/version'})
     except (OSError, ValueError, KeyError, TypeError, UnicodeError):
         errors.append({'path': manifest_path.name, 'reason': 'missing, unsafe, or invalid manifest/configuration'})
@@ -147,7 +148,7 @@ def main() -> int:
     print('ERROR: incomplete or mixed LensDrop Android source. No SDK/signing/printing workaround is appropriate.', file=sys.stderr)
     for problem in result['problems'][:80]:
         print(f"  {problem['reason']}: {problem['path']}", file=sys.stderr)
-    print('Restore the complete H5.12.2 Android source bundle at repository root, including hidden .github; commit and start a NEW workflow. Do not disable this check or clear app data.', file=sys.stderr)
+    print('Restore the complete H5.12.3 Android source bundle at repository root, including hidden .github; commit and start a NEW workflow. Do not disable this check or clear app data.', file=sys.stderr)
     return 2
 
 
