@@ -1,16 +1,14 @@
 plugins { id 'com.android.application' }
 android {
-    namespace 'app.lensdrop.transfer'
+    namespace 'app.lensdrop.adminlite'
     compileSdk 35
     defaultConfig {
-        applicationId 'app.lensdrop.transfer'
+        applicationId 'app.lensdrop.adminlite'
         minSdk 29
         targetSdk 35
-        versionCode 19
-        versionName '0.2.0-alpha.8-h5.12.2'
+        versionCode 1
+        versionName '0.1.0-alpha.1'
     }
     compileOptions { sourceCompatibility JavaVersion.VERSION_17; targetCompatibility JavaVersion.VERSION_17 }
     buildTypes { release { minifyEnabled false } }
 }
-
-dependencies { implementation 'com.journeyapps:zxing-android-embedded:4.3.0' }

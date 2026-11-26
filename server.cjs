@@ -133,8 +133,8 @@ function createApp(options = {}) {
           incomplete_uploads: store.one("SELECT COUNT(*) AS n FROM uploads WHERE state='receiving'").n },
         note: 'A successful health check or write probe does not establish persistence across host redeployments or backup durability.' });
     }
-    if (method === 'GET' && ['/', '/admin', '/app.js', '/style.css', '/presentation-admin.js', '/qr.js', '/slideshow.js', '/slideshow.css', '/slideshow-model.js', '/personal.js', '/personal-admin.js', '/onboarding-admin.js', '/pair.js', '/staff-desk.js', '/staff-desk.css', '/operations-shell.js', '/photo-controls-admin.js'].includes(p)) {
-      const name = p === '/' || p === '/admin' ? 'index.html' : p.slice(1);
+    if (method === 'GET' && ['/', '/admin', '/app.js', '/style.css', '/presentation-admin.js', '/qr.js', '/slideshow.js', '/slideshow.css', '/slideshow-model.js', '/personal.js', '/personal-admin.js', '/onboarding-admin.js', '/pair.js', '/staff-desk.js', '/staff-desk.css', '/operations-shell.js', '/photo-controls-admin.js', '/admin-lite', '/admin-lite.html', '/admin-lite.css', '/admin-lite.js'].includes(p)) {
+      const name = p === '/' || p === '/admin' ? 'index.html' : p === '/admin-lite' ? 'admin-lite.html' : p.slice(1);
       return serveFile(res, path.join(publicDir, name), name.endsWith('.js') ? 'text/javascript' : name.endsWith('.css') ? 'text/css' : 'text/html');
     }
     if (method === 'GET' && p === '/pair') return serveFile(res,path.join(publicDir,'pair.html'),'text/html');
