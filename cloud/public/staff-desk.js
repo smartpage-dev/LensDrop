@@ -2,8 +2,8 @@
 // Shared by authenticated cloud Admin and the authenticated loopback station dashboard.
 (()=>{
  const el=(tag,text,cls)=>{const n=document.createElement(tag);if(text!==undefined)n.textContent=text;if(cls)n.className=cls;return n;};
- function mount(root,c){let dead=false,epoch=0,collection=null,before=null,configuration=null,preview=null,urls=new Set(),photoFilter='all',lastRows='';const pendingKey='lensdrop_staff_order_v1:'+c.scope;
-  root.replaceChildren();root.classList.add('staff-desk');root.append(el('h2','Staff Photo Desk / H5.11'),el('p','Private event library. Lookup never prints. Select a photo, review its profile and copies, then confirm. Collection is recorded separately from physical output.'));
+ function mount(root,c){let dead=false,epoch=0,collection=null,before=null,configuration=null,preview=null,urls=new Set(),photoFilter='all',lastRows='',thumbObserver=null,thumbQueue=[],thumbActive=0;const pendingKey='lensdrop_staff_order_v1:'+c.scope;
+  root.replaceChildren();root.classList.add('staff-desk');root.append(el('div',undefined,'desk-titlebar'));const titlebar=root.firstChild;titlebar.append(el('div',undefined,'desk-title-copy'));titlebar.firstChild.append(el('span','OPERATIONS / STAFF','desk-eyebrow'),el('h2','Staff Photo Desk'),el('p','Review private photos, prepare a print and manage groups. Nothing prints without explicit confirmation.'));titlebar.append(el('span','Private access','desk-pill'));
   const msg=el('p','','desk-message'),configArea=el('div'),tools=el('div',undefined,'desk-actions'),reference=el('input'),heading=el('h3','All event photos'),grid=el('div',undefined,'desk-grid'),orderArea=el('div'),pendingArea=el('div'),groupArea=el('section',undefined,'desk-groups');
   reference.placeholder='Staff: scan / paste guest QR, full collection ID or 8-character REF';reference.setAttribute('aria-label','Guest ticket reference');reference.autocomplete='off';
   const say=t=>{if(!dead)msg.textContent=t;};
@@ -13,8 +13,17 @@
   tools.append(button('Refresh setup',configure),button('All event photos',async()=>{groupArea.replaceChildren();collection=null;lastRows='';reference.value='';await load();}),button('Groups / manage',loadGroups),reference,button('Lookup ticket (NO PRINT)',lookup),filter);
   reference.addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();lookup().catch(fail);}});
   root.append(msg,configArea,tools,groupArea,pendingArea,heading,grid,next,el('h3','Print orders and collection'),button('Refresh orders',loadOrders),orderArea);
-  function dropImages(){for(const u of urls)URL.revokeObjectURL(u);urls.clear();}
+  function dropImages(){thumbObserver?.disconnect();thumbObserver=null;thumbQueue=[];for(const u of urls)URL.revokeObjectURL(u);urls.clear();}
   async function image(id,kind,img,ticket){const r=await c.asset('photo/'+id+'/'+kind);if(!r.ok)throw Error('Preview unavailable; refresh access or photo status.');const blob=await r.blob();if(blob.size>12*1024*1024)throw Error('Preview exceeds size limit');const u=URL.createObjectURL(blob);if(dead||ticket!==epoch){URL.revokeObjectURL(u);return;}urls.add(u);img.src=u;}
+  // Only load visible cards, with at most 3 thumbnail requests in flight.
+  // This avoids 50 simultaneous JPEG decodes on the Staff Desk.
+  function pumpThumbs(ticket){while(!dead&&ticket===epoch&&thumbActive<3&&thumbQueue.length){const job=thumbQueue.shift();if(!job.img.isConnected)continue;thumbActive++;
+   image(job.id,'thumb',job.img,ticket).catch(e=>{if(ticket===epoch)job.error.textContent='Thumbnail unavailable: '+e.message;}).finally(()=>{thumbActive--;pumpThumbs(ticket);});}}
+  function watchThumb(img,id,error,ticket){
+   if(!('IntersectionObserver' in window)){if(thumbQueue.length<12){thumbQueue.push({img,id,error});pumpThumbs(ticket);}return;}
+   if(!thumbObserver)thumbObserver=new IntersectionObserver(entries=>{for(const entry of entries){if(!entry.isIntersecting)continue;thumbObserver.unobserve(entry.target);const j=entry.target.__staffThumb;delete entry.target.__staffThumb;if(j){thumbQueue.push(j);pumpThumbs(ticket);}}},{rootMargin:'300px'});
+   img.__staffThumb={img,id,error};thumbObserver.observe(img);
+  }
   async function configure(){const conf=await c.api('config');if(dead)return;configuration=conf;configArea.replaceChildren();const title=el('p',conf.event.name+' / '+(conf.workflow.print_route==='cloud'?'Method 2: cloud print delivery':'Method 1: phone archive + local-first print'));configArea.append(title,el('p','Phones upload event photos. The Windows station does NOT upload the event photo library. Guest QR access is separate from print permission.'));
    if(c.admin){const mode=el('select');mode.add(new Option('Method 1 - phone cloud archive + local-first print','hybrid'));mode.add(new Option('Method 2 - phone cloud archive + cloud print','cloud'));mode.value=conf.workflow.print_route;configArea.append(mode,button('Save default for newly prepared phones',async()=>{await c.workflow({print_route:mode.value,revision:configuration.workflow.revision});await configure();say('Saved. Phones must refresh prepared station; existing queued requests are unchanged.');}));
     for(const st of conf.stations){const row=el('div',undefined,'desk-actions'),enabled=el('input'),max=el('select');enabled.type='checkbox';enabled.checked=st.staff_enabled;for(let i=1;i<=5;i++)max.add(new Option(String(i),String(i)));max.value=String(st.staff_max_copies);const label=el('label','Allow local staff desk: '+st.label+' ');label.append(enabled);row.append(label,el('span','Maximum sheet copies'),max,button('Save staff permission',async()=>{await c.permission(st.id,{enabled:enabled.checked,max_copies:Number(max.value)});say('Station staff access saved; does not cancel accepted jobs.');await configure();}));configArea.append(row);}
@@ -25,10 +34,23 @@
   async function load(older=false){let data;if(collection)data=await c.api('lookup',{reference:collection.id,...(older&&before?{before}: {})});else data=await c.api('photos?filter='+encodeURIComponent(photoFilter)+(older&&before?'&before='+before:''));if(dead)return;const signature=JSON.stringify(data.photos.map(p=>[p.id,p.status,p.starred,p.projector_visible,p.printed,p.delivery?.id,p.delivery?.released,p.collections?.map(x=>x.id+':'+x.revision)]));if(older||signature!==lastRows){lastRows=signature;render(data);}if(!older)await loadOrders();}
   function render(data){const ticket=++epoch;dropImages();heading.textContent=collection?collection.label+' / '+collection.id:'All private event photos';before=data.next_before;next.hidden=!before;grid.replaceChildren();
    if(!data.photos.length)grid.append(el('p','No eligible photos yet. Uploading or guest assignment may still be pending. Hidden/Test photos are not selectable here.'));
-   for(const p of data.photos){const card=el('article'),img=el('img');img.alt='Private preview of '+p.filename;img.loading='lazy';const label=el('p',(p.starred?'★ ':'')+p.filename+' / '+p.id+' / '+p.device_label+' / '+p.status+' / '+(p.printed?'printed/submitted':'not printed')),guest=el('p',(p.collections?.length?p.collections.map(x=>x.label+' / '+x.kind+' / '+(x.released?'released':'awaiting approval')).join(' · '):'Staff-only: not assigned to a guest'));card.append(img,label,guest);if(p.status!=='hidden')card.append(button('Preview / prepare print',()=>openPreview(p)));if(c.admin||c.scope){for(const [field,title,value] of [['starred',p.starred?'Unstar':'Star',!p.starred],['gallery_visible',p.status==='live'?'Hide from public gallery':'Show in public gallery',p.status!=='live'],['projector_visible',p.projector_visible?'Hide from slideshow':'Show on slideshow',!p.projector_visible]]){if(p.status==='hidden'&&field!=='starred')continue;card.append(button(title+' (NO PRINT)',async()=>{if(field!=='starred'&&!confirm('Change public visibility of '+p.filename+'?'))return;await c.api('photo-control',{photo_id:p.id,field,value});await load();}));}}
-    if(p.status!=='hidden'&&!p.delivery&&collection)card.append(button('Assign to this guest (NO PRINT)',async()=>{if(!confirm('Assign this photo permanently to '+collection.label+'? This is separate from printing.'))return;await c.api('assign',{photo_id:p.id,delivery_id:collection.id});await load();}));
-    if(p.status!=='hidden'&&!p.delivery)card.append(button('Assign to a guest reference',async()=>{const ref=prompt('Paste the intended guest link, collection ID or printed REF. No printing will occur.');if(!ref)return;const found=await c.api('lookup',{reference:ref});if(!confirm('Assign '+p.filename+' to '+found.collection.label+' / '+found.collection.id+'?'))return;await c.api('assign',{photo_id:p.id,delivery_id:found.collection.id});await load();}));
-    grid.append(card);if(p.status==='hidden'){img.alt='Globally hidden photo: preview intentionally disabled';}else image(p.id,'thumb',img,ticket).catch(e=>say(e.message));
+   for(const p of data.photos){
+    const card=el('article',undefined,'desk-photo-card'),img=el('img');img.alt='Authorized thumbnail of '+p.filename;img.loading='lazy';
+    const open=button('View & prepare print',()=>openPreview(p));open.className='desk-primary';
+    const imageButton=el('button',undefined,'desk-photo-image');imageButton.type='button';imageButton.title='Enlarge '+p.filename;imageButton.setAttribute('aria-label','Enlarge '+p.filename);imageButton.onclick=()=>openPreview(p).catch(e=>{localError.textContent=e.message;say(e.message);});imageButton.append(img);
+    const body=el('div',undefined,'desk-photo-body'),name=el('strong',p.filename,'desk-photo-name'),meta=el('p',p.device_label+' · '+p.status+' · '+(p.printed?'Print submitted':'Not printed'),'desk-photo-meta');
+    const tags=el('div',undefined,'desk-tags');for(const col of p.collections||[])tags.append(el('span',col.label+' '+col.kind+(col.released?'':' · pending'),'desk-tag'));if(!p.collections?.length)tags.append(el('span','Unassigned / staff only','desk-tag muted'));
+    const localError=el('p','','desk-card-error');localError.setAttribute('role','alert');
+    body.append(name,meta,tags,localError);
+    const actions=el('div',undefined,'desk-card-actions');actions.append(open);
+    if(c.admin||c.scope){for(const [field,title,value] of [['starred',p.starred?'Unstar':'Star',!p.starred],['gallery_visible',p.status==='live'?'Hide from gallery':'Show in gallery',p.status!=='live'],['projector_visible',p.projector_visible?'Remove slideshow':'Add slideshow',!p.projector_visible]]){
+      if(p.status==='hidden'&&field!=='starred')continue;const b=button(title+' (NO PRINT)',async()=>{if(field!=='starred'&&!confirm('Change public visibility of '+p.filename+'?'))return;await c.api('photo-control',{photo_id:p.id,field,value});await load();});b.className='desk-secondary';actions.append(b);
+    }}
+    if(p.status!=='hidden'&&!p.delivery&&collection)actions.append(button('Assign to this guest (NO PRINT)',async()=>{if(!confirm('Assign '+p.filename+' to '+collection.label+'? No printing occurs.'))return;await c.api('assign',{photo_id:p.id,delivery_id:collection.id});await load();}));
+    if(p.status!=='hidden'&&!p.delivery)actions.append(button('Assign guest reference',async()=>{const ref=prompt('Paste the intended guest link, collection ID or printed REF. No printing will occur.');if(!ref)return;const found=await c.api('lookup',{reference:ref});if(!confirm('Assign '+p.filename+' to '+found.collection.label+'?'))return;await c.api('assign',{photo_id:p.id,delivery_id:found.collection.id});await load();}));
+    card.append(imageButton,body,actions);grid.append(card);
+    if(p.status==='hidden'){img.alt='Globally hidden photo; private preview disabled';imageButton.disabled=true;open.disabled=true;}
+    else watchThumb(img,p.id,localError,ticket);
    }
   }
   async function loadGroups(){
@@ -46,16 +68,41 @@
    const dialog=el('dialog');dialog.append(panel,button('Close',()=>dialog.close()));root.append(dialog);dialog.addEventListener('close',()=>dialog.remove());dialog.showModal();
   }
   function specBody(p,station,profile,copies,reprint,selectedDelivery){return {id:crypto.randomUUID(),photo_id:p.id,station_id:station.id,profile_id:profile.id,profile_revision:profile.revision,copies,delivery_id:selectedDelivery||null,reprint_of:reprint||null};}
-  async function openPreview(p){if(!configuration)await configure();if(preview){preview.close();preview.remove();}const dialog=el('dialog'),wrap=el('div',undefined,'desk-preview'),img=el('img'),title=el('h3','Confirm exact photo: '+p.filename),station=el('select'),profile=el('select'),copies=el('select'),delivery=el('select'),detail=el('p');
-   delivery.add(new Option('Unassigned (only if no collection)', ''));for(const col of p.collections||[])delivery.add(new Option(col.label+' / '+col.kind,col.id));if((p.collections||[]).length)delivery.value=p.collections[0].id;if((p.collections||[]).length)delivery.remove(0);
-   for(const s of configuration.stations)station.add(new Option(s.label+(s.paused?' (paused)':''),s.id));if(!station.options.length)throw Error('No authorized station is available.');for(let i=1;i<=configuration.max_copies;i++)copies.add(new Option(String(i),String(i)));
-   const selectedStation=()=>configuration.stations.find(s=>s.id===station.value),selectedProfile=()=>selectedStation()?.profiles.find(x=>x.id===profile.value);
-   function quantity(){const pr=selectedProfile(),pair=pr&&pr.id.startsWith('cp9550-strip-pair-');detail.textContent=(pair?'ONE finished strip duplicated; '+copies.value+' sheet copy/copies = '+Number(copies.value)*2+' strips.':'Full photo / Contain / '+copies.value+' copy/copies.')+' Preview is not cutter calibration. Guest: '+((p.collections||[]).find(x=>x.id===delivery.value)?.label||'staff-only/unassigned')+'. Printing does not make it public.';img.className=pair?'desk-strip':'';}
-   function profiles(){profile.replaceChildren(...selectedStation().profiles.map(x=>new Option(x.label+' [revision '+x.revision+']',x.id)));quantity();}station.onchange=profiles;profile.onchange=quantity;copies.onchange=quantity;profiles();img.alt='Selected immutable photo preview';
-   const send=button('Confirm ONE print request',async()=>{const pr=selectedProfile();if(!pr)throw Error('Station has no published profiles.');if(p.bytes>32*1024*1024)throw Error('Photo exceeds the 32 MiB print limit. The cloud original remains archived.');if(localStorage.getItem(pendingKey))throw Error('Resolve the saved pending request first.');const pair=pr.id.startsWith('cp9550-strip-pair-');if(pair&&Math.abs(Math.max(p.width,p.height)/Math.min(p.width,p.height)-3)>0.04)throw Error('Pair profiles require ONE finished 1:3 strip JPEG.');
-    const request=specBody(p,selectedStation(),pr,Number(copies.value),null,delivery.value);localStorage.setItem(pendingKey,JSON.stringify(request));dialog.close();showPending();await submit(request);
-   });
-   send.disabled=true;wrap.append(title,img,el('label','Destination station'),station,el('label','Validated station profile'),profile,el('label','Sheet copies'),copies,el('label','Guest collection for this order'),delivery,detail,send,button('Cancel preview',()=>dialog.close()));dialog.append(wrap);root.append(dialog);preview=dialog;dialog.addEventListener('close',()=>{dialog.remove();if(preview===dialog)preview=null;});dialog.showModal();await image(p.id,'delivery',img,epoch);if(dialog.isConnected&&img.src)send.disabled=false;
+  async function openPreview(p){
+   if(preview){preview.close();preview.remove();}
+   const dialog=el('dialog');dialog.className='desk-preview-dialog';
+   const wrap=el('div',undefined,'desk-preview'),header=el('div',undefined,'desk-preview-header'),title=el('h3',p.filename),close=button('Close',()=>dialog.close()),status=el('p','Loading authorized photo...','desk-modal-status');
+   close.className='desk-secondary';header.append(title,close);const img=el('img');img.alt='Large authorized preview of '+p.filename;
+   const meta=el('p',p.device_label+' · '+p.status+' · Photo ID: '+p.id,'desk-photo-meta');
+   const printBox=el('details',undefined,'desk-print-setup'),summary=el('summary','Prepare photo print · review first');printBox.append(summary);
+   wrap.append(header,meta,img,status,printBox);dialog.append(wrap);root.append(dialog);preview=dialog;
+   dialog.addEventListener('close',()=>{dialog.remove();if(preview===dialog)preview=null;});dialog.showModal();
+   // Preview opens BEFORE checking station configuration so an absent/stale print
+   // station cannot make the Preview button appear inert.
+   const photoTicket=epoch;
+   try{await image(p.id,'delivery',img,photoTicket);if(dialog.open&&img.src)status.textContent='Private preview ready. Previewing never publishes or prints.';else status.textContent='Preview changed during refresh; reopen if needed.';}
+   catch(e){if(dialog.open)status.textContent='Image unavailable: '+e.message+' (refresh access or check archive)';}
+   let conf=configuration;
+   if(!conf){try{conf=await c.api('config');if(!dead)configuration=conf;}catch(e){printBox.append(el('p','Printing unavailable: '+e.message,'desk-card-error'));return;}}
+   if(!dialog.open||dead)return;
+   if(!conf?.stations?.length){printBox.open=true;printBox.append(el('p','No authorized Print Station is configured. Photo preview is still available; connect a station before preparing a print.','desk-card-error'));return;}
+   const station=el('select'),profile=el('select'),copies=el('select'),delivery=el('select'),detail=el('p');
+   for(const st of conf.stations)station.add(new Option(st.label+(st.paused?' (paused)':''),st.id));
+   delivery.add(new Option('Unassigned (only if no collection)',''));for(const col of p.collections||[])delivery.add(new Option(col.label+' / '+col.kind,col.id));if((p.collections||[]).length){delivery.value=p.collections[0].id;delivery.remove(0);}
+   for(let i=1;i<=conf.max_copies;i++)copies.add(new Option(String(i),String(i)));
+   const selectedStation=()=>conf.stations.find(st=>st.id===station.value),selectedProfile=()=>selectedStation()?.profiles?.find(x=>x.id===profile.value);
+   const send=button('Confirm ONE print request',async()=>{
+    const pr=selectedProfile();if(!pr)throw Error('Station has no published print profiles.');if(p.bytes>32*1024*1024)throw Error('Photo exceeds the 32 MiB print limit.');if(localStorage.getItem(pendingKey))throw Error('Resolve your saved pending request first.');
+    const pair=pr.id.startsWith('cp9550-strip-pair-');if(pair&&Math.abs(Math.max(p.width,p.height)/Math.min(p.width,p.height)-3)>0.04)throw Error('Pair profile requires a 1:3 finished strip JPEG.');
+    const request=specBody(p,selectedStation(),pr,Number(copies.value),null,delivery.value);
+    if(!confirm('Submit ONE print request for '+p.filename+' / '+copies.value+' sheet(s) to '+selectedStation().label+'?'))return;
+    localStorage.setItem(pendingKey,JSON.stringify(request));dialog.close();showPending();await submit(request);
+   });send.className='desk-primary';
+   function quantity(){const pr=selectedProfile(),pair=pr&&pr.id.startsWith('cp9550-strip-pair-');detail.textContent=(pair?'One strip image duplicated: '+Number(copies.value)*2+' strips.':'Full photo: '+copies.value+' sheet(s).')+' Guest: '+((p.collections||[]).find(x=>x.id===delivery.value)?.label||'unassigned')+'. Output is not proof of physical printing.';img.className=pair?'desk-strip':'';send.disabled=!pr;}
+   function profiles(){profile.replaceChildren(...(selectedStation()?.profiles||[]).map(x=>new Option(x.label+' [revision '+x.revision+']',x.id)));quantity();if(!profile.options.length)detail.textContent='Selected station has no published profiles. Configure it in Windows Station first.';}
+   station.onchange=profiles;profile.onchange=quantity;copies.onchange=quantity;delivery.onchange=quantity;
+   const fields=el('div',undefined,'desk-print-fields');for(const [text,field] of [['Destination station',station],['Validated station profile',profile],['Sheet copies',copies],['Guest collection for this order',delivery]]){const label=el('label',text);label.append(field);fields.append(label);}
+   printBox.append(fields,detail,send);profiles();
   }
   async function submit(request){const result=await c.api('orders',request);if(result.job.id!==request.id)throw Error('Order identity mismatch; keep pending record.');localStorage.removeItem(pendingKey);showPending();say('Order '+result.job.id+' is '+result.job.state+'. Same request ID retained on retries. Windows operator must verify paper.');await loadOrders();}
   function showPending(){pendingArea.replaceChildren();const raw=localStorage.getItem(pendingKey);if(!raw)return;let p;try{p=JSON.parse(raw);}catch{say('Saved request record damaged; inspect before clearing.');return;}pendingArea.append(el('strong','Saved request '+p.id+' — outcome not yet reconciled'),button('Check / retry the SAME request',()=>submit(p)),el('p','Do not create another request to work around an uncertain response. Refresh orders first. No auto reprint.'));

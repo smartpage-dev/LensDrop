@@ -1,3 +1,11 @@
+# Current Cloud source — H5.12.2 Ops UI + Admin Lite staging
+
+Cloud runtime version `0.2.0-alpha.12-hostinger.5.12.1`, SQLite schema11 unchanged. The H5.12.2 Ops update provides admin cards, authenticated previews and QR pairing web UI, and `/admin-lite` backed by existing Admin Key authorisation. See `RELEASE_STATUS.json`. Preserve existing event storage, environment secrets and credentials. Build/package is not a live deployment.
+
+Historical documentation follows.
+
+---
+
 # CURRENT RELEASE: H5.11 engineering candidate (schema 10)
 
 Read `START_H5_11.md` and `RELEASE_STATUS.json` first. Older instructions below are historical and must not override H5.11 upgrade requirements. Do not deploy without a stopped-data backup and verified client builds.

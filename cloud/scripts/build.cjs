@@ -9,10 +9,10 @@ const root = path.join(__dirname, '..');
 (async () => {
   const [major, minor] = process.versions.node.split('.').map(Number);
   if (!((major === 22 && minor >= 13) || major === 24)) throw new Error('Use Node 22.13+ within 22.x, or Node 24.x.');
-  for (const file of ['server.js', 'tools/personal-qr-rehearsal.cjs', 'scripts/generate-secrets.cjs', 'src/server.cjs', 'src/store.cjs', 'src/hosting.cjs', 'src/operations.cjs', 'src/presentation.cjs', 'src/event-management.cjs', 'src/photo-controls.cjs', 'src/qr.cjs', 'src/deliveries.cjs', 'src/dual-collections.cjs', 'src/early-delivery.cjs', 'src/event-workflow.cjs', 'public/staff-desk.js', 'src/onboarding-print.cjs', 'shared/print-protocol.cjs', 'public/onboarding-admin.js', 'public/personal.js', 'public/personal-admin.js', 'public/app.js', 'public/photo-controls-admin.js', 'public/gallery.js', 'public/presentation-admin.js', 'public/slideshow.js', 'public/slideshow-model.js', 'public/qr.js']) {
+  for (const file of ['server.js', 'tools/personal-qr-rehearsal.cjs', 'scripts/generate-secrets.cjs', 'src/server.cjs', 'src/store.cjs', 'src/hosting.cjs', 'src/operations.cjs', 'src/presentation.cjs', 'src/event-management.cjs', 'src/photo-controls.cjs', 'src/qr.cjs', 'src/deliveries.cjs', 'src/dual-collections.cjs', 'src/early-delivery.cjs', 'src/event-workflow.cjs', 'public/staff-desk.js', 'src/onboarding-print.cjs', 'shared/print-protocol.cjs', 'public/onboarding-admin.js', 'public/admin-lite.js', 'public/photo-thumbs.js', 'public/personal.js', 'public/personal-admin.js', 'public/app.js', 'public/photo-controls-admin.js', 'public/gallery.js', 'public/presentation-admin.js', 'public/slideshow.js', 'public/slideshow-model.js', 'public/qr.js']) {
     execFileSync(process.execPath, ['--check', path.join(root, file)]);
   }
-  for (const file of ['public/index.html', 'public/gallery.html', 'public/app.js', 'public/photo-controls-admin.js', 'public/gallery.js', 'public/style.css', 'public/slideshow.html', 'public/slideshow.css', 'public/qr.js']) {
+  for (const file of ['public/index.html', 'public/admin-lite.html', 'public/admin-lite.css', 'public/gallery.html', 'public/app.js', 'public/photo-controls-admin.js', 'public/gallery.js', 'public/style.css', 'public/slideshow.html', 'public/slideshow.css', 'public/qr.js']) {
     if (!fs.statSync(path.join(root, file)).size) throw new Error('Missing or empty asset: ' + file);
   }
   const db = new DatabaseSync(':memory:');

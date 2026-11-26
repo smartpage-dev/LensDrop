@@ -1,19 +1,33 @@
-# LensDrop Admin Lite · 0.1.0-alpha.1
+# LensDrop current staged source — H5.12.2 Ops UI + Admin Lite
 
-An **independent Android APK source project**, package `app.lensdrop.adminlite`, not a modification of the photographer app (`app.lensdrop.transfer`).
+Current version summary: see `CURRENT_RELEASE.json`. Android photographer app remains code19 / QueueDb10; Cloud remains H5.12.1 / schema11; Windows native print station unchanged.
 
-- Dedicated cloud route `/admin-lite` has a small pairing-only management UI. The Android APK hosts this route in an HTTPS WebView.
-- Admin enters the **existing Cloud Admin Key per session**. Neither the APK nor Cloud web page writes that credential to local storage.
-- Administrator can generate a short-lived staff QR for a new photographer, re-pair an existing device without losing history, and approve its 6-digit code, using existing server API permissions.
-- No printing, gallery publication, media removal or offline administrative permissions.
-- Only HTTPS same-origin navigation; no file, camera or microphone permission. Screenshot protection enabled on the Android wrapper.
-- Cloud page `/admin-lite` **must be deployed before the APK can work**.
+This development update improves Staff Desk preview/print errors, in-card Personal QR, Admin Photographs thumbnails, and Pairing history; it also provides separate Android Admin Lite **source** and `LensDrop Admin Lite APK` GitHub Actions workflow. No compiled Admin Lite APK or production deployment is bundled.
 
-## Build
-Run the manual GitHub Action `LensDrop Admin Lite APK` on a test branch, or with JDK 17, Android SDK 35, Gradle 8.11.1: `cd clients/admin-lite && gradle :app:assembleDebug`.
-Debug APK uses a normal debug signing key, **not** a production signing identity. Preserve its own application ID for future updates. Never embed `LENSDROP_ADMIN_KEY` in the app.
+To test: run the Cloud and Station suites and Android source check on a fresh branch, deploy the separate full Hostinger staging root **only after backup**, and run the Admin Lite workflow on the same commit. Preserve existing credentials, data directories and Android signing identity. The Admin Lite web page uses the existing full Admin Key; this is **not** a least-privilege role.
 
-## Use
-Open the app, check the Hostinger HTTPS domain, enter your Admin Key on the Cloud page, select the event, issue the staff QR or re-pair from a device card. Photographer must scan with their *LensDrop photographer Android App → Staff Setup*. Approve the displayed six-digit code on Admin Lite. The app does not scan the photographer QR itself.
+The instructions below are retained as historical reference; they do not describe the current release.
 
-**Pilot only**: Native APK has not been compiled in this environment; check GitHub Actions artifact and test on physical Android before deployment. Avoid trusting unknown cloud domains.
+---
+
+# Current build repair: LensDrop H5.6.1 / Android code12
+
+Start with **START_BUILD_REPAIR_H5_6_1.html**. The missing Intent import is corrected and the complete Android source/workflow has a coherence gate. Use CURRENT_RELEASE.json for current status. No APK or live deployment is included. Preserve app data and signing identity.
+
+The following retained guide is historical; newer versioned guides take precedence.
+
+# Current Android update: LensDrop H5.6
+
+Open **START_ANDROID_H5_6.html** for the current Android UI/scanner guide and **docs/h5_6/RELEASE_REPORT.md** for evidence and limits. Android is 0.2.0-alpha.6-h5.6 / code11; cloud and Windows remain H5.5, unchanged. No APK or native build validation is included. Existing signing identity, data and queues must be preserved. Run the Android workflow on a NEW updated commit. The native lint gate remains mandatory.
+
+H56_FILE_MANIFEST.json is the current source inventory. Earlier manifests/guides below are historical. The embedded Hostinger ZIPs are still the unchanged H5.5 deployment, not a new H5.6 server. Only the Android build is required for a site/station already on H5.5.
+
+---
+
+# LensDrop H5.5 - start here
+
+Open START_ARCHIVE_STAFFPRINT_H5_5.html. This is the latest source snapshot, not a compiled release.
+
+Includes phone archive-all independent of guest selection, two agreed print routes, and an authenticated staff photo/ticket/order/collection desk. No station upload hub, guest kiosk or automatic print-on-scan.
+
+Build Android and Windows on GitHub with the existing signing identity. After backup, upgrade cloud -> Windows -> Android. Cloud schema7, Android photo6/print3. Existing data identities and initialization0 remain. Historical guides do not override the H5.5 guide. See docs/h5_5/RELEASE_REPORT.md for precise tests and unverified limits.

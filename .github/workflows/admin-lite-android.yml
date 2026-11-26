@@ -16,6 +16,43 @@ jobs:
     timeout-minutes: 30
     steps:
       - uses: actions/checkout@v4
+      - name: Verify checked-out Admin Lite source (before SDK downloads)
+        shell: bash
+        run: |
+          set -euo pipefail
+          echo "Git commit: $(git rev-parse HEAD)"
+          python3 - <<'PYADMINLITE'
+          import hashlib, json, pathlib, sys
+          paths = [
+              'clients/admin-lite/README.md',
+              'clients/admin-lite/settings.gradle',
+              'clients/admin-lite/build.gradle',
+              'clients/admin-lite/app/build.gradle',
+              'clients/admin-lite/app/src/main/AndroidManifest.xml',
+              'clients/admin-lite/app/src/main/java/app/lensdrop/adminlite/MainActivity.java',
+          ]
+          manifest_path = pathlib.Path('CLOUD_STATION_SOURCE_SNAPSHOT_H5_12_1.json')
+          if not manifest_path.is_file():
+              print('::error::H5.12.1 source manifest missing from checkout')
+              sys.exit(1)
+          hashes = json.loads(manifest_path.read_text())['files']
+          issues = []
+          for rel in paths:
+              file = pathlib.Path(rel)
+              if not file.is_file():
+                  issues.append(('MISSING', rel))
+              elif rel not in hashes:
+                  issues.append(('NOT-IN-MANIFEST', rel))
+              elif hashlib.sha256(file.read_bytes()).hexdigest() != hashes[rel]:
+                  issues.append(('STALE', rel))
+          for kind, rel in issues:
+              print(f'::error file={rel}::{kind}: Admin Lite source missing or changed in Git checkout')
+          if issues:
+              print('Commit the complete clients/admin-lite/ directory AND the updated manifest on the same branch.')
+              print('A workflow-only patch cannot build the Admin Lite APK.')
+              sys.exit(1)
+          print('PASS: all six Admin Lite source files match the manifest in this Git commit')
+          PYADMINLITE
       - uses: actions/setup-java@v4
         with:
           distribution: temurin

@@ -1317,8 +1317,22 @@ jobs:
                       raise RuntimeError('STOP: mismatches outside known 21-file repair: '+', '.join(other[:20]))
                   if unknown:
                       raise RuntimeError('STOP: unknown modifications (not present in prior release baselines): '+', '.join(p+'='+str(h)[:12] for p,h in unknown))
-                  if git('status','--porcelain',cwd=repo):
-                      raise RuntimeError('STOP: worktree not clean. Commit or stash user changes on a separate branch before restore.')
+                  # A GitHub checkout can report unstaged working-tree differences (e.g. generated
+                  # local files or line-ending normalization). Those are not part of the repair
+                  # commit. Refuse pre-existing staged changes; add only the 21 approved paths.
+                  dirty=git('status','--porcelain=v1','--untracked-files=all',cwd=repo)
+                  if dirty:
+                      print('PRE-REPAIR GIT STATUS (for diagnosis; not automatically committed):')
+                      for entry in dirty.splitlines()[:80]:print('  '+entry)
+                  if mode=='apply_local' and dirty:
+                      raise RuntimeError('STOP: local worktree not clean; commit/stash changes before local apply.')
+                  if mode=='restore_branch':
+                      workspace=os.environ.get('GITHUB_WORKSPACE','')
+                      if os.environ.get('GITHUB_ACTIONS')!='true' or not workspace or pathlib.Path(workspace).resolve()!=repo:
+                          raise RuntimeError('STOP: restore_branch may only run inside its checked-out GitHub Actions workspace.')
+                  staged_before=git('diff','--cached','--name-only',cwd=repo)
+                  if staged_before:
+                      raise RuntimeError('STOP: pre-existing staged files are not permitted: '+staged_before.replace('\n',', '))
                   branch=git('branch','--show-current',cwd=repo)
                   if mode=='apply_local' and (not branch or branch in ('main','master')):
                       raise RuntimeError('STOP: create a NEW review branch before local apply; never write into main.')
@@ -1332,6 +1346,9 @@ jobs:
                       f.write_bytes(payload[p])
                   if changes:
                       git('add','-f','--',*changes,cwd=repo)
+                  staged_paths=set(git('diff','--cached','--name-only',cwd=repo).splitlines())
+                  if staged_paths!=set(changes):
+                      raise RuntimeError('STOP: staged path set differs from approved source repairs: '+repr(sorted(staged_paths ^ set(changes))))
                   for p,h in manifest.items():
                       f=repo/p
                       if not f.is_file() or sha(f.read_bytes())!=h:
@@ -1351,6 +1368,9 @@ jobs:
                   git('config','user.name','LensDrop Source Repair Bot',cwd=repo)
                   git('config','user.email','41898282+github-actions[bot]@users.noreply.github.com',cwd=repo)
                   git('commit','-m','Sync H5.12.2 Ops UI Admin Lite source with approved manifest',cwd=repo)
+                  committed_paths=set(git('diff-tree','--no-commit-id','--name-only','-r','HEAD',cwd=repo).splitlines())
+                  if committed_paths!=set(changes):
+                      raise RuntimeError('COMMIT CONTENT FAIL: unexpected paths: '+repr(sorted(committed_paths ^ set(changes))))
                   for p,h in manifest.items():
                       if sha(gitbytes('show','HEAD:'+p,cwd=repo))!=h:
                           raise RuntimeError('HEAD COMMIT FAIL: '+p)

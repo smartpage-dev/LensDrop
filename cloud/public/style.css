@@ -23,3 +23,40 @@
 
 /* Keep one primary introduction instead of two competing hero blocks. */
 .ops-main .intro{display:none}
+
+/* H5.12.2 inline staff re-pair invitation — visible in its own photographer block. */
+.inline-repair-qr{margin:14px 0 8px;padding:16px;border:1px solid #9ccec0;border-radius:14px;background:#f4fbf8;max-width:620px;overflow-wrap:anywhere}
+.inline-repair-heading{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;margin-bottom:8px}
+.inline-repair-heading strong{font-size:15px}
+.inline-repair-code{display:flex;align-items:center;justify-content:center;min-height:200px;background:#fff;border:1px solid #dce5e2;border-radius:10px;padding:12px;margin:10px 0;max-width:320px}
+.inline-repair-code svg{display:block;width:min(100%,260px);height:auto;max-width:260px}
+.inline-repair-actions{display:flex;gap:8px;flex-wrap:wrap;margin:4px 0}
+.inline-repair-actions button{margin:0}
+.inline-repair-qr input{font-size:12px;max-width:100%;min-height:38px;overflow:hidden}
+.inline-repair-qr p{font-size:13px!important;margin:8px 0}
+@media(max-width:500px){.inline-repair-qr{padding:12px}.inline-repair-code{max-width:100%}}
+
+/* Inline personal delivery QR, never separated from the selected collection */
+#personalDeliveries{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:12px;align-items:start;margin-top:12px}
+.personal-delivery-card{border:1px solid #dce9e1;border-radius:14px;padding:15px;background:white;box-shadow:0 4px 18px #153f3508;min-width:0;overflow-wrap:anywhere}
+.personal-delivery-top{display:flex;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;gap:7px}.personal-delivery-labels{display:grid;gap:3px}.personal-delivery-labels strong{font-size:15px}.personal-delivery-labels small{font-size:11px;color:#648075}
+.personal-count{font-size:10px;font-weight:750;background:#e8f5ee;color:#2d6651;padding:6px 8px;border-radius:20px}.personal-mini{font-size:12px!important;color:#6b7f76;margin:10px 0!important}
+.personal-view{width:100%;margin:5px 0!important;min-height:40px}.personal-inline-detail{border-top:1px solid #e5eee9;margin-top:13px;padding-top:13px}.personal-inline-heading h3{margin:4px 0 10px;font-size:16px}
+.personal-inline-summary{display:grid;grid-template-columns:minmax(0,180px) minmax(0,1fr);gap:12px;align-items:start}.personal-inline-summary .personal-qr{background:white;border:1px solid #e3eee7;border-radius:9px;padding:7px}
+.personal-inline-summary .personal-qr svg{width:100%;max-width:170px;height:auto;display:block}.personal-inline-actions{display:flex;flex-direction:column;gap:7px}.personal-inline-actions a,.personal-inline-actions button{font-size:11px;margin:0;max-width:100%;overflow-wrap:anywhere}
+.personal-inline-photos{margin:14px 0}.personal-inline-photos h4{font-size:13px;margin:0 0 6px}.personal-photo-row{display:flex;flex-wrap:wrap;align-items:center;gap:7px;border-top:1px solid #eef3ef;padding:9px 0}.personal-photo-name{flex:1;min-width:125px;display:grid;gap:3px}.personal-photo-name strong{font-size:12px;overflow-wrap:anywhere}.personal-photo-name small{font-size:11px;color:#658174}.personal-photo-row button{font-size:11px;margin:0}
+@media(min-width:1100px){#personalDeliveries{grid-template-columns:repeat(3,minmax(0,1fr))}}@media(max-width:520px){#personalDeliveries{grid-template-columns:1fr}.personal-inline-summary{grid-template-columns:150px minmax(0,1fr)}}
+
+/* H5.12.2 admin photo list: protected 78px thumbnails and click-to-enlarge */
+#photos .admin-photo-table{min-width:680px}#photos .admin-photo-table td:first-child{max-width:400px;display:flex;align-items:center;gap:10px;min-width:170px}
+.photo-thumb-button{width:84px;height:84px;padding:3px!important;margin:0!important;border:1px solid #d9e8df!important;background:#ecf3ee!important;border-radius:10px!important;flex:none;overflow:hidden}
+.photo-thumb-button img{display:block;width:100%;height:100%;object-fit:contain;border-radius:7px}.photo-thumb-button img:not([src]){background:linear-gradient(110deg,#e5ece8,#f8faf8,#e5ece8)}
+.photo-thumb-button img.thumb-missing{opacity:.4}.photo-file-name{font-size:12px;color:#2d4239;overflow-wrap:anywhere}
+.admin-photo-table td{vertical-align:middle}.admin-photo-table td:last-child button{font-size:11px;padding:7px 9px;min-height:32px;margin:2px}
+
+/* Compact pairing review — history preserved server-side */
+.pairing-filter-bar{display:flex;gap:8px;align-items:center;flex-wrap:wrap;padding:9px;background:#f3f7f5;border:1px solid #e0e9e4;border-radius:12px;margin:10px 0}.pairing-filter-bar select{width:auto;max-width:100%;min-width:205px}.pairing-filter-bar input{flex:1;min-width:180px}.pairing-filter-bar span{font-size:11px;color:#667d70}
+#h5-pairings{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:9px}#h5-pairings .pairing-history-card{border:1px solid #e1eae5;border-radius:12px;padding:12px;background:#fff;margin:0}
+.pairing-history-title{display:flex;justify-content:space-between;align-items:center;gap:7px}.pairing-history-title strong{font-size:13px;overflow-wrap:anywhere}.pairing-status{font-size:10px;background:#edf2ee;color:#667d70;padding:5px 8px;border-radius:20px;white-space:nowrap;text-transform:capitalize}.pairing-status.active{background:#dcf3e4;color:#25724b}
+#h5-pairings .pairing-history-card p{font-size:11px!important;color:#657d72;margin:8px 0}#h5-pairings button{font-size:11px;padding:7px 9px;margin:2px;min-height:32px}
+@media(max-width:600px){.pairing-filter-bar{display:grid}.pairing-filter-bar input,.pairing-filter-bar select{width:100%}}

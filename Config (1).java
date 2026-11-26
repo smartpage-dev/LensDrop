@@ -1,1 +1,0 @@
-package app.lensdrop.transfer;import android.content.Context;/** JVM test-only preference stub: existing workflow tests use classic mode. */final class Config{static boolean instantEnabled=false;Config(Context c){}boolean instantQr(){return instantEnabled;}}
