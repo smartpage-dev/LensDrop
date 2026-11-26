@@ -23,7 +23,10 @@ jobs:
       - uses: gradle/actions/setup-gradle@v4
         with:
           gradle-version: '8.11.1'
-      - uses: android-actions/setup-android@v3
+      - name: Set up current Android command-line SDK (no deprecated tools package)
+        uses: android-actions/setup-android@v4
+        with:
+          packages: platform-tools
       - name: Install Android SDK 35
         run: sdkmanager 'platforms;android-35' 'build-tools;35.0.0'
       - name: Compile debug APK
